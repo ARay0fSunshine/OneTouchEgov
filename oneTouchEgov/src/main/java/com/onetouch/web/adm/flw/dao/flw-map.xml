@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.adm.flw.dao.FlwMapper">
+
+	<!-- 공정전개 보기 -->
+	<select id="selectFlw" resultType="com.onetouch.web.adm.flw.dao.FlwVO">
+		select   prc_seq,
+				 prd_cd,
+				 prc_cd,
+		         FN_GET_PRC_CD_TO_NM(prc_cd) as prcNm,
+		         work_cmt,
+		         std_load,
+		         unit_cost,
+		         lead_time      
+		from     adm_prc_flow
+		where    prd_cd = #{prdCd}
+		order by prc_seq
+	</select>
+	
+	<!-- 공정전개 지우기 -->
+	<delete id="deleteFlw">
+		delete 
+		from 	adm_prc_flow
+		where 	prd_cd = #{prdCd}
+	</delete>
+	
+	<update id="updateFlw">
+		UPDATE 	adm_prc_flow
+		SET 	work_cmt = #{workCmt},
+				std_load = #{stdLoad},
+				unit_cost = #{unitCost},
+				lead_time = #{leadTime}
+		WHERE	prc_cd = #{prcCd}
+	</update>
+	
+	<update id="updatePrd">
+		UPDATE 	adm_prd
+		SET 	prd_std = #{prdStd},
+				mng_unit = #{mngUnit},
+				prd_sect = #{prdSect},
+				use_yn = 
+				<if test = "useYn == null || useYn == ''" >
+					'N'
+				</if>
+				<if test = "useYn == 'on'">
+					'Y'
+				</if>
+		WHERE	prd_cd = #{prdCd}		
+	</update>
+	
+	<!-- 공정흐름 // 공정관리 // 공통bom join -->
+	<select id="selectFlwPrcBom" resultType="com.onetouch.web.adm.bom.dao.BomVO">
+		select a.prdCd as prdCd , a.prcSeq as prcSeq , 
+		    a.prcCd as prcCd , a.workCmt as workCmt ,a.stdLoad as stdLoad , 
+		    a.unitCost as unitCost , a.leadTime as leadTime , a.prcNm as prcNm , 
+		    a.mngUnit as mngUnit , a.pdtDay as pdtDay , a.prcSect as prcSect ,
+		    b.bom_cd as bomCd , b.mtr_cd as mtrCd ,b.use_amt as useAmt 
+		from (select a.prd_cd as prdCd , a.prc_seq as prcSeq , 
+		    a.prc_cd as prcCd , a.work_cmt as workCmt ,a.std_load as stdLoad , 
+		    a.unit_cost as unitCost , a.lead_time as leadTime , b.prc_nm as prcNm , 
+		    b.mng_unit as mngUnit , b.pdt_day as pdtDay , b.prc_sect as prcSect 
+		    from adm_prc_flow a join adm_prc_mng b
+		    on (a.prc_cd=b.prc_cd)) a join adm_bom b
+		on(a.prcCd = b.prc_cd)
+		where prdCd=#{prdCd}
+	</select>
+</mapper>

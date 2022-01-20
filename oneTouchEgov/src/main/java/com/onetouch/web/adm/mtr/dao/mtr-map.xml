@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.adm.mtr.dao.MtrMapper">
+
+	<!-- 자재리스트 조회 -->
+	<select id="selectAdmMtrAll" resultType="com.onetouch.web.adm.mtr.dao.MtrVO">
+		select  mtr_cd, 
+		        mtr_nm, 
+		        std, 
+		        FN_GET_BAS_DTL_CD_TO_NM(std) as stdNm, 
+		        unit,
+		        FN_GET_BAS_DTL_CD_TO_NM(unit) as unitNm, 
+		        comp_cd,
+		        FN_GET_BAS_DTL_CD_TO_NM(comp_cd) as compNm, 
+		        safe_stck,
+		        mtr_sect,
+		        FN_GET_BAS_DTL_CD_TO_NM(mtr_sect) as mtrSectNm,
+		        use_yn,
+		        mng_amt
+		from    adm_mtr
+	</select>
+	
+	<!-- use_yn='Y' 자재리스트 -->
+	<select id="selectUseAdmMtr" resultType="com.onetouch.web.adm.mtr.dao.MtrVO">
+		select  mtr_cd, 
+		        mtr_nm, 
+		        std, 
+		        FN_GET_BAS_DTL_CD_TO_NM(std) as stdNm, 
+		        unit,
+		        FN_GET_BAS_DTL_CD_TO_NM(unit) as unitNm,
+		        comp_cd,
+		        FN_GET_BAS_DTL_CD_TO_NM(comp_cd) as compNm, 
+		        safe_stck,
+		        mtr_sect,
+		        FN_GET_BAS_DTL_CD_TO_NM(mtr_sect) as mtrSectNm,
+		        use_yn,
+		        mng_amt
+		from    adm_mtr
+		where   use_yn='Y' 
+	</select>
+	
+	<!-- 클릭한 자재 정보 조회 -->
+	<select id="selectAdmMtrDtl" resultType="com.onetouch.web.adm.mtr.dao.MtrVO">
+		select  mtr_cd, 
+		        mtr_nm, 
+		        std, 
+		        FN_GET_BAS_DTL_CD_TO_NM(std) as stdNm, 
+		        unit,
+				FN_GET_BAS_DTL_CD_TO_NM(unit) as unitNm,
+				comp_cd,
+		        FN_GET_BAS_DTL_CD_TO_NM(comp_cd) as compNm, 
+		        safe_stck,
+		        mtr_sect,
+		        FN_GET_BAS_DTL_CD_TO_NM(mtr_sect) as mtrSectNm,
+		        use_yn,
+		        mng_amt
+		from    adm_mtr
+		where 	mtr_cd = #{mtrCd}
+	</select>
+	
+	<update id="updateMtr">
+		UPDATE 	adm_mtr
+		SET 	mtr_cd = #{mtrCd},
+			 	mtr_nm = #{mtrNm},
+			 	std = #{std},
+			 	unit = #{unit},
+			 	comp_cd = #{compCd},
+			 	mtr_sect = #{mtrSect},
+				safe_stck = #{safeStck},
+				use_yn = 
+				<if test = "useYn == null || useYn == ''" >
+					'N'
+				</if>
+				<if test = "useYn == 'on'">
+					'Y'
+				</if>
+		WHERE	mtr_cd = #{mtrCd}
+	</update>
+</mapper>

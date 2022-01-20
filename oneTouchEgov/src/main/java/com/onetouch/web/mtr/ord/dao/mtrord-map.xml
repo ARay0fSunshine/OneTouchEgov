@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.mtr.ord.dao.MtrOrdMapper">
+	<!--발주내역 전체조회 -->
+	<select id="ordMtrList" resultType="com.onetouch.web.mtr.ord.dao.MtrOrdVO">
+		SELECT 
+			a.ORD_NO,
+			a.MTR_CD,
+			FN_GET_MTR_CD_TO_NM(a.MTR_CD) AS MTR_NM,
+			a.UNIT,
+			a.UNIT_COST,
+			a.ORD_AMT,
+			(a.UNIT_COST * a.ORD_AMT) AS TOT_COST,
+			a.IN_AMT,
+			a.NOTIN_AMT,
+			TO_CHAR(b.ORD_DATE, 'yyyy-MM-dd') AS ORD_DATE,
+			FN_GET_BAS_DTL_CD_TO_NM(b.COMP_CD) AS COMP_NM,
+			b.CMT,
+			c.MNG_AMT
+		FROM
+			MTR_ORD_DTL a, MTR_ORD b, ADM_MTR c
+		WHERE
+			a.ORD_NO = b.ORD_NO
+		AND
+			a.MTR_CD = c.MTR_CD
+		<![CDATA[AND a.NOTIN_AMT > 0]]>
+	</select>
+	
+	<!-- 발주내역 조건조회 -->
+	<select id="ordMtrSelect" resultType="com.onetouch.web.mtr.ord.dao.MtrOrdVO">
+		SELECT 
+			a.ORD_NO,
+			a.SEQ,
+			FN_GET_MTR_CD_TO_NM(a.MTR_CD) AS MTR_NM,
+			a.UNIT,
+			a.UNIT_COST,
+			a.AMT,
+			(a.UNIT_COST * a.AMT) AS TOT_COST,
+			a.ORD_AMT,
+			a.IN_AMT,
+			a.NOTIN_AMT,
+			b.ORD_DATE,
+			FN_GET_BAS_DTL_CD_TO_NM(COMP_CD) AS COMP_NM,
+			b.CMT
+		FROM MTR_ORD_DTL a, MTR_ORD b
+		WHERE 1=1 
+		<if test="compCd != null and compCd != ''"> 
+			<![CDATA[AND a.COMP_CD = #{compCd}]]>
+		</if>
+		<if test="mtrCd != null and mtrCd != ''"> 
+			<![CDATA[AND a.MTR_CD = #{mtrCd}]]>
+		</if>
+		<if test="startDate != null and startDate != ''"> 
+			<![CDATA[AND TO_CHAR(A.IN_DATE, 'yyyy-MM-dd') >= #{startDate}]]>
+		</if>
+		<if test="endDate != null and endDate != ''"> 
+			<![CDATA[AND TO_CHAR(A.IN_DATE, 'yyyy-MM-dd') <= #{endDate}]]>
+		</if>
+		<if test="compCd != null and compCd != ''">
+			AND B.COMP_CD = #{compCd}
+		</if>
+		<if test="ditemCode != null and ditemCode != ''">
+			AND B.MTR_CD = #{ditemCode}
+		</if>
+		
+	</select>
+</mapper>

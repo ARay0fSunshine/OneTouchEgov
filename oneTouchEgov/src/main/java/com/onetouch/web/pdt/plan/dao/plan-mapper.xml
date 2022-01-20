@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.pdt.plan.dao.PlanMapper">
+<select id="list" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select PLAN_NO,DUE_DATE,ORD_SHT_NO,WORK_PROT,PLAN_DATE from pdt_plan
+	where 1=1
+	<if test='nowPhs =="Y"'>
+		and now_phs ='Y'
+	</if>
+	<if test='nowPhs =="N"'>
+		and now_phs ='N'
+	</if>
+	
+</select>
+<select id="selectDtl" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select prd_cd, cnt as need_cnt from pdt_ord_view where ORD_SHT_NO=#{ordShtNo}
+</select>
+<select id="findPrcCd" resultType="com.onetouch.web.fct.info.dao.InfoVO">
+	select a.fct_cd , a.fct_nm , a.prc_cd
+	from fct_info a join (select prc_cd from adm_prc_flow where prd_cd=#{prdCd}) b
+	on(a.prc_cd = b.prc_cd)
+</select>
+<insert id="insertPlan">
+	<!-- <foreach collection="list" item="alist">
+	insert into pdt_plan (PLAN_NO,DUE_DATE,ORD_SHT_NO,WORK_PROT,PLAN_DATE) 
+	values(
+   PKG_MAKE_CODE.CODE('PPL','pdt_plan','PLAN_NO', 'plan_date')
+   ,to_date(#{alist.dueDate},'yyyy-mm-dd HH24:MI:SS')
+   ,#{alist.ordShtNo},#{alist.workProt},sysdate
+	)     동적쿼리하다감
+	</foreach> -->
+	insert into pdt_plan (WORK_PROT,PLAN_NO,DUE_DATE,ORD_SHT_NO,PLAN_DATE,now_phs) 
+	values
+   (
+   #{workProt}
+   ,#{planNo}
+   ,to_date(#{dueDate},'yyyy-mm-dd HH24:MI:SS')
+   ,#{ordShtNo},sysdate,'N')
+</insert>
+	<delete id="deletePlan">
+		delete from pdt_plan where plan_no=#{planNo}	
+	</delete>
+<!-- 제품명검색해서 로트별 재고보기 -->
+<select id="lotCntSelect" parameterType="com.onetouch.web.pdt.plan.dao.PlanVO" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+    select a.use_amt as useAmt,a.mtrlot as mtrLot , a.stckCnt as stckCnt , a.hldCnt as hldCnt , a.mtrcd as mtrCd , b.prd_cd as prdCd , b.need_cnt*a.use_amt as needCnt 
+    from (select a.prc_cd as prcCd,a.use_amt as use_amt,b.mtr_lot as mtrLot ,b.stck_cnt as stckCnt,b.hld_cnt as hldCnt ,b.mtr_cd as mtrCd ,a.prd_cd as prd_cd
+            from adm_bom a join mtr_lot_stck b
+            on (a.mtr_cd = b.mtr_cd)
+            where a.prd_cd=#{prdCd} AND a.prc_cd = #{prcCd}) a join (select prd_cd, cnt as need_cnt from pdt_ord_view where ORD_SHT_NO=#{ordShtNo}) b
+            on(a.prd_cd= b.prd_cd) 
+</select>	
+ <select id="addPlanLotSelect" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as stckCnt,b.hld_cnt as hldCnt ,b.mtr_cd as mtrCd ,a.prd_cd as prdCd
+            from adm_bom a join mtr_lot_stck b
+            on (a.mtr_cd = b.mtr_cd)
+            where a.prd_cd=#{prdCd} AND a.prc_cd = #{prcCd} 
+
+</select> 
+<insert id="planDtlInsert">
+	insert into pdt_plan_dtl (line_no, plan_no,prd_cd, prc_cd, need_cnt, instr_cnt,work_plan_time,work_str_date) 
+	values(
+	#{lineNo},
+	#{planNo},
+	#{prdCd},
+	#{prcCd},
+	#{needCnt},
+	#{instrCnt},
+	#{workPlanTime},
+	to_date(#{workStrDate},'yyyy-MM-dd'))
+</insert>
+<insert id="LotFindInsert">
+	insert into used_mtr_lot (prc_cd,mtr_lot,instr_no ,line_no, dtl_select) 
+	values (#{prcCd},
+	#{mtrLot},
+	#{planNo},
+	#{lineNo},
+	'PD')
+</insert>
+<select id="findPlanSeq" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select PKG_MAKE_CODE.CODE('PPL','pdt_plan','PLAN_NO') as planNo from dual
+</select>
+<select id="findLineNo" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select prd_cd , prd_nm, able_line_no as lineNo from adm_prd where prd_cd=#{prdCd}
+</select>
+
+</mapper>

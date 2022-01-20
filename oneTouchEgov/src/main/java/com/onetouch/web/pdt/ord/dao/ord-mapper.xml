@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.pdt.ord.dao.OrdMapper">
+
+<select id="list" resultType="com.onetouch.web.pdt.ord.dao.OrdVO">
+	select * from pdt_ord_sht
+	where 1=1
+	<if test="nowPhs =='' || nowPhs==null" >
+		And now_phs = 'N'
+	</if>
+</select>
+<select id="select" resultType="com.onetouch.web.pdt.ord.dao.OrdVO">
+	select * from pdt_ord_sht where 1=1
+	<if test='ordDate!=""'>
+		and to_char(ord_date,'yyyy-MM-dd')=#{ordDate} 
+	</if> 
+	<if test='nowPhs =="Y"'>
+		and now_phs ='Y'
+	</if>
+	<if test='nowPhs =="N"'>
+		and now_phs ='N'
+	</if>
+	
+</select>
+<update id="ordCheck">
+	update pdt_ord_sht set now_phs = 'Y' where ord_sht_no=#{ordShtNo}
+</update>
+<delete id="delete">
+	delete 
+	from pdt_ord_sht 
+	where ord_sht_no in
+	<foreach collection="list" item="vo" open="(" close=")" separator=",">
+		#{vo.ordShtNo}
+	</foreach>
+</delete>
+</mapper>

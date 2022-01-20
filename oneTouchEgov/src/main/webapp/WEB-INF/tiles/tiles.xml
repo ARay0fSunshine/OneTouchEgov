@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration
+2.1//EN"
+"http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition name="mainTemplate" template="/WEB-INF/jsp/tiles/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles/header.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/jsp/tiles/sidebar.jsp" />
+		<put-attribute name="nav" value="/WEB-INF/jsp/tiles/nav.jsp" />
+		<put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="tiles/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/jsp/{1}.jsp" />
+	</definition>
+	
+	<definition name="tiles/*/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="egovframework/*/*/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}.jsp"/>
+	</definition>
+	<definition name="egovframework/*/*/*/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}.jsp"/>
+	</definition>
+</tiles-definitions>

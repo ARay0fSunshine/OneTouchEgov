@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.fct.fix.dao.FixMapper">
+	<select id="fixSelectList" resultType="com.onetouch.web.fct.fix.dao.FixVO">
+		SELECT fix_cd,fct_cd, req_dt, str_dt, fin_dt, fix_phs, fix_cmt, cnt, unit_cost, tot_cost FROM fct_fix_mng
+		WHERE 1=1
+		<if test="fixPhs == '수리요청'">
+			 AND fix_phs = #{fixPhs} 
+		</if>
+		<if test="fixPhs == '수리중'">
+			 AND fix_phs = #{fixPhs} 
+		</if>
+		<if test="fixPhs == '수리완료'">
+			 AND fix_phs = #{fixPhs} 
+		</if>
+		<if test="fixTo != null">
+			<![CDATA[
+				AND fin_dt <= #{fixTo}
+			]]>
+		</if>
+		<if test="fixFrom != null">
+			<![CDATA[
+				AND fin_dt >= #{fixFrom}
+			]]>
+		</if>
+		<if test='fctCd != null and fctCd != "" and fctCd != "d"'>
+			<![CDATA[
+				AND substr(fct_cd,1,11) = #{fctCd}
+			]]>
+		</if>
+	</select>
+	
+	<delete id="deleteFtc">
+		DELETE
+		FROM fct_fix_mng
+		WHERE fix_cd = #{fixCd}
+	</delete>
+	
+	<update id="updateFtc">
+		UPDATE
+			fct_fix_mng set
+			<if test='fixPhs.equals("수리중")'>
+				str_dt = sysdate,
+			</if>
+			<if test='fixPhs.equals("수리완료")'>
+				str_dt = #{strDt},			
+				fin_dt = sysdate,
+				fix_cmt = #{fixCmt},
+			</if> 
+			 
+		    fix_phs = #{fixPhs}
+		WHERE fix_cd = #{fixCd}
+	</update>
+	
+	<insert id="insertFtc">
+	
+	</insert>
+</mapper>
