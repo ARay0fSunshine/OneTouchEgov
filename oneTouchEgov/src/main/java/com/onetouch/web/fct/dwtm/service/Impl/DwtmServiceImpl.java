@@ -15,8 +15,27 @@ public class DwtmServiceImpl implements DwtmService {
 	
 	//수리조회
 	@Override
-	public List<DwtmVO> dwtmSelect(DwtmVO dwtmVO) {
+	public List<DwtmVO> dwtmSelectAll(DwtmVO dwtmVO) {
 		return dmapper.dwtmSelect(dwtmVO);
+	}
+
+	@Override
+	public int dwtmInsert(DwtmVO dwtmVO) {
+		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+		int n = dmapper.dwtmInsert(dwtmVO);
+		System.out.println(n);
+		return n;
+	}
+
+	@Override
+	public int dwtmUpdate(DwtmVO dwtmVO) {
+		
+		return dmapper.dwtmUpdate(dwtmVO);
+	}
+
+	@Override
+	public int dwtmDelte(DwtmVO dwtmVO) {
+		return dmapper.dwtmDelete(dwtmVO);
 	}
 
 }

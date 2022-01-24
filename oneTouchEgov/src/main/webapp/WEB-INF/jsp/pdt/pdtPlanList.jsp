@@ -71,6 +71,8 @@
 		<input type="hidden" name="fctCd" id="fctCd">
 	</form>
 	<script>
+	//document.getElementsClassName('tui-select-box-placeholder')
+	
 	let lotGrid;
   	let lotData;
 	let selectTag;
@@ -186,11 +188,20 @@
 				}
 			},
 			"자재등록":()=>{
-			hiddenGrid.appendRows(lotGrid.getModifiedRows().updatedRows);
+			let modiData = lotGrid.getModifiedRows().updatedRows;
+			let modiList=[];
+			for(obj of modiData){
+				obj.planNo=insertPlanNo;
+				obj.lineNo=insertLineNo;
+				obj.prcCd=insertPrcCd;
+				modiList.push(obj);
+			}
+			hiddenGrid.appendRows(modiList);
 			document.getElementById('hidden');
-			hiddenGrid.setValue(hiddenGrid.getRowCount()-1,'planNo',insertPlanNo);
+			
+			/* hiddenGrid.setValue(hiddenGrid.getRowCount()-1,'planNo',insertPlanNo);
 			hiddenGrid.setValue(hiddenGrid.getRowCount()-1,'lineNo',insertLineNo);
-			hiddenGrid.setValue(hiddenGrid.getRowCount()-1,'prcCd',insertPrcCd);
+			hiddenGrid.setValue(hiddenGrid.getRowCount()-1,'prcCd',insertPrcCd); */
 			
 		},
 			"행추가":function(){
@@ -423,6 +434,7 @@
 	 		//상품코드 공정코드로 자재목록 불러오기
 	 		else if(ev.columnName=="prcCd"){
 	 			lotDiv.style="display:block";
+	 			lotGrid.refreshLayout();
 	 			fetch("lotCdFind/"+planGrid.getValue(ev.rowKey,'prdCd')+'/'+planGrid.getValue(ev.rowKey,'prcCd'))
 	 			.then(response=>response.json())
 	 			.then(result=>{
@@ -446,7 +458,15 @@
 	//로우 클릭 이벤트
      grid.on('click', ev => {
     	 //메인그리드 클릭시 모달창open
+    	 console.log(grid.getValue(ev.rowKey,'ordShtNo'));
     	 if(ev.columnName=='planDate'){
+    		 if(grid.getValue(ev.rowKey,'ordShtNo')!='null'){
+    			 fetch('ordShtSelect/'+grid.getValue(ev.rowKey,'ordShtNo'))
+    			 .then(response=>response.json())
+    			 .then(result=>{
+    				 console.log(result)
+    			 })
+    		 }
 		  	planDialog.dialog( "open" );
 		  	planGrid.refreshLayout();
 	    	lotGrid.refreshLayout();
@@ -629,6 +649,51 @@
 		planInsertData.plan=grid.getModifiedRows().createdRows;     //메인그리드 생산계획 데이터
 		planInsertData.detail=planGrid.getModifiedRows().createdRows; //플랜그리드 디테일 데이터
 		planInsertData.lot=hiddenGrid.getData();					//히든그리드 자재정보 데이터
+		
+		/* console.log(hiddenGrid.getData())
+		let detail=hiddenGrid.getData();
+		let map=new Map();
+		detail.forEach(x=>{
+			if(map.has(x.mtrCd)){
+				map.get(x.mtrCd).hldCnt=map.get(x.mtrCd).hldCnt*1+x.hldCnt*1
+			}
+			else{
+				map.set(x.mtrCd,x)
+			}
+				
+		})
+		
+		let abc=[]
+		map.forEach(x=>{
+			abc.push(x)
+		})
+		console.log(abc);
+		let detailMap=detail.map(x=>{
+			return x.mtrCd;
+		})
+		
+		let detailSet=new Set(detailMap);
+		let uniqueArr=[...detailSet]
+		Array.isArray(uniqueArr)
+		console.log(uniqueArr.length) 
+		let sum=0;
+		let sumArr=[];
+		
+		
+		console.log(sumArr); */
+		
+	/* 	for(let i=0 ; i<a.length;i++){
+			vo=new vo;
+			for(obj of list){
+				if(a[i]==obj.lot){
+					vo.sum=vo.sum+obj.cnt  //2
+				}else{
+					vo.cnt=sum
+					sum=0
+				}
+			}			
+			list.add(vo)
+		} */
 		
 		fetch('planDtlInsert',{
 			method:'POST',
