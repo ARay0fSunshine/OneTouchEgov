@@ -59,12 +59,13 @@
    //테마옵션 (선언된 그리드 바로빝에 해주면되고 또는 jsp 파일로 만들어서 넣어도됨)
    Grid.applyTheme('striped', {
       cell: {
-        header: {
-          background: '#eef'
-        },
-        evenRow: {
-          background: '#fee'
-        }
+    	  header: {
+	            background: '#4B49AC',
+	            text: '#fff'
+	        },
+	        evenRow: {
+	        	background:'#F5F7FF'
+	        }
         
       },
       //고정칼럼 색상 설정
@@ -152,17 +153,19 @@
   	}) */
     
     //공정 코드 조회 ajax 요청
-    
-     $.ajax({
-    	url:'selectPrc',
-    	dataType: 'json',
-    	async : false
-    }).done(function(datas){
-    	$('#fctCd').append("<option value='d'>전체</option>")
-    	for(let data of datas){
-    		$('#fctCd').append("<option value="+data.dtlCd+">"+data.dtlNm+"</option>")
-    	}
-    }) 
+
+    	$.ajax({
+			url:'selectFixPrc',
+			dataType: 'json',
+			async : false
+		}).done(function(datas){
+			console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+			console.log(datas)
+			$('#fctCd').append("<option value='d'>전체</option>")
+			for(let data of datas){
+				$('#fctCd').append("<option value="+data.dtlCd+">"+data.dtlNm+"</option>")
+			}
+		}) 
     
     
      //공정코드 조건조회 ajax 

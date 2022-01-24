@@ -16,12 +16,12 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="BasList">공통코드관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="BomList">제품Bom관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="mngList">공정관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="FlwList">공정흐름관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="FltList">불량코드관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="mtrList">자재정보관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/BasList">공통코드관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/BomList">제품Bom관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/mngList">공정관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/FlwList">공정흐름관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/FltList">불량코드관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/mtrList">자재정보관리</a></li>
               </ul>
             </div>
           </li>
@@ -33,9 +33,9 @@
             </a>
             <div class="collapse" id="form-elements">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="ordList">♡동일쓰ㅋㅋ</a></li>
-                <li class="nav-item"><a class="nav-link" href="PlanList">♨동일쓰ㅋㅋ</a></li>
-                <li class="nav-item"><a class="nav-link" href="WorkList">♬동일쓰ㅋㅋ</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/ordList">♡동일쓰ㅋㅋ</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/PlanList">♨동일쓰ㅋㅋ</a></li>
+                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/WorkList">♬동일쓰ㅋㅋ</a></li>
               </ul>
             </div>
           </li>
@@ -47,12 +47,12 @@
             </a>
             <div class="collapse" id="charts">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="inForm">입고자재관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="inList">입고자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="outList">출고자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="rtnForm">반품자재관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="rtnList">반품자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="stckList">현재재고조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/inForm">입고자재관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/inList">입고자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/outList">출고자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/rtnForm">반품자재관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/rtnList">반품자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/stckList">현재재고조회</a></li>
               </ul>
             </div>
           </li>
@@ -64,22 +64,23 @@
             </a>
             <div class="collapse" id="tables">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="ftcIhfoIns">설비등록</a></li>
-                <li class="nav-item"> <a class="nav-link" href="ftcIhfoSel">설비조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="ftcFix">수리관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="ftcProd">정기점검관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcIhfoIns">설비등록</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcIhfoSel">설비조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcFix">수리관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcProd">정기점검관리</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
               <i class="icon-contract menu-icon"></i>
-              <span class="menu-title">Icons</span>
+              <span class="menu-title">사용자권한관리</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="icons">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Mdi icons</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/uat/uia/egovLoginUsr.do">로그인</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/sec/ram/EgovAuthorList.do">권한관리</a></li>
               </ul>
             </div>
           </li>
