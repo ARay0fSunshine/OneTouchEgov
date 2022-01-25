@@ -7,8 +7,9 @@
 			A.IN_NO,
 			TO_CHAR(A.IN_DATE, 'yyyy-MM-dd') AS IN_DATE, 
 			A.MTR_CD, 
-			B.MTR_NM, 
-			FN_GET_BAS_DTL_CD_TO_NM(B.UNIT) AS UNIT,
+			B.MTR_NM,
+			B.UNIT,
+			FN_GET_BAS_DTL_CD_TO_NM(B.UNIT) AS UNIT_NM,
 			A.ORD_NO, 
 			A.FLT_AMT, 
 			A.IN_AMT,
@@ -107,8 +108,7 @@
 	<update id="prdNeed">
 		update MTR_LOT_STCK
 		set 
-		HLD_CNT = #{hldCnt},
-		STCK_CNT = STCK_CNT-#{hldCnt}
+		HLD_CNT = #{hldCnt}
 		WHERE 
 		MTR_LOT = #{mtrLot}
 	</update>

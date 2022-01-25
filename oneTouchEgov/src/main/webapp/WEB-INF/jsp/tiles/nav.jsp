@@ -1,12 +1,85 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav"> 
-          <li class="nav-item">
-            <a class="nav-link" href="ordList">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
+          <%-- <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+              <i class="icon-contract menu-icon"></i>
+              <span class="menu-title">egov</span>
+              <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="icons">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="${path}/uat/uia/egovLoginUsr.do">로그인</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/uat/uap/selectLoginPolicyList.do">로그정책관리</a></li>
+              </ul>
+            </div>
+          </li> --%>
+          
+          
+        
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-usermng" aria-expanded="false" aria-controls="ui-usermng">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">통합인증</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-usermng">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="${path}/uat/uap/selectLoginPolicyList.do">로그정책관리</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-scrt" aria-expanded="false" aria-controls="ui-scrt">
+              <i class="icon-head menu-icon"></i>
+              <span class="menu-title">보안</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-scrt">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="${path}/sec/ram/EgovAuthorList.do">권한관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sec/rgm/EgovAuthorGroupList.do">권한그룹관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sec/gmt/EgovGroupList.do">그룹관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sec/rmt/EgovRoleList.do">롤관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sec/drm/EgovDeptAuthorList.do">부서권한관리</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-system" aria-expanded="false" aria-controls="ui-system">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">시스템관리</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-system">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/mpm/EgovMenuListSelect.do">메뉴리스트관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/mpm/EgovMenuManageSelect.do">메뉴관리리스트</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/mcm/EgovMenuCreatManageSelect.do">메뉴생성관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/stm/EgovSiteMapng.do">메뉴생성관리사이트맵</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/stm/EgovSiteMapng.do">사이트맵</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/mnu/bmm/selectBkmkMenuManageList.do">바로가기메뉴관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/sym/prm/EgovProgramListManageSelect.do">프로그램관리</a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-usersupport" aria-expanded="false" aria-controls="ui-usersupport">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">사용자지원</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-usersupport">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="${path}/uss/umt/EgovEntrprsMberManage.do">기업회원관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/uss/umt/EgovUserManage.do">업무사용자관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/uss/umt/dpt/selectDeptManageListView.do">부서관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/uss/umt/EgovMberManage.do">일반회원관리</a></li>
+              </ul>
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
@@ -16,12 +89,12 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/BasList">공통코드관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/BomList">제품Bom관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/mngList">공정관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/FlwList">공정흐름관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/FltList">불량코드관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/mtrList">자재정보관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/BasList">공통코드관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/BomList">제품Bom관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/mngList">공정관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/FlwList">공정흐름관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/FltList">불량코드관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/adm/mtrList">자재정보관리</a></li>
               </ul>
             </div>
           </li>
@@ -33,9 +106,10 @@
             </a>
             <div class="collapse" id="form-elements">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/ordList">♡동일쓰ㅋㅋ</a></li>
-                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/PlanList">♨동일쓰ㅋㅋ</a></li>
-                <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/WorkList">♬동일쓰ㅋㅋ</a></li>
+                <li class="nav-item"><a class="nav-link" href="${path}/pdt/ordList">주문서목록</a></li>
+                <li class="nav-item"><a class="nav-link" href="${path}/pdt/PlanList">생산계획서관리</a></li>
+                <li class="nav-item"><a class="nav-link" href="${path}/pdt/WorkList">생산지시서관리</a></li>
+                <li class="nav-item"><a class="nav-link" href="${path}/pdt/prdPrcList">생산공정관리</a></li>
               </ul>
             </div>
           </li>
@@ -47,43 +121,36 @@
             </a>
             <div class="collapse" id="charts">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/inForm">입고자재관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/inList">입고자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/outList">출고자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/rtnForm">반품자재관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/rtnList">반품자재조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/stckList">현재재고조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/inForm">입고자재관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/inList">입고자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/outList">출고자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/rtnForm">반품자재관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/rtnList">반품자재조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/calForm">재고조정관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/calList">재고조정조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/mtr/stckList">재고조회</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="icon-grid-2 menu-icon"></i>
+              <i class="icon-grid menu-icon"></i>
               <span class="menu-title">설비 관리</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="tables">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcIhfoIns">설비등록</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcIhfoSel">설비조회</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcFix">수리관리</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/ftcProd">정기점검관리</a></li>
+            	<li class="nav-item"> <a class="nav-link" href="${path}/fct/fctInfoIns">설비등록</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/fctInfoSel">설비조회</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/fctFix">수리관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/fctProd">점검관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/fctDwtmIns">비동기관리</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/UploadFile">업로드 테스트</a></li>
+                <li class="nav-item"> <a class="nav-link" href="${path}/fct/UploadAjax">아작스 업로드 테스트</a></li>
               </ul>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-              <i class="icon-contract menu-icon"></i>
-              <span class="menu-title">사용자권한관리</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/uat/uia/egovLoginUsr.do">로그인</a></li>
-                <li class="nav-item"> <a class="nav-link" href="${pageContext.request.contextPath}/sec/ram/EgovAuthorList.do">권한관리</a></li>
-              </ul>
-            </div>
-          </li>
+          
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
               <i class="icon-head menu-icon"></i>

@@ -118,7 +118,8 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		// 만료일자로부터 경과한 일수 => ex)1이면 만료일에서 1일 경과
 		model.addAttribute("elapsedTimeExpiration", passedDayChangePWD - expirePwdDay);
 		
-		return "egovframework/com/cmm/EgovUnitContent";
+		//return "egovframework/com/cmm/EgovUnitContent";
+		return "tiles/home";
 	}
 
 	@RequestMapping("/EgovLeft.do")

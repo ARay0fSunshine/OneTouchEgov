@@ -16,13 +16,14 @@ import com.onetouch.web.adm.bas.dao.BasVO;
 import com.onetouch.web.adm.bas.service.BasService;
 import com.onetouch.web.zzz.dao.ModifyVO;
 
+@RequestMapping("/adm")
 @Controller
 public class BasController {
 
 	@Autowired BasService basservice;
 	
 	//공통관리 보여주는 페이지로 이동
-	@RequestMapping("BasList")
+	@RequestMapping("/BasList")
 	public String basList() {
 		return "tiles/adm/admBasList";
 	}
@@ -58,12 +59,20 @@ public class BasController {
 		return maps;
 	}
 	
-	//삭제수정등록 처리
+	//삭제수정등록 처리 (basDtl)
 	@ResponseBody
-	@PostMapping("/basModifyData")
+	@PostMapping("/basDtlModifyData")
 	public void modify(@RequestBody ModifyVO<BasDtlVO> mvo) {
 		System.out.println("modify" + mvo);
 		basservice.modify(mvo);
+	}
+	
+	//삭제수정등록 처리 (basAll)
+	@ResponseBody
+	@PostMapping("/basAllModifyData")
+	public void modifyBas(@RequestBody ModifyVO<BasVO> mvo) {
+		System.out.println("modify" + mvo);
+		basservice.modifyBas(mvo);
 	}
 	
 }
