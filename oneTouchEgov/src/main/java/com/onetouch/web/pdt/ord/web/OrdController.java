@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.onetouch.web.pdt.ord.dao.OrdVO;
 import com.onetouch.web.pdt.ord.service.OrdService;
 
+@RequestMapping("pdt/")
 @Controller
 public class OrdController {
 
@@ -47,6 +48,11 @@ public class OrdController {
 		
 		return service.list();
 		
+	}
+	@ResponseBody
+	@GetMapping("orderSeq")
+	public OrdVO orderSeq() {
+		return service.orderSeq();
 	}
 	
 

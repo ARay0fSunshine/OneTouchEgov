@@ -621,6 +621,14 @@
 			</exclusions>
 		</dependency>
 		
+		<!--종현 섬네일 이미지 생성 -->		
+		<!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+		<dependency>
+		    <groupId>net.coobird</groupId>
+		    <artifactId>thumbnailator</artifactId>
+		    <version>0.4.16</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -724,6 +732,19 @@
                 <version>3.1.1</version>
             </plugin>
         </plugins>
+        
+        <resources> 
+        	<resource> 
+        		<directory>src/main/resources</directory> 
+        	</resource> 
+        
+        	<resource> 
+        		<directory>src/main/java</directory> 
+        		<includes> 
+        			<include>**/*.xml</include> 
+        		</includes> 
+        	</resource> 
+        </resources>
     </build>
     <reporting>
         <outputDirectory>${basedir}/target/site</outputDirectory>

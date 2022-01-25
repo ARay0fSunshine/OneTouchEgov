@@ -18,6 +18,7 @@ import com.onetouch.web.adm.flw.dao.FlwVO;
 import com.onetouch.web.adm.flw.service.FlwService;
 import com.onetouch.web.zzz.dao.ModifyVO;
 
+@RequestMapping("/adm")
 @Controller
 public class FlwController {
 	
@@ -26,7 +27,7 @@ public class FlwController {
 	@Autowired BomService bomservice;
 	
 	//공정흐름관리 보여주는 페이지로이동
-	@RequestMapping("FlwList")
+	@RequestMapping("/FlwList")
 	public String flwList() {
 		return "tiles/adm/admFlwList";
 	}
@@ -89,11 +90,19 @@ public class FlwController {
 	
 	//form 수정
 	@ResponseBody
-	@PostMapping("updatePrd")
+	@PostMapping("/updatePrd")
 	public List<PrdVO> updatePrd(PrdVO prdvo) {
 		flwservice.updatePrd(prdvo);
 		System.out.println("upd"+prdvo);
 		return bomservice.selectPrd(prdvo);
+	}
+	
+	//삭제수정등록 처리
+	@ResponseBody
+	@PostMapping("/prdModifyData")
+	public void modifyPrd(@RequestBody ModifyVO<PrdVO> mvo) {
+		System.out.println("modify" + mvo);
+		bomservice.modifyPrd(mvo);
 	}
 	
 }
