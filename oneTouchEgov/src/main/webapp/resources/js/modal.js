@@ -3,11 +3,10 @@ function mMtr(){
 	let mtrData;
 		
 	$.ajax({
-		url : './modalMtrList',
+		url : '../modalMtrList',
 		dataType : 'json',
 		async : false,
 		success : function(result){
-			console.log(result);
 			mtrData = result;
 		}
 	});
@@ -16,7 +15,7 @@ function mMtr(){
 			
 	$("#dialog-form").attr('title', '자재');
 	
-	$("#dialog-form").load("modalMtr", function(){
+	$("#dialog-form").load("../modalMtr", function(){
 		let mtrGrid = tui.Grid;
 		
 		mtrGrid.applyTheme('striped',{
@@ -114,7 +113,7 @@ function mPrd(){
 	let prdData;
 		
 	$.ajax({
-		url : './modalPrdList',
+		url : '../modalPrdList',
 		dataType : 'json',
 		async : false,
 		success : function(result){
@@ -127,7 +126,7 @@ function mPrd(){
 			
 	$("#dialog-form").attr('title', '제품');
 	
-	$("#dialog-form").load("modalPrd", function(){
+	$("#dialog-form").load("../modalPrd", function(){
 		let prdGrid = tui.Grid;
 		
 		prdGrid.applyTheme('striped',{
@@ -201,7 +200,7 @@ function mPrc(){
 	let prcData;
 		
 	$.ajax({
-		url : './modalPrcList',
+		url : '../modalPrcList',
 		dataType : 'json',
 		async : false,
 		success : function(result){
@@ -214,7 +213,7 @@ function mPrc(){
 			
 	$("#dialog-form").attr('title', '공정');
 	
-	$("#dialog-form").load("modalPrc", function(){
+	$("#dialog-form").load("../modalPrc", function(){
 		let prcGrid = tui.Grid;
 		
 		prcGrid.applyTheme('striped',{
@@ -298,7 +297,7 @@ function mBas(basCd){
 	let basData;
 		
 	$.ajax({
-		url : './modalBasList',
+		url : '../modalBasList',
 		method : 'POST',
 		data : 'basCd=' + basCd,
 		success : function(result){
@@ -356,7 +355,7 @@ function mBas(basCd){
 			
 	$("#dialog-form").attr('title', title);
 	
-	$("#dialog-form").load("modalBas", function(){
+	$("#dialog-form").load("../modalBas", function(){
 		let basGrid = tui.Grid;
 		
 		basGrid.applyTheme('striped',{
@@ -407,7 +406,7 @@ function mBas(basCd,btn){
 	let basData;
 		
 	$.ajax({
-		url : './modalBasList',
+		url : '../modalBasList',
 		method : 'POST',
 		data : 'basCd=' + basCd,
 		success : function(result){
@@ -465,7 +464,7 @@ function mBas(basCd,btn){
 			
 	$("#dialog-form").attr('title', title);
 	
-	$("#dialog-form").load("modalBas", function(){
+	$("#dialog-form").load("../modalBas", function(){
 		let basGrid = tui.Grid;
 		
 		basGrid.applyTheme('striped',{
@@ -500,6 +499,141 @@ function mBas(basCd,btn){
 		
 		basGrid.on('dblclick', ev => {
 			getModalBas(basGrid.getRow(ev.rowKey),btn);
+		})
+		
+		basGrid.on('successResponse',function(ev){
+			console.log("성공")
+		})
+		basGrid.on('failResponse',function(ev){
+			console.log("실패")
+		})
+	});
+}
+
+//공통코드2
+function mBas2(){
+	let bas2Data;
+
+		
+	$.ajax({
+		url : '../modalBas2List',
+		dataType : 'json',
+		async : false,
+		success : function(result){
+			console.log(result);
+			bas2Data = result;
+		}
+	});
+		
+	dialog.dialog("open");
+			
+	$("#dialog-form").attr('title', '공통');
+	
+	$("#dialog-form").load("../modalBas2", function(){
+		let bas2Grid = tui.Grid;
+		
+		bas2Grid.applyTheme('striped',{
+			cell:{
+				header: {
+		            background: '#4B49AC',
+		            text: '#fff'
+		        },
+		        evenRow: {
+		        	background:'#F5F7FF'
+		        }
+			}
+		})
+		
+		const bas2Columns = [ 
+			{
+				header: '제품코드',
+				name: 'basCd',
+				align: 'center'
+			},
+			{
+				header: '제품명',
+				name: 'basNm',
+				align: 'center'
+			},
+			{
+				header: '제품설명',
+				name: 'basCmt',
+				align: 'center'
+			}
+		]; 
+
+		
+		bas2Grid = new Grid({
+			el : document.getElementById('bas_grid2'),
+			data : bas2Data,
+			columns : bas2Columns
+		});
+		
+		bas2Grid.on('dblclick', ev => {
+			getModalBas2(bas2Grid.getRow(ev.rowKey));
+		})
+		
+		bas2Grid.on('successResponse',function(ev){
+			console.log("성공")
+		})
+		bas2Grid.on('failResponse',function(ev){
+			console.log("실패")
+		})
+		
+
+	});
+}
+	
+	
+	//라인 모달 
+	function mLine(){
+	console.log('테스트 하는 중입니다.')
+	let basData;
+		
+	$.ajax({
+		url : '../fct/LineSelect',
+		success : function(result){
+			basData = result;
+		}
+	});
+	
+	dialog.dialog("open");
+	
+	let title='라인'
+	$("#dialog-form").attr('title', title);
+	
+	$("#dialog-form").load("../modalBas", function(){
+		let basGrid = tui.Grid;
+		
+		basGrid.applyTheme('striped',{
+			cell:{
+				header: {
+		            background: '#4B49AC',
+		            text: '#fff'
+		        },
+		        evenRow: {
+		        	background:'#F5F7FF'
+		        }
+			}
+		})
+		
+		const basColumns = [ 
+			{
+				header: title + '코드',
+				name: 'lineNo',
+				//hidden: true
+			}
+		];
+		
+		basGrid = new Grid({
+			el : document.getElementById('bas_grid'),
+			data : basData,
+			columns : basColumns
+		});
+		
+		basGrid.on('dblclick', ev => {
+			console.log('회사코드 그리드 더블 클릭하기')
+			getModalLine(basGrid.getRow(ev.rowKey));
 		})
 		
 		basGrid.on('successResponse',function(ev){
