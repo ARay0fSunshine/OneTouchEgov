@@ -50,62 +50,62 @@ public class InfoController {
 	}
 	
 //수정
-  @ResponseBody
-  @PostMapping(value ="/Updateinfo" ,produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
-  public List<InfoVO> InfoUpdate(MultipartFile uploadFile, InfoVO infoVO) {
-
-	  String uploadFolder = "C:\\upload";			
-	  String uploadFolderPath = getFolder();
-	  
-	  if(uploadFile != null && uploadFile.getSize() >0) {
-		  
-		  File uploadPath = new File(uploadFolder, uploadFolderPath);
-			
-			MultipartFile multipartFile = uploadFile;
-			
-			
-			log.info("---------------------------");
-			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-			log.info("Upload File Size: " + multipartFile.getSize());
-			
-			String uploadFileName = multipartFile.getOriginalFilename();
-			log.info("!!!!!!!!!!!!!!!!!!");
-			log.info(uploadFileName);
-			
-			UUID uuid =  UUID.randomUUID();
-			uploadFileName = uuid.toString() + "_" + uploadFileName;
-			
-			try {
-				File saveFile = new File(uploadPath, uploadFileName);
-				multipartFile.transferTo(saveFile);		//파일 경로에 만들어주는 메서드
-				infoVO.setFctImg(uploadFileName);
-				infoVO.setUuid(uuid.toString());
-				infoVO.setUploadPath(uploadFolderPath);
-				
-				//파일이 이미지 타입인지 확인
-				if(checkImageType(saveFile)) {
-					
-					infoVO.setImage(true);
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 200, 200);
-					thumbnail.close();
-					
-				}
-			
-				
-				
-			} catch (Exception e) {
-				//log.error(e.getMessage());
-				e.printStackTrace();
-			}//end catch
-		  }
-	  
-	  System.out.println("업데이트할 때 infoVO 확인하기");
-	  System.out.println(infoVO);
-	  
-	  infoservice.InfoUpdate(infoVO);
-	  return infoservice.selectFctInfoAll(infoVO);
-  }
+//  @ResponseBody
+//  @PostMapping(value ="/Updateinfo" ,produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+//  public List<InfoVO> InfoUpdate(MultipartFile uploadFile, InfoVO infoVO) {
+//
+//	  String uploadFolder = "C:\\upload";			
+//	  String uploadFolderPath = getFolder();
+//	  
+//	  if(uploadFile != null && uploadFile.getSize() >0) {
+//		  
+//		  File uploadPath = new File(uploadFolder, uploadFolderPath);
+//			
+//			MultipartFile multipartFile = uploadFile;
+//			
+//			
+//			log.info("---------------------------");
+//			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+//			log.info("Upload File Size: " + multipartFile.getSize());
+//			
+//			String uploadFileName = multipartFile.getOriginalFilename();
+//			log.info("!!!!!!!!!!!!!!!!!!");
+//			log.info(uploadFileName);
+//			
+//			UUID uuid =  UUID.randomUUID();
+//			uploadFileName = uuid.toString() + "_" + uploadFileName;
+//			
+//			try {
+//				File saveFile = new File(uploadPath, uploadFileName);
+//				multipartFile.transferTo(saveFile);		//파일 경로에 만들어주는 메서드
+//				infoVO.setFctImg(uploadFileName);
+//				infoVO.setUuid(uuid.toString());
+//				infoVO.setUploadPath(uploadFolderPath);
+//				
+//				//파일이 이미지 타입인지 확인
+//				if(checkImageType(saveFile)) {
+//					
+//					infoVO.setImage(true);
+//					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+//					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 200, 200);
+//					thumbnail.close();
+//					
+//				}
+//			
+//				
+//				
+//			} catch (Exception e) {
+//				//log.error(e.getMessage());
+//				e.printStackTrace();
+//			}//end catch
+//		  }
+//	  
+//	  System.out.println("업데이트할 때 infoVO 확인하기");
+//	  System.out.println(infoVO);
+//	  
+//	  infoservice.InfoUpdate(infoVO);
+//	  return infoservice.selectFctInfoAll(infoVO);
+//  }
 	
 	//공정코드 조회 
 	@ResponseBody
@@ -158,76 +158,76 @@ public class InfoController {
 	  }
 	  
 	  // 설비 등록 아작스 -------------------------------------------------------------------------------------------//
-	  @ResponseBody
-	  @PostMapping(value = "/infoInsert", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
-	  public ResponseEntity<InfoVO> InfoInsert(MultipartFile uploadFile, InfoVO infoVO) {
-		  System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		  log.info("update ahax post.......");
-		  
-		  
-		  String uploadFolder = "C:\\upload";			
-		  String uploadFolderPath = getFolder();
-		  
-			/* uploadFile 매개변수에 값이 있는지 확인 */
-		  if(uploadFile != null && uploadFile.getSize() >0) {
-			  
-			//make folder-------------------------------
-			File uploadPath = new File(uploadFolder, uploadFolderPath);
-			log.info("upload path: " + uploadPath );
-			System.out.println(uploadPath);
-			
-			// 경로에 파일이 없으면 mkdirs로 만들어주는 메서드 
-			if(uploadPath.exists() == false) {
-				uploadPath.mkdirs();
-			}
-			
-			MultipartFile multipartFile = uploadFile;
-			
-			
-			log.info("---------------------------");
-			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-			log.info("Upload File Size: " + multipartFile.getSize());
-			
-			String uploadFileName = multipartFile.getOriginalFilename();
-			log.info("!!!!!!!!!!!!!!!!!!");
-			log.info(uploadFileName);
-			
-			UUID uuid =  UUID.randomUUID();
-			uploadFileName = uuid.toString() + "_" + uploadFileName;
-			
-			try {
-				File saveFile = new File(uploadPath, uploadFileName);
-				multipartFile.transferTo(saveFile);		//파일 경로에 만들어주는 메서드
-
-				infoVO.setFctImg(uploadFileName);
-				infoVO.setUuid(uuid.toString());
-				infoVO.setUploadPath(uploadFolderPath);
-				
-				//파일이 이미지 타입인지 확인
-				if(checkImageType(saveFile)) {
-					
-					infoVO.setImage(true);
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 200, 200);
-					thumbnail.close();
-					
-				}
-			
-				
-				
-			} catch (Exception e) {
-				//log.error(e.getMessage());
-				e.printStackTrace();
-			}//end catch
-		  }
-		  
-		 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(infoVO.getFctImg());
-		  infoservice.insertFctInfo(infoVO);
-		  return new ResponseEntity<>(infoVO, HttpStatus.OK);
-				  //infoservice.selectFctInfoAll(infoVO);
-	  }
-	  
+//	  @ResponseBody
+//	  @PostMapping(value = "/infoInsert", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+//	  public ResponseEntity<InfoVO> InfoInsert(MultipartFile uploadFile, InfoVO infoVO) {
+//		  System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//		  log.info("update ahax post.......");
+//		  
+//		  
+//		  String uploadFolder = "C:\\upload";			
+//		  String uploadFolderPath = getFolder();
+//		  
+//			/* uploadFile 매개변수에 값이 있는지 확인 */
+//		  if(uploadFile != null && uploadFile.getSize() >0) {
+//			  
+//			//make folder-------------------------------
+//			File uploadPath = new File(uploadFolder, uploadFolderPath);
+//			log.info("upload path: " + uploadPath );
+//			System.out.println(uploadPath);
+//			
+//			// 경로에 파일이 없으면 mkdirs로 만들어주는 메서드 
+//			if(uploadPath.exists() == false) {
+//				uploadPath.mkdirs();
+//			}
+//			
+//			MultipartFile multipartFile = uploadFile;
+//			
+//			
+//			log.info("---------------------------");
+//			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+//			log.info("Upload File Size: " + multipartFile.getSize());
+//			
+//			String uploadFileName = multipartFile.getOriginalFilename();
+//			log.info("!!!!!!!!!!!!!!!!!!");
+//			log.info(uploadFileName);
+//			
+//			UUID uuid =  UUID.randomUUID();
+//			uploadFileName = uuid.toString() + "_" + uploadFileName;
+//			
+//			try {
+//				File saveFile = new File(uploadPath, uploadFileName);
+//				multipartFile.transferTo(saveFile);		//파일 경로에 만들어주는 메서드
+//
+//				infoVO.setFctImg(uploadFileName);
+//				infoVO.setUuid(uuid.toString());
+//				infoVO.setUploadPath(uploadFolderPath);
+//				
+//				//파일이 이미지 타입인지 확인
+//				if(checkImageType(saveFile)) {
+//					
+//					infoVO.setImage(true);
+//					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+//					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 200, 200);
+//					thumbnail.close();
+//					
+//				}
+//			
+//				
+//				
+//			} catch (Exception e) {
+//				//log.error(e.getMessage());
+//				e.printStackTrace();
+//			}//end catch
+//		  }
+//		  
+//		 System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		System.out.println(infoVO.getFctImg());
+//		  infoservice.insertFctInfo(infoVO);
+//		  return new ResponseEntity<>(infoVO, HttpStatus.OK);
+//				  //infoservice.selectFctInfoAll(infoVO);
+//	  }
+//	  
 	//특정한 파일이 이미지 타입인지를 검사하는 메서드
 		private boolean checkImageType(File file) {
 			try {

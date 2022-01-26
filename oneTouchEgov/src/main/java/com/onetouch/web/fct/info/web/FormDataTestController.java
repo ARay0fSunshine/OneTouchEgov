@@ -78,66 +78,66 @@ public class FormDataTestController {
 	
 	//파일 아작스 ------------------------------------------------------------------------
 	
-	@PostMapping(value = "uploadAjaxAction", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
-	@ResponseBody
-	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
-		log.info("update ahax post.......");
-		
-		List<AttachFileDTO> list = new ArrayList<>();
-		String uploadFolder = "C:\\upload";			
-		String uploadFolderPath = getFolder();		
-		
-		//make folder-------------------------------
-		File uploadPath = new File(uploadFolder, uploadFolderPath);
-		log.info("upload path: " + uploadPath );
-		System.out.println(uploadPath);
-		
-		if(uploadPath.exists() == false) {
-			uploadPath.mkdirs();
-		}
-		
-		//make yyyy/MM/dd folder
-		for(MultipartFile multipartFile : uploadFile) {
-			AttachFileDTO attachDTO = new AttachFileDTO();
-			
-			log.info("---------------------------");
-			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-			log.info("Upload File Size: " + multipartFile.getSize());
-			
-			String uploadFileName = multipartFile.getOriginalFilename();
-			log.info("!!!!!!!!!!!!!!!!!!");
-			log.info(uploadFileName);
-			attachDTO.setFileName(uploadFileName);
-			UUID uuid =  UUID.randomUUID();
-			uploadFileName = uuid.toString() + "_" + uploadFileName;
-			
-			try {
-				File saveFile = new File(uploadPath, uploadFileName);
-				multipartFile.transferTo(saveFile);
-
-				attachDTO.setUuid(uuid.toString());
-				attachDTO.setUploadPath(uploadFolderPath);
-				
-				//check image type file
-				if(checkImageType(saveFile)) {
-					
-					attachDTO.setImage(true);
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
-					thumbnail.close();
-					
-				}
-				
-				//add to List
-				list.add(attachDTO);
-				
-			} catch (Exception e) {
-				//log.error(e.getMessage());
-				e.printStackTrace();
-			}//end catch
-		}//end for
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
+//	@PostMapping(value = "uploadAjaxAction", produces = MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE)
+//	@ResponseBody
+//	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
+//		log.info("update ahax post.......");
+//		
+//		List<AttachFileDTO> list = new ArrayList<>();
+//		String uploadFolder = "C:\\upload";			
+//		String uploadFolderPath = getFolder();		
+//		
+//		//make folder-------------------------------
+//		File uploadPath = new File(uploadFolder, uploadFolderPath);
+//		log.info("upload path: " + uploadPath );
+//		System.out.println(uploadPath);
+//		
+//		if(uploadPath.exists() == false) {
+//			uploadPath.mkdirs();
+//		}
+//		
+//		//make yyyy/MM/dd folder
+//		for(MultipartFile multipartFile : uploadFile) {
+//			AttachFileDTO attachDTO = new AttachFileDTO();
+//			
+//			log.info("---------------------------");
+//			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+//			log.info("Upload File Size: " + multipartFile.getSize());
+//			
+//			String uploadFileName = multipartFile.getOriginalFilename();
+//			log.info("!!!!!!!!!!!!!!!!!!");
+//			log.info(uploadFileName);
+//			attachDTO.setFileName(uploadFileName);
+//			UUID uuid =  UUID.randomUUID();
+//			uploadFileName = uuid.toString() + "_" + uploadFileName;
+//			
+//			try {
+//				File saveFile = new File(uploadPath, uploadFileName);
+//				multipartFile.transferTo(saveFile);
+//
+//				attachDTO.setUuid(uuid.toString());
+//				attachDTO.setUploadPath(uploadFolderPath);
+//				
+//				//check image type file
+//				if(checkImageType(saveFile)) {
+//					
+//					attachDTO.setImage(true);
+//					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+//					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
+//					thumbnail.close();
+//					
+//				}
+//				
+//				//add to List
+//				list.add(attachDTO);
+//				
+//			} catch (Exception e) {
+//				//log.error(e.getMessage());
+//				e.printStackTrace();
+//			}//end catch
+//		}//end for
+//		return new ResponseEntity<>(list, HttpStatus.OK);
+//	}
 	
 	
 	//파일 아작스 ------------------------------------------------------------------------
