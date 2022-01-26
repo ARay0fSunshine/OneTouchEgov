@@ -21,10 +21,7 @@
 			A.ORD_NO = B.ORD_NO
 		AND
 			(A.FLT_AMT/A.ORD_AMT*100) > 5
-		<!-- 	
 		
-		AND
-			NVL(A.CMT,'') NOT LIKE '%반품요청완료%' -->
 		<if test="startDate != null and startDate != ''"> 
 			<![CDATA[AND TO_CHAR(B.ORD_DATE, 'yyyy-MM-dd') >= #{startDate}]]>
 		</if>
