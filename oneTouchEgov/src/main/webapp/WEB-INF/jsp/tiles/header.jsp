@@ -96,7 +96,7 @@
 		<c:if test="${loginVO != null}">
 			<c:if test='${loginVO.id != null}'>
 				<li class="nav-item">
-					${loginVO.name}(${loginVO.id}) / ${role} 
+					${loginVO.name}(${loginVO.id} ${role })  
 					<spring:message code="comCmm.unitContent.2"/>
 			        <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">
 			     	<spring:message code="comCmm.unitContent.3"/></a>  	

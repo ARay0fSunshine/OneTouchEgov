@@ -34,15 +34,22 @@ public class InfoVO extends MngVO  {
 	String empNo;		//사번
 	String checkPrcCd; //설비 조회 페이지에서 검색 조건으로 선택하는 공정코드를 담는 변수 
 	String checkRadio;	//설비수리 페이지 에서 radio value값을 담는 변수 
-	String lineNo;
+	String lineNO;
 	String prcNm;		//공정이름
 	String chkProdUnit;	//점검 주기 날짜 단윈
 	String uploadPath;		//업로드 경로
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	Date fixTo;		//날짜조회	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	Date fixFrom;		//날짜조회
 	
 	private String fileName;		//원본파일의 이름
 	private String uuid;			//uuid값
 	private boolean image;			//이미지여부정보
+	String todayDate;
 	
 	
 	

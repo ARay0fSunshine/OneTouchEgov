@@ -8,7 +8,7 @@ public class LotVO {
 	private String hldCnt;
 	private String mtrCd;
 	private String stckCnt;
-	private String calAmt = "0";
+	private String calAmt;
 	private String cmt;
 	private String inNo;
 	private String inDate;
@@ -21,4 +21,6 @@ public class LotVO {
 	private String mtrStckCnt;
 	private String safeStck;
 	private String useYn;
+	private String unit;
+	private String stckUse;
 }

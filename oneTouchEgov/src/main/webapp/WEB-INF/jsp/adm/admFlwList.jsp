@@ -64,6 +64,7 @@
 </div>
 </div>
 <script type="text/javascript">
+	//--------변수선언--------
 	let prdCode1;
 	let prdCode2;
 	let prdCodeVal;
@@ -71,9 +72,11 @@
 	let PrdDtl;
 	let lineSplit =[];
 	let Grid = tui.Grid;
+	//--------변수선언 끝--------
 	
 	document.getElementById('btnEditPrd').setAttribute('disabled', true);
 	
+	//--------그리드 css--------
 	Grid.applyTheme('default',{
 		cell:{
 			/* header:{
@@ -88,6 +91,7 @@
 	        }
 		}
 	})
+	//--------그리드 css--------
 	
 	const columns1 = [{
 		
@@ -107,7 +111,8 @@
 		
 		header : '공정순서',
 		name : 'prcSeq',
-		sortable : true
+		sortable : true,
+		editor : 'text'
 	},
 	{
 		header : '공정명',
@@ -234,6 +239,29 @@
 	})
 
 	/*공정흐름*/
+		//공정순서 자동추가알림
+		grid2.on('editingStart', (ev) => {
+			if(ev.columnName == 'prcSeq') {
+				var value = grid2.getValue(ev.rowKey, 'prcSeq');
+					console.log(value);
+				if(value == null) {
+					alert('표시순서는 자동추가됩니다');
+					ev.stop();
+				}
+			}
+		})
+		
+		//공정순서 수정막기
+		grid2.on('editingStart', (ev) => {
+			if(ev.columnName == 'prcSeq') {
+				var value = grid2.getValue(ev.rowKey, 'prcSeq');
+				if(value != null) {
+					ev.stop();
+				}
+			}
+		})
+	
+			
 		//조회 버튼
 		btnFlw.addEventListener("click", function() {
 			prdCodeVal = $('#prdCd').val();
@@ -245,9 +273,14 @@
 			
 		//추가버튼
 		btnAdd.addEventListener("click", function() {
-			grid2.appendRow({});
 			rowk = grid2.getRowCount() - 1;
-			console.log(prdCodeVal);
+			if(grid2.getRowCount() == 0) {
+				seqVal = 1;
+			} else {			
+				seqVal = parseInt(grid2.getValue(rowk,'prcSeq'))+1
+			}
+			grid2.appendRow({'prcSeq':seqVal});
+			//console.log(prdCodeVal);
 			grid2.setValue(rowk, "prdCd", prdCodeVal, false);
 		})	
 		

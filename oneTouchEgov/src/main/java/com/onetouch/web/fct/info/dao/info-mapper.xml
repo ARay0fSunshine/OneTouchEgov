@@ -3,20 +3,34 @@
 <mapper namespace="com.onetouch.web.fct.info.dao.InfoMapper">
 <!-- 작성자 : 박종현 -->
 
+<!-- 현재 날자 값 조회 -->
+<select id="todayDate" resultType="com.onetouch.web.fct.info.dao.InfoVO">
+	SELECT (sysdate-7) as fixFrom, sysdate fixTo   FROM dual
+</select>
 
 <!-- 라인 조회-->
 <select id="LineSelect" resultType="com.onetouch.web.fct.info.dao.LineVO">
-	SELECT * from fct_line
+	SELECT * from fct_line 
+	<if test='fctLineChek =="Y"'>
+		WHERE use_yn = 'Y'
+	</if>
 </select>
 <!-- 라인 등록 -->
 <insert id="LineInsert">
-	insert into fct_line values(#{lineNO},#{totPdtAmt},#{uphPdtAmt},#{useYn},#{empNo})
+	insert into fct_line values(#{lineNO},#{totPdtAmt},#{uphPdtAmt},
+	<if test = "useYn ==null or useYn==''">
+      'N'	
+   </if>
+   <if test = 'useYn =="Y"'>
+      'Y'
+   </if>
+   ,#{empNo})
 </insert>
 <update id="LineUpdate">
 	UPDATE fct_line SET TOT_PDT_AMT = #{totPdtAmt}, UPH_PDT_AMT = #{uphPdtAmt}, USE_YN = #{useYn}, EMP_NO = #{empNo} WHERE LINE_NO = #{lineNO}
 </update>
 <delete id="LineDelete">
-	
+	DELETE fct_line where line_no = #{lineNO}
 </delete>
 
 
@@ -32,12 +46,24 @@ select * from fct_info where line_no = #{lineNo}
 	    on f.prc_cd = a.prc_cd
 	where 1=1
 		<if test='checkPrcCd != "d" and checkPrcCd != null'>
-			and f.prc_cd = #{checkPrcCd}
+			and  substr(f.fct_cd,1,11) = #{checkPrcCd}
+		</if>
+		<if test="fixTo != null">
+			<![CDATA[
+				AND f.in_date <= #{fixTo}
+			]]>
+		</if>
+		<if test="fixFrom != null">
+			<![CDATA[
+				AND f.in_date >= #{fixFrom}
+			]]>
 		</if>
 </select>
 
-
-
+<!-- 설비코드 조회 -->
+<select id="selectCheckFct" resultType="com.onetouch.web.fct.info.dao.InfoVO">
+	SELECT fct_cd,fct_nm FROM fct_info
+</select>
 <!-- 단건조회 -->
 <select id="selectFctInfo" resultType="com.onetouch.web.fct.info.dao.InfoVO">
 	select * from fct_Info where fct_cd = #{fct_cd}
@@ -58,7 +84,7 @@ select * from fct_info where line_no = #{lineNo}
 							 ,FCT_IMG
 							 ,UPLOAD_PATH
 							 ) 
-	values (FN_GET_FCTCD_FROM_PRCCD(#{fctCd}),#{fctNm},#{lineNo},#{prcCd},#{fctStd},#{fctModel},#{compCd},#{inDate},#{purchCost},#{chkProd},#{chkProdUnit},#{fctImg},#{uploadPath})
+	values (#{fctCd},#{fctNm},#{lineNO},#{prcCd},#{fctStd},#{fctModel},#{compCd},#{inDate},#{purchCost},#{chkProd},#{chkProdUnit},#{fctImg},#{uploadPath})
 </insert>
 <!-- 수정 -->
 <update id="InfoUpdate">

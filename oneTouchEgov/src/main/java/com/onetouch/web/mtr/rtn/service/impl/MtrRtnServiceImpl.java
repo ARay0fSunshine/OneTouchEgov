@@ -31,7 +31,9 @@ public class MtrRtnServiceImpl implements MtrRtnService {
 		    for(MtrRtnVO data : mvo.getUpdatedRows()){
 		    	System.out.println(data);
 		    	rtnMapper.insertRtn(data);
-//		    	rtnMapper.updateCmt(data);
+		    	System.out.println("여기");
+		    	rtnMapper.updateCmt(data);
+		    	System.out.println("요기요");
 		    	};
 		}
 	}

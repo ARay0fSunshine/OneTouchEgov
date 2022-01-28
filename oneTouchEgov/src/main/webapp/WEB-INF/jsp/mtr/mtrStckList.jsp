@@ -16,13 +16,23 @@
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
+<script src="${path}/resources/js/toastr-options.js"></script>
 
 </head>
 <style type="text/css">
 	.tui-grid-cell-summary{
 		text-align: center;
 	}
+/* 	.ui-tabs .ui-tabs-nav .ui-tabs-anchor{
+		style: "background-color: #4747A1"
+	}
+	.ui-tabs-active{
+		style: "background-color: #4747A1"
+	} */
 </style>
 <body>
 	<div class="container">
@@ -73,7 +83,6 @@
 fetch('mtrStckRadio')
 .then(response=>response.json())
 .then(result=>{
-	console.log("result");
 	let div = document.getElementById("mtrRadio");
 	for(let i = 0; i < result.length; i++){
 		let input = document.createElement("input");
@@ -93,24 +102,15 @@ $( function() {
     $( "#tabs" ).tabs({
     	activate: function( event, ui ) {
     		if(ui.newTab[0].innerText == '자재별'){
-    				mtrGrid.refreshLayout();
+    			mtrGrid.refreshLayout();
+    		} else{
+    			lotGrid.refreshLayout();
+    			
     		}
     	}
     });
     
   } );
-
-var Grid = tui.Grid;
-Grid.applyTheme('striped', {
-     cell: {
-       header: {
-         background: '#eef'
-       },
-       evenRow: {
-         background: '#fee'
-       }
-     },
-   });
 const lotDataSource = {
 		  api: {
 		    readData: { url: './lotStckList', method: 'POST' }
@@ -152,19 +152,25 @@ const lotColumns = [{
 	 {
 	   header: '홀딩수량',
 	   name: 'hldCnt',
-	   align: 'center',
+	   align: 'right',
 	   sortable: true
 	 },
 	 {
 	   header: '현재고',
 	   name: 'stckCnt',
-	   align: 'center',
+	   align: 'right',
+	   sortable: true
+	 },
+	 {
+	   header: '사용가능수량',
+	   name: 'stckUse',
+	   align: 'right',
 	   sortable: true
 	 },
 	 {
 	   header: '비고',
 	   name: 'cmt',
-	   align: 'center',
+	   align: 'left',
 	   sortable: true
 	 }
 	]
@@ -172,6 +178,9 @@ const lotColumns = [{
 var lotGrid = new Grid({
      el : document.getElementById('lotTab'),
      data : lotDataSource,
+     scrollX : false,
+     scrollY : true,
+     bodyHeight: 400,
      columns : lotColumns,
 				summary : {
 					height: 40,
@@ -197,7 +206,7 @@ var lotGrid = new Grid({
 					}
 				}
    });
-window.setTimeout(function(){lotGrid.refreshLayout()}, 100);
+window.setTimeout(function(){lotGrid.refreshLayout()}, 200);
    
 const mtrDataSource = {
 		  api: {
@@ -233,19 +242,28 @@ const mtrColumns = [{
 					 {
 					   header: '홀딩수량',
 					   name: 'hldCnt',
-					   align: 'center',
+					   align: 'right',
 					   sortable: true
 					 },
 					 {
 					   header: '현재고',
 					   name: 'mtrStckCnt',
-					   align: 'center',
+					   align: 'right',
+					   sortable: true
+					 },
+					 {
+					   header: '사용가능수량',
+					   name: 'stckUse',
+					   align: 'right',
+					   validation: {
+					        validatorFn: (value, row, columnName) => Number(value) > Number(row['safeStck'])
+					   },
 					   sortable: true
 					 },
 					 {
 					   header: '안전재고',
 					   name: 'safeStck',
-					   align: 'center',
+					   align: 'right',
 					   sortable: true
 					 },
 					 {
@@ -259,6 +277,9 @@ const mtrColumns = [{
 var mtrGrid = new Grid({
      el : document.getElementById('mtrTab'),
      data : mtrDataSource,
+     scrollX : false,
+     scrollY : true,
+     bodyHeight: 400,
      columns : mtrColumns,
 				summary : {
 					height: 40,
@@ -299,15 +320,12 @@ function format(value){
 	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-lotGrid.on('response', function(ev) {
-	console.log("lotev")
-	console.log(ev)
-      //grid.resetOriginData();
+lotGrid.on('dblclick', function(ev) {
+	toastr["error"]("변경할 수 없습니다.", "경고입니다.")
    });
-mtrGrid.on('response', function(ev) {
-	console.log("mtrev")
-	console.log(ev)
-      //grid.resetOriginData();
+   
+mtrGrid.on('dblclick', function(ev) {
+	toastr["error"]("변경할 수 없습니다.", "경고입니다.")
    });
    
 btnFind.addEventListener("click", function(){

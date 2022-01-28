@@ -119,6 +119,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		model.addAttribute("elapsedTimeExpiration", passedDayChangePWD - expirePwdDay);
 		
 		//return "egovframework/com/cmm/EgovUnitContent";
+		
 		return "tiles/home";
 	}
 

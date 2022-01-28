@@ -48,7 +48,7 @@
 				dataType:'application/html',
 				success : function(result){
 					//window.alert(result);
-					location.href="/oneTouchEgov";
+					//location.href="/oneTouchEgov";
 				}
 			})
 	 	 </script>

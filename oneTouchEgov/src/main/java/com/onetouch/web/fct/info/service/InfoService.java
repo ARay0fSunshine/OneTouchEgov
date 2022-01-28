@@ -8,16 +8,26 @@ import com.onetouch.web.fct.info.dao.LineVO;
 
 public interface InfoService {
 	
-	
-	
+	//현재 날자 조회
+	InfoVO todayDate();
+	//라인수정
+	int LineUpdate(LineVO lineVO);
+	//라인삭제
+	int LineDelete(LineVO lineVO);
 	//라인조회
-	List<LineVO> LineSelect();
+	List<LineVO> LineSelect(LineVO lineVO);
+	int LineInsert(LineVO lineVO);
+	
 	//수정 
 	int InfoUpdate(InfoVO infoVO);
 
+	//검색조건 설비코드 조회 
+	List<InfoVO> selectCheckFct(InfoVO infoVO);
+	
 	List<InfoVO> selectFctInfoAll(InfoVO infoVO);
 	void deleteFctInfo(List<InfoVO> list);
 	InfoVO selectFctInfo(InfoVO infoVO);
 	void insertFctInfo(InfoVO infoVO);
+	
 	
 }

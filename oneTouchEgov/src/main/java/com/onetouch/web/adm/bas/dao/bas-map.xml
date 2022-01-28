@@ -17,12 +17,12 @@
 	<insert id="insertBasAll">
 		insert  into adm_bas_cd
 		(bas_cd,
-		 bas_nm,
-		 bas_cmt)
+		 bas_nm
+		 <if test = "basCmt != null or basCmt != ''">,bas_cmt</if>)
 		 values 
 		(#{basCd},
-		 #{basNm},
-		 #{basCmt})
+		 #{basNm}
+		 <if test = "basCmt != null or basCmt != ''">,#{basCmt})</if>
 	</insert>
 	
 	<!-- 기초코드 수정 -->
@@ -79,7 +79,7 @@
 		 #{dtlNm},
 		 #{basCd},
 		 <if test="dtlCmt != null">#{dtlCmt},</if>
-		 (SELECT NVL(MAX(seq),0)+1 FROM adm_bas_dtl_cd WHERE bas_cd=#{basCd}),
+		 #{seq},
 		 #{useYn}
 		 )
 	</insert>

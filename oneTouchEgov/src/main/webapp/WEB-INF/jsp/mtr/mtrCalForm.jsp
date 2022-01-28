@@ -18,7 +18,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
+<script src="${path}/resources/js/toastr-options.js"></script>
 </head>
 <style type="text/css">
 	.tui-grid-cell-summary{
@@ -64,7 +66,13 @@
 		<hr>
 	</div>
 	<div id="grid"></div>
-	<div id="dialog-form"></div>
+	<div id="dialog-form">
+		<label>자재구분</label>
+		<input type="text" id="mDitemCode" name="ditemCode">
+		<br>
+		<label>입고업체</label>&nbsp;&nbsp;&nbsp;
+		<input type="text" id="mDitemCodeNm" name="ditemCodeNm">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</div>
 	<div id="dialog-lot">
 		<label>자재코드</label>
 		<input type="text" id="mDitemCode" name="ditemCode" disabled="disabled">
@@ -78,38 +86,6 @@
 <script type="text/javascript">
 let rowk = -1;
 let dt = new Date();
-
-toastr.options = {
-	       "closeButton": true,
-	       "debug": false,
-	       "newestOnTop": false,
-	       "progressBar": true,
-	       "positionClass": "toast-top-center",
-	       "preventDuplicates": false,
-	       "onclick": null,
-	       "showDuration": "3",
-	       "hideDuration": "100",
-	       "timeOut": "1500",
-	       "extendedTimeOut": "1000",
-	       "showEasing": "swing",
-	       "hideEasing": "linear",
-	       "showMethod": "fadeIn",
-	       "hideMethod": "fadeOut",
-	       "tapToDismiss": false,
-	       "closeHtml": "확인"
-			}
-
-var Grid = tui.Grid;
-Grid.applyTheme('striped', {
-     cell: {
-       header: {
-         background: '#eef'
-       },
-       evenRow: {
-         background: '#fee'
-       }
-    },
-});
 const dataSource = {
 		  api: {
 		    readData: { url: './mtrCalForm', method: 'POST' },
@@ -122,11 +98,15 @@ const dataSource = {
 var mainGrid = new Grid({
      el : document.getElementById('grid'),
      data : dataSource,
+     scrollX : false,
+     scrollY : true,
+     bodyHeight: 400,
      rowHeaders : [ 'checkbox'],
      columns : [
 				 {
 				   header: '정산구분',
 				   name: 'calSectNm',
+				   align: 'center',
 				   editor: {
 						type: 'radio',
 						options: {
@@ -142,13 +122,21 @@ var mainGrid = new Grid({
 				   header: '정산일자',
 				   name: 'calDate',
 				   align: 'center',
+				   editor: {
+						type: 'datePicker',
+						options: {
+						language: 'ko',
+						format: 'yyyy-MM-dd'
+						}
+					 },
 				   sortable: true
 				 },
 				 {
 				   header: '자재코드',
 				   name: 'mtrCd',
 				   align: 'center',
-				   sortable: true
+				   sortable: true,
+				   hidden: true
 				 },
 				 {
 				   header: '자재명',
@@ -160,6 +148,18 @@ var mainGrid = new Grid({
 				   header: '단위',
 				   name: 'unitNm',
 				   align: 'center',
+				   sortable: true
+				 },
+				 {
+				   header: 'Lot No',
+				   name: 'mtrLot',
+				   align: 'center',
+				   sortable: true
+				 },
+				 {
+				   header: '재고수량',
+				   name: 'stckCnt',
+				   align: 'right',
 				   sortable: true
 				 },
 				 {
@@ -177,18 +177,21 @@ var mainGrid = new Grid({
 				   sortable: true
 				 },
 				 {
-				   header: 'Lot No',
-				   name: 'mtrLot',
-				   align: 'center',
-				   sortable: true
-				 },
-				 {
 				   header: '비고',
 				   name: 'cmt',
 				   align: 'left',
 				   sortable: true
+				 },
+				 {
+				   header: '정산구분',
+				   name: 'calSect',
+				   hidden: true
+				 },
+				 {
+				   header: '단위',
+				   name: 'unit',
+				   hidden: true
 				 }
-				 
 				],
 				summary : {
 					height: 40,
@@ -208,24 +211,43 @@ var mainGrid = new Grid({
 					}
 				}
 	});
-mainGrid.on('response', function(ev) {
+mainGrid.on('editingFinish', function(ev) {
+	if(ev.columnName == 'calSectNm'){
+		if(mainGrid.getValue(ev.rowKey,'calSectNm') == '입고정산'){
+			mainGrid.setValue(ev.rowKey,'calSect','MTR_CAL001')
+		}else if(mainGrid.getValue(ev.rowKey,'calSectNm') == '출고정산'){
+			mainGrid.setValue(ev.rowKey,'calSect','MTR_CAL002')
+		}
+	}
+	if(ev.columnName == 'calAmt'){
+		if(mainGrid.getValue(ev.rowKey,'calSectNm') == '출고정산'){
+			if(mainGrid.getValue(ev.rowKey,'calAmt') > mainGrid.getValue(ev.rowKey,'stckCnt')){
+				toastr["warning"]("출고정산량이 현재고보다 많습니다.")
+				ev.stop();
+			}
+		}
+	}
+	mainGrid.refreshLayout();
    });
 mainGrid.on('dblclick',function(ev){
 	rowk = ev.rowKey
 	if(ev.columnName == "mtrLot"){
-		if(mainGrid.getValue(ev.rowKey, 'mtrCd') == null || mainGrid.getValue(ev.rowKey, 'mtrCd') == ''){
-			toastr["warning"]("자재코드를 입력해주세요.")
+		$('#ui-id-2').html('자재별 LOT정보');
+		if(mainGrid.getValue(ev.rowKey, 'mtrNm') == null || mainGrid.getValue(ev.rowKey, 'mtrNm') == ''){
+			toastr["warning"]("자재를 선택해 주세요.")
+		}else if(mainGrid.getValue(ev.rowKey, 'calSectNm') == null || mainGrid.getValue(ev.rowKey, 'calSectNm') == ''){
+			toastr["warning"]("정산 구분을 입력해 주세요.")
 		}else{
-			let row = mainGrid.getRow(ev.rowKey);
+			 let row = mainGrid.getRow(ev.rowKey);
 			 lotDialog.dialog("open");
 			 document.getElementById('mDitemCode').value = row.mtrCd
 			 document.getElementById('mDitemCodeNm').value = row.mtrNm
 			 document.getElementById('mUnitNm').value = row.unitNm
 			 lotGrid.readData(1,row,true);
-			 lotGrid.refreshLayout();	
+			 lotGrid.refreshLayout();
 		}
-	}
-	if(ev.columnName == "mtrCd"){
+	} 
+	if(ev.columnName == "mtrNm"){
 		mMtr();
 		$('#ui-id-1').html('자재 검색');
 	}
@@ -255,13 +277,12 @@ function format(value){
 //자재검색모달 row더블클릭 이벤트
 function getModalMtr(param){
 	dialog.dialog("close");
-	console.log(rowk)
-	console.log(param)
 	if(rowk >= 0){
 		mainGrid.blur();
 		mainGrid.setValue(rowk, "mtrCd", param.mtrCd, false);
 		mainGrid.setValue(rowk, "mtrNm", param.mtrNm, false);
 		mainGrid.setValue(rowk, "unitNm", param.unitNm, false);
+		mainGrid.setValue(rowk, "unit", param.unit, false);
 		/* mainGrid.setValue(rowk, "compNm", param.compNm, false);
 		mainGrid.setValue(rowk, "mngAmt", param.mngAmt, false); */
 		rowk = -1;
@@ -283,7 +304,6 @@ function today(ev) {
 //조회버튼
 btnFind.addEventListener("click", function(){
    let param= $("#frm").serializeObject();
-   console.log(param)
    mainGrid.readData(1,param,true);
 })
 //저장버튼
@@ -323,13 +343,26 @@ let lotDialog = $( "#dialog-lot" ).dialog({
 			let month = ('0' + (dt.getMonth()+1)).slice(-2)
 			let day = ('0' + (dt.getDate())).slice(-2)
 			let str = year + '-' + month + '-' + day
+			let calSect = mainGrid.getValue(rowk, 'calSect')
+			let calSectNm = mainGrid.getValue(rowk, 'calSectNm')
+			let stckCnt = mainGrid.getValue(rowk, 'calSectNm')
 			for(row of rows){
 				row.calDate = str
-				console.log(row);
+				row.calSect = calSect
+				row.calSectNm = calSectNm
+				row.stckCnt = stckCnt
 			}
 			mainGrid.setValue(rowk, 'mtrLot', rows[0].mtrLot)
 			rows.splice(0,1);
-			mainGrid.appendRows(rows);
+			console.log("rows")
+			console.log(rows)
+			
+			for(let i=0; i<rows.length; i++){
+				mainGrid.appendRow();
+				mainGrid.setRow(mainGrid.getRowCount()-1,rows[i]);
+				//mainGrid.setRow(rowk+i,rows[i]);
+			}
+			mainGrid.uncheckAll();
 			lotDialog.dialog("close");
 		}
 	}
@@ -347,6 +380,9 @@ let lotDataSource = {
 let lotGrid = new Grid({
 el : document.getElementById('dialog-lot'),
 data : lotDataSource,
+scrollX : false,
+scrollY : true,
+bodyHeight: 400,
 rowHeaders : [ 'checkbox'],
 columns : [ 
 			{
@@ -386,8 +422,18 @@ columns : [
 				hidden: true
 			},
 			{
+				header: '단위코드',
+				name: 'unit',
+				hidden: true
+			},
+			{
 				header: '정산량',
 				name: 'calAmt',
+				hidden: true
+			},
+			{
+				header: '정산구분',
+				name: 'calSectNm',
 				hidden: true
 			}
 			]

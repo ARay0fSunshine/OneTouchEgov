@@ -49,8 +49,9 @@ public class MngController {
 	}
 
 	/*
-	 * 이 형태로 만들어줘야함 { "result": true, 
-	 * 						"data": { "contents": [], "pagination": {
+	 * 이 형태로 만들어줘야함 
+	 * { "result": true, 
+	 * 	 "data": { "contents": [], "pagination": {
 	 * "page": 1, "totalCount": 100 } } }
 	 */
 
@@ -70,9 +71,10 @@ public class MngController {
 	
 	// 삭제,수정,등록 처리
 	@ResponseBody
-	@PostMapping("/admModifyData")
-	public void modify(@RequestBody ModifyVO<MngVO> mvo) {
+	@PostMapping("/mngModifyData")
+	public String modify(@RequestBody ModifyVO<MngVO> mvo) {
 		System.out.println("modify" + mvo);
 		mngservice.modify(mvo);
+		return "mngCont";
 	}
 }

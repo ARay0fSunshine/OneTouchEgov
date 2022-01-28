@@ -1,8 +1,10 @@
 package com.onetouch.web.prd.prc.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.onetouch.web.prd.prc.dao.PrcMapper;
@@ -93,6 +95,9 @@ public class PrcServiceImpl implements PrcService{
 		}
 		String a=(mapper.myPrcFlow(vo)).getPrcSeq().substring(0,1);//내공정흐름번호
 		if(flowMin==Integer.parseInt(a)) { //공정흐름 1번이 들어온경우
+			System.out.println("qqqqqqqqqqqq");
+			System.out.println(vo);
+			vo.setMsg("공정종료");
 			mapper.endUpdate(vo); //시간업데이트
 			vo=mapper.endTimeSelect(vo);  //입력된시간불러와서 리턴
 			vo.setMsg("공정종료.");
@@ -103,12 +108,16 @@ public class PrcServiceImpl implements PrcService{
 			return vo; 
 		}
 		else if(Integer.parseInt(a)!=flowMax &&  Integer.parseInt(a)-1==mapper.endFlowCheck(vo)) { //1번흐름이 아니고 엔드시간찍힌애들의 합이 내플로우 -1과같을떄(앞공정종료o)
+			System.out.println("qqqqqqqqqqqq");
+			System.out.println(vo);
+			vo.setMsg("공정종료");
 			mapper.endUpdate(vo); //시간업데이트
 			vo=mapper.endTimeSelect(vo);
 			vo.setMsg("공정종료!!.");
 			return vo;
 		}
 		else if(Integer.parseInt(a)-1==mapper.endFlowCheck(vo) &&  Integer.parseInt(a)==flowMax) {
+			vo100.setMsg("라인가동종료");
 			mapper.endUpdate(vo100); //시간업데이트
 			vo=mapper.endTimeSelect(vo100);
 			//lot 번호 부여
@@ -151,9 +160,11 @@ public class PrcServiceImpl implements PrcService{
 		PrcVO vo2=new PrcVO();
 		vo2=vo;
 		String fltSave=mapper.realFlt(vo).getSumFlt();
+		String pdtSave=mapper.realFlt(vo).getPdtCnt();
 		while(true){
 			String flt=mapper.realFlt(vo2).getSumFlt();
-			if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()) {
+			String pdt=mapper.realFlt(vo2).getPdtCnt();
+			if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
 				return mapper.realFlt(vo);
 			}
 		}
@@ -172,6 +183,43 @@ public class PrcServiceImpl implements PrcService{
 		mapper.fastStop(vo);
 		
 	}
+
+	@Override
+	public List<PrcVO> prcMovingView(PrcVO vo) {
+		int upCheck=mapper.updateCheck();
+		
+		while(true) {
+			if(upCheck!=mapper.updateCheck()) {
+				return mapper.prcMovingView(vo);
+			}
+		}
+	}
+
+	@Override
+	public List<PrcVO> movingSearchList(PrcVO vo) {
+		
+		if("Y".equals(vo.getPrcCheck())){
+			System.out.println("진행종료");
+			return mapper.movingSearchListFinish(vo);
+		}
+		else{
+			System.out.println("미진행");
+			return mapper.movingSearchList(vo);
+		}
+	}
+	
+	/*
+	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void selectTask1()
+	 * { List<PrcVO> list= new ArrayList<>(); list=mapper.autoSelect();
+	 * System.out.println(list); for(PrcVO vo : list) {
+	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) { int
+	 * uph=mapper.uphFind(vo); System.out.println(uph);
+	 * System.out.println(vo.getPdtCnt());
+	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
+	 * System.out.println(vo); mapper.autoUpdate(vo); } }
+	 * 
+	 * }
+	 */
 	
 	
 	

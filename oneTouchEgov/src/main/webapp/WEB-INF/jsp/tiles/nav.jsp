@@ -123,8 +123,8 @@
 		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/BomList">제품Bom관리</a></li>
 		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/mngList">공정관리</a></li>
 		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/FlwList">공정흐름관리</a></li>
-		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/FltList">불량코드관리</a></li>
 		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/mtrList">자재정보관리</a></li>
+		                <li class="nav-item"> <a class="nav-link" href="${path}/adm/FltList">불량코드관리</a></li>
 		              </ul>
 		            </div>
 		          </li>
