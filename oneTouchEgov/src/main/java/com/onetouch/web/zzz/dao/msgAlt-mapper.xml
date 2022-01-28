@@ -62,5 +62,7 @@
 		DELETE FROM msg_alt
 		WHERE msg_no in <foreach collection="list" item="vo" open="(" close=")" separator=",">#{vo.msgNo}</foreach>
 	</delete>
+	
+	
 
 </mapper>

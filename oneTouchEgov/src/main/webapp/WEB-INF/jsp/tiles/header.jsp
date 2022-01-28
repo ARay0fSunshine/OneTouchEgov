@@ -93,26 +93,31 @@
 			</li> -->
 		</c:if>
 			
-			<c:if test="${loginVO == null }">
-				${loginVO.name}(${loginVO.id})<spring:message code="comCmm.unitContent.2"/>
-			     <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">
-			     <spring:message code="comCmm.unitContent.3"/></a>  	
-				<%-- <li class="nav-item" id="btnivinfo" onclick=adminDropDown("btnIvInfo") style="position:relative;">
-				  	<a class="nav-link" href="#">${name }님▾</a>
-				  	<div id="divdropdown2" style="display:none;">
-					  	<ul id="uldropdown">
-							<li class="nav-item">
-							  	<a class="nav-link" id="navlinka" href="memberLogout.do">Logout</a>
-							</li>
-					 
-					 		<li class="nav-item">
-						  		<a class="nav-link" id="navlinka" href="selectMyInfo.do">My Profile</a>
-							</li>
-					  	</ul>
-				  	</div>
-				  	
-				</li>
- --%>			</c:if>
+		<c:if test="${loginVO != null}">
+			<c:if test='${loginVO.id != null}'>
+				<li class="nav-item">
+					${loginVO.name}(${loginVO.id}) / ${role} 
+					<spring:message code="comCmm.unitContent.2"/>
+			        <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">
+			     	<spring:message code="comCmm.unitContent.3"/></a>  	
+			     </li>
+			<%-- <li class="nav-item" id="btnivinfo" onclick=adminDropDown("btnIvInfo") style="position:relative;">
+			  	<a class="nav-link" href="#">${name }님▾</a>
+			  	<div id="divdropdown2" style="display:none;">
+				  	<ul id="uldropdown">
+						<li class="nav-item">
+						  	<a class="nav-link" id="navlinka" href="memberLogout.do">Logout</a>
+						</li>
+				 
+				 		<li class="nav-item">
+					  		<a class="nav-link" id="navlinka" href="selectMyInfo.do">My Profile</a>
+						</li>
+				  	</ul>
+			  	</div>
+			  	
+			</li> --%>
+			</c:if>
+		</c:if>
           
           <!-- <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">

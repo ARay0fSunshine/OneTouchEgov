@@ -91,7 +91,10 @@ function mMtr(){
 		mtrGrid = new Grid({
 			el : document.getElementById('mtr_grid'),
 			data : mtrData,
-			columns : mtrColumns
+			columns : mtrColumns,
+			scrollX : false,
+			scrollY : true,
+			bodyHeight: 400
 		});
 		
 		mtrGrid.on('dblclick', ev => {
@@ -299,6 +302,7 @@ function mBas(basCd){
 	$.ajax({
 		url : '../modalBasList',
 		method : 'POST',
+		async: false,
 		data : 'basCd=' + basCd,
 		success : function(result){
 			basData = result;
@@ -408,6 +412,7 @@ function mBas(basCd,btn){
 	$.ajax({
 		url : '../modalBasList',
 		method : 'POST',
+		async: false,
 		data : 'basCd=' + basCd,
 		success : function(result){
 			basData = result;
@@ -509,89 +514,19 @@ function mBas(basCd,btn){
 		})
 	});
 }
-
-//공통코드2
-function mBas2(){
-	let bas2Data;
-
-		
-	$.ajax({
-		url : '../modalBas2List',
-		dataType : 'json',
-		async : false,
-		success : function(result){
-			console.log(result);
-			bas2Data = result;
-		}
-	});
-		
-	dialog.dialog("open");
-			
-	$("#dialog-form").attr('title', '공통');
-	
-	$("#dialog-form").load("../modalBas2", function(){
-		let bas2Grid = tui.Grid;
-		
-		bas2Grid.applyTheme('striped',{
-			cell:{
-				header: {
-		            background: '#4B49AC',
-		            text: '#fff'
-		        },
-		        evenRow: {
-		        	background:'#F5F7FF'
-		        }
-			}
-		})
-		
-		const bas2Columns = [ 
-			{
-				header: '제품코드',
-				name: 'basCd',
-				align: 'center'
-			},
-			{
-				header: '제품명',
-				name: 'basNm',
-				align: 'center'
-			},
-			{
-				header: '제품설명',
-				name: 'basCmt',
-				align: 'center'
-			}
-		]; 
-
-		
-		bas2Grid = new Grid({
-			el : document.getElementById('bas_grid2'),
-			data : bas2Data,
-			columns : bas2Columns
-		});
-		
-		bas2Grid.on('dblclick', ev => {
-			getModalBas2(bas2Grid.getRow(ev.rowKey));
-		})
-		
-		bas2Grid.on('successResponse',function(ev){
-			console.log("성공")
-		})
-		bas2Grid.on('failResponse',function(ev){
-			console.log("실패")
-		})
-		
-
-	});
-}
 	
 	
 	//라인 모달 
-	function mLine(){
+	function mLine(lineStatusVO){
 	console.log('테스트 하는 중입니다.')
 	let basData;
-		
+	
 	$.ajax({
 		url : '../fct/LineSelect',
+		method:'post',
+		async: false,
+		data: JSON.stringify(lineStatusVO),
+		contentType: "application/json",
 		success : function(result){
 			basData = result;
 		}
@@ -620,7 +555,7 @@ function mBas2(){
 		const basColumns = [ 
 			{
 				header: title + '코드',
-				name: 'lineNo',
+				name: 'lineNO',
 				//hidden: true
 			}
 		];

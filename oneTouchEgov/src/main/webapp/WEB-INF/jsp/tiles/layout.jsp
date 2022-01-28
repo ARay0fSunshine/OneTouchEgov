@@ -13,7 +13,7 @@
 <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Skydash Admin</title>
+  <title>Onetouch</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="${path}/resources/template/vendors/feather/feather.css">
   <link rel="stylesheet" href="${path}/resources/template/vendors/ti-icons/css/themify-icons.css">
@@ -36,6 +36,24 @@
   <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
   
   <script src="${path}/resources/template/json.min.js"></script>
+  
+  <c:if test="${loginVO != null}">
+	 <c:if test='${loginVO.uniqId != null}'>
+	 	 <script>
+		 	$.ajax({
+				url : 'selectRole',
+				method : 'POST',
+				async : false,
+				data : 'uniqId=${loginVO.uniqId}',
+				dataType:'application/html',
+				success : function(result){
+					//window.alert(result);
+					location.href="/oneTouchEgov";
+				}
+			})
+	 	 </script>
+	 </c:if>
+  </c:if>  
 
 </head>
 <body>

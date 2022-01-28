@@ -1,5 +1,6 @@
 package egovframework.com.uat.uia.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,14 +8,19 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.util.SystemOutLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.onetouch.web.zzz.service.RoleService;
+import com.onetouch.web.zzz.dao.RoleVO;
 
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovComponentChecker;
@@ -80,6 +86,9 @@ public class EgovLoginController {
 
 	@Resource(name = "egovLoginConfig")
 	EgovLoginConfig egovLoginConfig;
+	
+	@Autowired RoleService roleService;
+	
 
 	/** log */
 	private static final Logger LOGGER = LoggerFactory.getLogger(EgovLoginController.class);
@@ -157,14 +166,59 @@ public class EgovLoginController {
 		
 		// 2. 로그인 처리
 		LoginVO resultVO = loginService.actionLogin(loginVO);
-		
 		// 3. 일반 로그인 처리
 		if (resultVO != null && resultVO.getId() != null && !resultVO.getId().equals("")) {
-
+			
 			// 3-1. 로그인 정보를 세션에 저장
 			request.getSession().setAttribute("loginVO", resultVO);
 			// 2019.10.01 로그인 인증세션 추가
 			request.getSession().setAttribute("accessUser", resultVO.getUserSe().concat(resultVO.getId()));
+			
+			
+			
+			
+			//---yhs추가 권한에 맞는 메뉴리스트 세션에 담기
+			
+			/*
+			 * RoleVO roleVO = new RoleVO(); List<RoleVO> roleList =
+			 * roleService.selectRole(resultVO.getUniqId());
+			 * 
+			 * String rtn = "|";
+			 * 
+			 * for(RoleVO rv : roleList) { rtn = rtn + rv.getMenu() + "|"; }
+			 * 
+			 * System.out.println("22"); System.out.println(rtn); System.out.println("@@");
+			 * 
+			 * request.getSession().setAttribute("role", rtn);
+			 */
+			
+			/*
+			 * List<RoleVO> list = roleService.selectRole(resultVO.getUniqId());
+			 * 
+			 * String rtn = "|"; System.out.println(rtn); if (list.size() > 0) { for(RoleVO
+			 * rv : list) { rtn = rtn + rv.getMenu() + "|"; } }
+			 * 
+			 * System.out.println(rtn); System.out.println(list.size());
+			 * 
+			 * if (rtn.contains("sec")) { request.getSession().setAttribute("role",
+			 * "ADMIN"); } else if (rtn.contains("pdt")) { if (rtn.contains("adm")) {
+			 * request.getSession().setAttribute("role", "PDTADM"); } else {
+			 * request.getSession().setAttribute("role", "PDT"); }
+			 * 
+			 * } else if (rtn.contains("mtr")) { if (rtn.contains("adm")) {
+			 * request.getSession().setAttribute("role", "MTRADM"); } else {
+			 * request.getSession().setAttribute("role", "PDT"); }
+			 * 
+			 * } else if (rtn.contains("fct")) { if (rtn.contains("adm")) {
+			 * request.getSession().setAttribute("role", "FCTADM"); } else {
+			 * request.getSession().setAttribute("role", "PDT"); }
+			 * 
+			 * } else { request.getSession().setAttribute("role", null); }
+			 * 
+			 * request.getSession().setAttribute("menu", rtn);
+			 */
+			 
+			//----
 
 			return "redirect:/uat/uia/actionMain.do";
 
@@ -332,6 +386,10 @@ public class EgovLoginController {
 		// 세션모드인경우 Authority 초기화
 		// List<String> authList = (List<String>)EgovUserDetailsHelper.getAuthorities();
 		request.getSession().setAttribute("accessUser", null);
+		
+		//---yhs 롤관련 추가
+		request.getSession().setAttribute("role", null);
+		//---
 
 		//return "redirect:/egovDevIndex.jsp";
 		return "redirect:/EgovContent.do";

@@ -22,7 +22,7 @@
 	<security:http pattern="/html/**" security="none"/>
     <security:http pattern="/images/**" security="none"/>
  	<security:http pattern="/js/**" security="none"/>
- 	<security:http pattern="/resource/**" security="none"/>
+ 	<security:http pattern="/resources/**" security="none"/>
  	<security:http pattern="\A/WEB-INF/jsp/.*\Z" request-matcher="regex" security="none"/>
 
     <egov-security:config id="securityConfig"
@@ -46,10 +46,10 @@
 		hashBase64="false"
 
 		concurrentMaxSessons="1"
-		concurrentExpiredUrl="/EgovContent.do"
+		concurrentExpiredUrl="/"
 		errorIfMaximumExceeded="false"
 
-		defaultTargetUrl="/EgovContent.do"
+		defaultTargetUrl="/"
 		alwaysUseDefaultTargetUrl="true"
 
 		sniff="true"

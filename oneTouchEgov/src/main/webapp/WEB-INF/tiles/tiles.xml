@@ -25,4 +25,7 @@
 	<definition name="egovframework/*/*/*/*" extends="mainTemplate">
 		<put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}.jsp"/>
 	</definition>
+	<definition name="egovframework/*/*/*/*/*" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}/{5}.jsp"/>
+	</definition>
 </tiles-definitions>
