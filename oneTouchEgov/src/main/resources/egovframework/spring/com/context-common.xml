@@ -89,8 +89,4 @@
 		class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
 	</bean>
 
-	<task:scheduler id="jobScheduler" pool-size="10" />
-	<task:executor id="jobTaskExecutor" pool-size="10" />
-	<task:annotation-driven executor="jobTaskExecutor" scheduler="jobScheduler" />
-
 </beans>
