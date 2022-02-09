@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 <style>
 .labeltext{
 	width: 80px !important;
@@ -73,7 +74,7 @@ hr{
 						</div>
 						<div>
 							<label class="labeltext">공정라인</label>&emsp;&nbsp;
-							<select id="ableLineNo" name="ableLineNo" class="selectoption"></select>&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;
+							<input id="ableLineNo" name="ableLineNo" class="selectoption">&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;
 							<label class="labeltext colline2">사용여부</label>&emsp;&nbsp;
 							<span class="form-check form-check-flat form-check-primary inline">
 								<label class="form-check-label chkboxalign">
@@ -107,23 +108,9 @@ hr{
 	let rowk;
 	let BomCnt = 0;
 	let prdCdVal;
-	let Grid = tui.Grid;
+	let modifyList = [];
 	//--------변수선언 끝--------
-	
-	//--------그리드 css--------
-	Grid.applyTheme('striped',{
-		cell:{
-			header: {
-	            background: '#4B49AC',
-	            text: '#fff'
-	        },
-	        evenRow: {
-	        	background:'#F5F7FF'
-	        }
-		}
-	}) 
-	//--------그리드 css 끝--------
-	
+		
 	//--------제품정보 보여주는 form 기능--------
 		//제품코드옆의 돋보기 누르면
 		btnPrdCd.addEventListener("click", function() {
@@ -137,9 +124,8 @@ hr{
 			autoOpen : false,
 			modal : true,
 			resizable: false,
-			height: "auto",
-			width: 800,
-			height: 400
+			//height: 550,
+			width:  900
 		});
 		
 		//제품코드 눌렀을때 나오는 모달에서 더블클릭했을때 실행되는 함수
@@ -149,19 +135,20 @@ hr{
 			document.getElementById('prdStdNm').value = param.prdStdNm;
 			document.getElementById('mngUnitNm').value = param.mngUnitNm;
 			document.getElementById('prdSectNm').value = param.prdSectNm;
+			document.getElementById('ableLineNo').value = param.ableLineNo;
 			if(param.useYn == 'Y') {
 				document.getElementById('useYn').checked = true
 			} else {
 				document.getElementById('useYn').checked = false
 			}
 			
-			lineSplit = param.ableLineNo.split("/")
+			/* lineSplit = param.ableLineNo.split("/")
 			for(i=0;i<lineSplit.length;i++) {
 				let option = document.createElement('option');
 				option.value = lineSplit[i];
 				option.innerHTML = lineSplit[i];
 				document.getElementById('ableLineNo').appendChild(option);
-			}
+			} */
 			
 			dialog.dialog("close");
 			
@@ -260,8 +247,8 @@ hr{
 		data: dataSource,
 		rowHeaders : [ 'checkbox' ],
 		columns,
-		bodyHeight: 284,
-		minBodyHeight: 284
+		bodyHeight: 330,
+		minBodyHeight: 330
 	})
 	//--------그리드 그리기 끝--------
 	
@@ -318,17 +305,22 @@ hr{
 		
 		//등록버튼
 		btnAdd.addEventListener("click", function() {
-			mainGrid.appendRow({'mtrCd':'',
-								'mtrNm':'',
-								'useAmt':'',
-								'ordChk':'',
-								'pdtChk':'',
-								'prcNm':'',
-								'cmt':''},
-								{focus : true});
-			rowk = mainGrid.getRowCount() - 1;
-			prdCdVal = document.getElementById("prdCd").value
-			mainGrid.setValue(rowk, "prdCd", prdCdVal, false);
+			if(document.getElementById('prdCd').value != '' &&
+				document.getElementById('prdCd').value != null) {
+					mainGrid.appendRow({'mtrCd':'',
+										'mtrNm':'',
+										'useAmt':'',
+										'ordChk':'',
+										'pdtChk':'',
+										'prcNm':'',
+										'cmt':''},
+										{focus : true});
+					rowk = mainGrid.getRowCount() - 1;
+					prdCdVal = document.getElementById("prdCd").value
+					mainGrid.setValue(rowk, "prdCd", prdCdVal, false);			
+			} else {
+				alert('제품코드를 먼저 선택하세요');
+			}
 		})
 		
 		//삭제버튼
@@ -342,30 +334,36 @@ hr{
 			mainGrid.blur();
 			//필수입력
 			rowk = mainGrid.getRowCount();
-			if(BomCnt <= rowk) {
-				for(i=BomCnt; i<rowk; i++) {
-					if(mainGrid.getRow(i).mtrCd == '') {
-						alert("자재코드는 필수입력칸입니다!!");
-						return;
-					} else if(mainGrid.getRow(i).mtrNm == '') {
-						alert("자재명은 필수입력칸입니다!!");
-						return;
-					} else if(mainGrid.getRow(i).useAmt == '') {
-						alert("사용량은 필수입력칸입니다!!");
-						return;
-					} else if(mainGrid.getRow(i).ordChk == '') {
-						alert("발주는 필수입력칸입니다!!");
-						return;
-					} else if(mainGrid.getRow(i).pdtChk == '') {
-						alert("생산은 필수입력칸입니다!!");
-						return;
-					} else if(mainGrid.getRow(i).prcNm == '') {
-						alert("사용공정명은 필수입력칸입니다!!");
-						return;
-					}
+			for(i=0; i<rowk; i++) {
+				if(mainGrid.getRow(i).mtrCd == '') {
+					alert("자재코드는 필수입력칸입니다!!");
+					return;
+				} else if(mainGrid.getRow(i).mtrNm == '') {
+					alert("자재명은 필수입력칸입니다!!");
+					return;
+				} else if(mainGrid.getRow(i).useAmt == '') {
+					alert("사용량은 필수입력칸입니다!!");
+					return;
+				} else if(mainGrid.getRow(i).ordChk == '') {
+					alert("발주는 필수입력칸입니다!!");
+					return;
+				} else if(mainGrid.getRow(i).pdtChk == '') {
+					alert("생산은 필수입력칸입니다!!");
+					return;
+				} else if(mainGrid.getRow(i).prcNm == '') {
+					alert("사용공정명은 필수입력칸입니다!!");
+					return;
 				}
-				mainGrid.request('modifyData');
 			}
+			let create = mainGrid.getModifiedRows().createdRows;
+			let update = mainGrid.getModifiedRows().updatedRows;
+			for(let i=0; i<create.length; i++) {
+				modifyList.push(create[i].mtrCd);
+			}
+			for(let i=0; i<update.length; i++) {
+				modifyList.push(update[i].mtrCd);
+			}
+			mainGrid.request('modifyData');
 		})
 			
 		//초기화버튼
@@ -373,13 +371,34 @@ hr{
 			if(!confirm("초기화하시겠습니까?")){
 				return;
 			}
-			$('#bomFrm')[0].submit();
+			formClear();
 		})
+		
+		//초기화함수
+		function formClear() {
+			document.getElementById('prdCd').value = '';
+			document.getElementById('prdNm').value = '';
+			document.getElementById('prdStdNm').value = '';
+			document.getElementById('mngUnitNm').value = '';
+			document.getElementById('prdSectNm').value = '';
+			document.getElementById('useYn').checked = false;
+			document.getElementById('ableLineNo').value = '';
+			mainGrid.clear();
+		}
 		
 		//메인그리드 readData(등록수정삭제 후에)
 		mainGrid.on("response", function(ev) {
-			if(ev.xhr.response == "bomCont") {
-				mainGrid.readData();
+			if(JSON.parse(ev.xhr.response).result != true) {
+				console.log(JSON.parse(ev.xhr.response));
+				mainGrid.resetData(JSON.parse(ev.xhr.response));
+				for(mtrCdData of mainGrid.getData()) {
+					if(modifyList[modifyList.length-1] == mtrCdData.mtrCd) {
+						mainGrid.focus(mtrCdData.rowKey, 'mtrCd', true);
+						break;
+					} else {
+						mainGrid.focus(mainGrid.getRowCount()-1,'mtrCd',true);
+					}
+				}
 				console.log("메인그리드 readData했음");
 			}
 		})

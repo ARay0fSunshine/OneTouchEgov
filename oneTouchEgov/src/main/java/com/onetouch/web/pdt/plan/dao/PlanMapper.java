@@ -22,6 +22,14 @@ public interface PlanMapper {
 	List<PlanVO> pdtPlanDtllist(PlanVO vo);
 	List<PlanVO> safeStckView();
 	List<PlanVO> selectPrd();
-	
+	int dateCal(PlanVO vo);
+	PlanVO test(PlanVO vo);	
+	List<PlanVO> slectDate(PlanVO vo);
+	List<PlanVO> useFct();
+	List<PlanVO> lineUphFind(List<PlanVO> list);
+	int strDateEndDateMinus(PlanVO vo);
+	PlanVO dateArr(PlanVO vo);
+	PlanVO updFind(String lineNo);
+	List<PlanVO> lineNoAndSeqFind(PlanVO vo);
 	
 }

@@ -7,7 +7,13 @@ import com.onetouch.web.fct.info.dao.InfoVO;
 import com.onetouch.web.fct.info.dao.LineVO;
 
 public interface InfoService {
-	
+
+	//설비가 등록된 라인을 조회
+	LineVO selectLineNo(LineVO lineVO);
+	//공정 시작 설비상태 가동으로 변경
+	void updateStartFctPhs();
+	//설비 이름 조회
+	InfoVO selectFctNm(InfoVO infoVO);
 	//현재 날자 조회
 	InfoVO todayDate();
 	//라인수정
@@ -25,7 +31,7 @@ public interface InfoService {
 	List<InfoVO> selectCheckFct(InfoVO infoVO);
 	
 	List<InfoVO> selectFctInfoAll(InfoVO infoVO);
-	void deleteFctInfo(List<InfoVO> list);
+	void deleteFctInfo(InfoVO infoVO);
 	InfoVO selectFctInfo(InfoVO infoVO);
 	void insertFctInfo(InfoVO infoVO);
 	

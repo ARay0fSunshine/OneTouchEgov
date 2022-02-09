@@ -37,7 +37,7 @@
   
   <script src="${path}/resources/template/json.min.js"></script>
   
-  <c:if test="${loginVO != null}">
+ <%-- <c:if test="${loginVO != null}">
 	 <c:if test='${loginVO.uniqId != null}'>
 	 	 <script>
 		 	$.ajax({
@@ -53,7 +53,25 @@
 			})
 	 	 </script>
 	 </c:if>
-  </c:if>  
+  </c:if>    --%>
+  
+	<c:if test="${loginVO != null}">
+	 <c:if test='${loginVO.uniqId != null}'>
+	 	 <script>
+		 	$.ajax({
+				url : 'selectRole',
+				method : 'POST',
+				async : false,
+				data : 'uniqId=${loginVO.uniqId}',
+				dataType:'application/html',
+				success : function(result){
+					//window.alert(result);
+					//location.href="/oneTouchEgov";
+				}
+			})
+	 	 </script>
+	 </c:if>
+  </c:if> 
 
 </head>
 <body>

@@ -14,8 +14,8 @@
 <body>
 	<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="/oneTouchEgov"><img src="${path}/resources/template/images/logo.png" class="mr-2" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="/oneTouchEgov"><img src="${path}/resources/template/images/logo-mini.png" alt="logo"/></a>
+        <a class="navbar-brand brand-logo mr-5" href="${path}"><img src="${path}/resources/template/images/logo.png" class="mr-2" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="${path}"><img src="${path}/resources/template/images/logo-mini.png" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -96,7 +96,7 @@
 		<c:if test="${loginVO != null}">
 			<c:if test='${loginVO.id != null}'>
 				<li class="nav-item">
-					${loginVO.name}(${loginVO.id} ${role })  
+					${loginVO.name}(${loginVO.id})  
 					<spring:message code="comCmm.unitContent.2"/>
 			        <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">
 			     	<spring:message code="comCmm.unitContent.3"/></a>  	

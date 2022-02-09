@@ -26,60 +26,121 @@
 <!-- toastr -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
+
+<link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
+<link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <style type="text/css">
-	.red{background-color: red}
-	.blue{background-color: skyblue}
-	.green{background-color: green}
+.warning{background-color: orangered}
+.caution{background-color: gold}
+	
+.labeltext{
+	width: 80px !important;
+}
+.colline2{
+	margin-left: 100px;
+	width: 90px !important;
+}
+.bascard1{
+	height:80px;
+}
 </style>
 </hel>
 <body>
 
-<div>
-
-	<div style="margin-top: 10px; border-top: 2px solid black; border-bottom: 2px solid black; padding: 5px;">
-		<form id="fixFrm" method="post">
-		<span style="margin-left: 100px;">
-			<label>해당일자</label>
-			<input type="Date" id="fixFrom" name="fixFrom"> 
-			<label> ~ </label> 
-			<input type="Date" id="fixTo" name="fixTo">
-		
-		
-			<label>설비구분</label>
-			<select id="fctCd" name="fctCd"></select>
-		
-	</form>
-		<button type="button" id='btnFind'>조회</button>
-		<button type="button" id='btnAdd'>추가</button>
-		<button	type="button" id='btnDel'>삭제</button>
-		<button type="button" id='btnSave'>저장</button>
-		</span>
+<div class="content-wrapper">
+	<div class="row">
+		<div class="col-md-12 grid-margin">
+			<div class="row">
+				<div class="col-12 col-xl-8 mb-4 mb-xl-0">
+					<h3 class="font-weight-bold page-title">정기점검관리</h3>
+				</div>
+			</div>
 		</div>
-		<div>
-		<button style="background: #4b49ac; width: 150px;color: white; height: 80px; "  type="button" id='prodChekCompleteBtn'>
-			점검완료등록
-		</button>
 	</div>
 	
-	
-	
-</div>
+	<div class="row">
+		<div class="col-md-12 grid-margin stretch-card">
+			<div class="card bascard1">
+				<div class="card-body">
+					<!-- <h4 class="card-title">점검관리</h4> -->
+					<form id="fixFrm" method="post">
+						<div class="rowdiv">
+							<span>
+								<label class="labeltext">해당일자</label>&nbsp;&nbsp;
+								<input type="text" id="fixFrom" name="fixFrom" class="datepicker jquerydtpicker"> 
+								<label> ~ </label> 
+								<input type="text" id="fixTo" name="fixTo" class="datepicker jquerydtpicker">
+							</span>
+							
+							<span>
+								<label class="form-check-label colline2">설비구분</label>
+								<select id="fctCd" name="fctCd" class="selectoption"></select>
+							</span>
+							
+							<span class="floatright">
+								<button type="button" id="resetBtn" onclick=prodclear()  class="btn btn-main newalign">초기화</button>
+								<button type="button" id="btnFind" class="btn btn-primary newalign">조회</button>
+								
+							</span>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<span class="floatright">
+		<button type="button" id="prodChekCompleteBtn" class="btn btn-primary newalign2">점검완료등록</button>
+		<button type="button" id="btnDel" class="btn btn-main newalign2">삭제</button>
+		<button type="button" id="btnSave" class="btn btn-primary newalign2">저장</button>
+	</span>
+	<br><br>
+	<hr>
 	<div id="dialog-form" title="점검대상">점검대상 목록</div>
 	<div id="grid"></div>
-	
+</div>
+
 	
 <script>
 
 
-	let Grid = tui.Grid;
+	/* let Grid = tui.Grid; */
 	let data;
 	let prodCheckObj;	//점검대상인 데이터를 담는 변수
 	let dialog;
 	let checkedRowdata;	//체크 행의 데이터를 저장하는 변수
+	let now;
+	let prodNo;	//만들어질 정기점검이력번호
+	let predictprodChkNo;
 	
-	//disabled에 대한 속성 값 추가 
-	Grid.applyTheme('clean',{	
+	$(function() {
+	    //input을 datepicker로 선언
+	    $(".jquerydtpicker").datepicker({
+	        dateFormat: 'yy-mm-dd' //달력 날짜 형태
+	        ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+	        ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+	        ,changeYear: true //option값 년 선택 가능
+	        ,changeMonth: true //option값  월 선택 가능                
+	        ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
+	        ,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+	        ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
+	        //,buttonText: "선택" //버튼 호버 텍스트              
+	        ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+	        ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+	        ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+	        ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+	        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+	        ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+	        ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
+	    });                    
+	    
+	    //초기값을 오늘 날짜로 설정해줘야 합니다.
+	    $('.jquerydtpicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)     
+	    	       
+	});   
+	
+	/* Grid.applyTheme('clean',{	
         cell: {
             header: {
               background: '#eef'
@@ -88,46 +149,73 @@
           currentRow: {
           	background: '#fee'
           }
-     	}) ; 
+     	}) ;  */
 	
-	 dialog = $( "#dialog-form" ).dialog({ //<div id="dialog-form" title="title"></div> 같이 가져갈 것  //(이미 있다면 let선언 빼주거나 아니면 dialog 이름 바꿔서 사용)
+	 dialog = $( "#dialog-form" ).dialog({
 		autoOpen : false,
 		modal : true,
 		resizable: true,
 		height: "auto",
 		width: 1300, //530,  제품모달은 사이즈 530정도로~~
 		modal: true,
-		buttons:{"불러오기":function(){ 
-			console.log('55555555555555555555555555S')
-			console.log(checkedRowdata)
-			var temp = [];
-			for(i=0; i<checkedRowdata.length; i++){
-				temp.push({chkDt:''
-					       ,chkExpectDt:''
-					       ,fctCd:checkedRowdata[i].fctCd
-					       ,chkRslt:''
-					       ,fctNm:checkedRowdata[i].fctNm
-						   ,msrMtt:''		   
-						   ,msrCmt:''})
-			}
-			console.table(temp)
-			//mainGrid.appendRows(temp);
-			mainGrid.resetData(temp);
-			
-			
-			let rowK = mainGrid.getRowCount();
-			
-	    	console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-	    	console.log(rowK)
-			for(i =0; i< rowK; i++){
-				mainGrid.setValue(i, 'chkRslt','');
-				mainGrid.setValue(i, 'msrMtt','');
-				mainGrid.setValue(i, 'msrCmt','');
-				mainGrid.uncheck(i);
+		buttons:{"불러오기":function(){
+			fetch('./selectTodayDate')
+			.then(response=> response.json())
+			.then(result=>{
+				console.log('결과값 가져오기')
+				console.log(result)
+				now = result.fixTo.substr(0,10)
+				console.log(now)
+			})
+			.then(x=>{
+				fetch('./selectExpectFctProd')
+				.then(response=> response.json())
+				.then(result=>{
+					console.log('테스트입니다요요요용오오오옹호호호로로로오오오우우유유유류루루루유룰')
+					console.log(result.predictProdChkNo)
+					predictprodChkNo = result.predictProdChkNo; 
+				})
+				.then(x=>{
+					var temp = [];
+					for(i=0; i<checkedRowdata.length; i++){
+						console.log(checkedRowdata)
+						temp.push({
+									chkExpectDt:''
+								   ,chkProd:checkedRowdata[i].chkProd
+								   ,chkProdUnit:checkedRowdata[i].chkProdUnit
+								   ,chkDt:now
+								   ,prodChkNo:predictprodChkNo
+							       ,fctCd:checkedRowdata[i].fctCd
+							       ,chkRslt:checkedRowdata[i].chkRslt
+							       ,fctNm:checkedRowdata[i].fctNm
+								   ,msrMtt:''		   
+								   ,msrCmt:''})
+					}
+					console.table(temp)
+					//mainGrid.appendRows(temp);
+					mainGrid.resetData(temp);
+					
+					
+					let rowK = mainGrid.getRowCount();
+					
+			    	console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+			    	console.log(rowK)
+					for(i =0; i< rowK; i++){
+						mainGrid.setValue(i, 'chkRslt','');
+						mainGrid.setValue(i, 'msrMtt','');
+						mainGrid.setValue(i, 'msrCmt','');
+						mainGrid.uncheck(i);
+						
+					}
+			    	prodCheckGrid.refreshLayout();
+					dialog.dialog( "close" );
+					
+					
+				})
+			})
 				
-			}
-	    	
-			dialog.dialog( "close" );
+		
+			
 			
 			
 		}}
@@ -182,7 +270,7 @@
 	    validation : {
 	    	required : true
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '설비이름',
@@ -200,7 +288,7 @@
 	    validation : {
 	    	required : true
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '차기점검일',
@@ -209,7 +297,7 @@
 	    validation : {
 	    	required : true
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '점검주기',
@@ -218,7 +306,7 @@
 	    validation : {
 	    	required : true
 	    },
-	    align:'left'
+	    align:'right'
   },
   {
 	    header: '점검주기단위',
@@ -227,25 +315,42 @@
 	    validation : {
 	    	required : true
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '판정',
 	    name: 'chkRslt',
-	    editor: 'text',
+	    editor:{
+	    	type:'radio',
+	    	options: {
+	    		listItems:[
+	    		{text: '적합', value: '적합'},
+	    		{text: '부적합', value: '부적합'}
+	    		]
+	    	}
+	    },
 	    validation : {
 	    	required : false
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '조치사항',
 	    name: 'msrMtt',
-	    editor: 'text',
+	    editor:{
+	    	type:'radio',
+	    	options: {
+	    		listItems:[
+	    		{text: '수리', value: '수리'},
+	    		{text: '점검', value: '점검'},
+	    		{text: '교체', value: '교체'}
+	    		]
+	    	}
+	    },
 	    validation : {
 	    	required : false
 	    },
-	    align:'left'
+	    align:'center'
   },
   {
 	    header: '조치내역',
@@ -262,7 +367,9 @@
 	    el: document.getElementById('grid'),
 	    data:dataSource,  //이름이 같다면 생격가능
 	    rowHeaders : [ 'checkbox' ],
-	    columns: columns
+	    columns: columns,
+	    bodyHeight: 509,
+        minBodyHeight: 509,
 	 });
    
    //disapbleColumn 컬럼수정을 막는 코드
@@ -301,33 +408,39 @@
 		    header: '정기점검이력번호',
 		    name: 'prodChkNo',
 		    editor: 'text',
-		    width: 200
+		    width: 200,
+		     align:'center'
 	  },
 	  {
 		    header: '설비이름',
 		    name: 'fctNm',
-		    editor: 'text'
+		    editor: 'text',
+		    align:'left'
 	  },
 	  {
 		    header: '설비코드',
 		    name: 'fctCd',
 		    editor: 'text',
-		    width: 200
+		    width: 200,
+		     align:'center'
 	  },
 	  {
 		    header: '점검일자',
 		    name: 'chkDt',
-		    editor: 'text'
+		    editor: 'text',
+		    align:'center'
 	  },
 	  {
 		    header: '차기점검일',
 		    name: 'chkExpectDt',
-		    editor: 'text'
+		    editor: 'text',
+		    align:'center'
 	  },
 	  {
 		    header: '남은 점검일수',
 		    name: 'dayDiff',
-		    editor: 'text'
+		    editor: 'text',
+		    align:'center'
 		    
 	  }
     ]
@@ -350,13 +463,6 @@
    btnDel.addEventListener("click", function(){
 	   mainGrid.removeCheckedRows(true);
    });
-	   
-	   
-   
-   btnAdd.addEventListener("click", function() {
-		mainGrid.appendRow({})
-   });	
-   
 
    btnSave.addEventListener("click", function() {
 	    mainGrid.blur();	//커서 빼주는 거 ?
@@ -373,15 +479,15 @@
 	   console.log('모달창 띄울 때 뜨는 값 ')
 	   console.log(dataSourceProdCheck)
 	   for(i=0;i<prodCheckGrid.getRowCount();i++){
-			if(prodCheckGrid.getData()[i].dayDiff<=3){
-				prodCheckGrid.addRowClassName(i,'red')
+			if(prodCheckGrid.getData()[i].dayDiff<=1){
+				prodCheckGrid.addRowClassName(i,'warning')
 			}
-			else if(prodCheckGrid.getData()[i].dayDiff > 3 && prodCheckGrid.getData()[i].dayDiff <= 5){
-				prodCheckGrid.addRowClassName(i,'blue')
+			else if(prodCheckGrid.getData()[i].dayDiff > 1 && prodCheckGrid.getData()[i].dayDiff <= 3){
+				prodCheckGrid.addRowClassName(i,'caution')
 			}
-			else{
+			/* else{
 				prodCheckGrid.addRowClassName(i,'green')
-			}
+			} */
 	   }
 	   
 	   
@@ -415,8 +521,11 @@
 	 
    // 조회를 하기 위한 조건데이터를 form직렬화를 시켜서 json 타입으로 readData로 넘겨주는 함수 
    function checkRdo(){
+	   
 	   let checkFormdata = $("#fixFrm").serializeObject();
-    	mainGrid.readData(1,checkFormdata, true);
+	   console.log('fixFrm출력하기')
+	   console.log(checkFormdata)
+	   mainGrid.readData(1,checkFormdata, true);
     	
     	
 	}
@@ -447,14 +556,16 @@
 			dataType: 'json',
 			async : false
 		}).done(function(datas){
-			console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-			console.log(datas)
 			$('#fctCd').append("<option value='d'>전체</option>")
 			for(let data of datas){
 				$('#fctCd').append("<option value="+data.dtlCd+">"+data.dtlNm+"</option>")
 			}
 		}) 
 	   
+		function prodclear(){
+			console.log('초기화')
+			mainGrid.clear()
+	 }
 		
 </script>
 </body>

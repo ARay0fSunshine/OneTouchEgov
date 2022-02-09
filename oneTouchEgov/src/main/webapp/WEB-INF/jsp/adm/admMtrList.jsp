@@ -13,16 +13,17 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 
 <style>
 hr{
 	margin-top: 0.4rem !important;
 }
 .labeltext{
-	width: 80px !important;
+	width: 120px !important;
 }
 .bascard1{
-	height: 555px;
+	height: 651px;
 }
 .inline{
 	display: inline-block;
@@ -33,6 +34,14 @@ hr{
 }
 .rowdiv{
 	margin-bottom: 15px !important;
+}
+.form-check .form-check-label input[type="checkbox"] + .input-helper:before, .form-check .form-check-label input[type="checkbox"] + .input-helper:after{
+	top: 3px !important;
+	left: -20px !important;
+}
+.mtrFrm{
+	margin-top: 40px;
+	margin-left: 30px;
 }
 </style>
 
@@ -52,7 +61,7 @@ hr{
 		<div class = "col-4">
 			<h4 class="gridtitle">✔자재목록</h4>
 			<span class="floatright">
-				<button type="button" id="btnDel" class="btn btn-main newalign2">삭제</button>
+				
 			</span>
 			<br><br>
 			<hr>
@@ -63,17 +72,18 @@ hr{
 			<span class="floatright">
 				<button type="button" id="btnReset" class="btn btn-main newalign2">초기화</button>
 				<button type="button" id="btnAdd" class="btn btn-main newalign2">등록</button>
+				<button type="button" id="btnDel" class="btn btn-main newalign2">삭제</button>
 				<button type="button" id="btnEdit" class="btn btn-primary newalign2">수정</button>
 			</span>
 			<br><br>
 			<hr>
 			<div class="card bascard">
 				<div class="card-body bascard1">
-					<h4 class="card-title">기초코드</h4>
-					<form id="mtrFrm" name="mtrFrm" method="post">
+					<!-- <h4 class="card-title">기초코드</h4> -->
+					<form id="mtrFrm" name="mtrFrm" class="mtrFrm" method="post" onsubmit="return false">
 						<div class="rowdiv">
 							<label class="labeltext">자재코드&nbsp;</label>
-							<input id="mtrCd" name="mtrCd" class="inputtext">
+							<input id="mtrCd" name="mtrCd" class="inputtext" onkeyup="entermtrCd()">
 						</div>
 						
 						<div class="rowdiv">
@@ -83,20 +93,20 @@ hr{
 						
 						<div class="rowdiv">
 							<label class="labeltext">자재규격&nbsp;</label>
-							<input id="stdNm" name="stdNm" class="inputtext">
-							<button type="button" id="btnStd" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button>
+							<select id="stdNm" name="std" class="inputtext"></select>
+							<!-- <button type="button" id="btnStd" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button> -->
 						</div>
 						
 						<div class="rowdiv">
 							<label class="labeltext">관리단위&nbsp;</label>
-							<input id="unitNm" name="unitNm" class="inputtext">
-							<button type="button" id="btnUnit" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button>
+							<select id="unitNm" name="unit" class="inputtext"></select>
+							<!-- <button type="button" id="btnUnit" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button> -->
 						</div>
 						
 						<div class="rowdiv">
 							<label class="labeltext">자재구분&nbsp;</label>
-							<input id="mtrSectNm" name="mtrSectNm" class="inputtext">
-							<button type="button" id="btnMtrSect" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button>
+							<select id="mtrSectNm" name="mtrSect" class="inputtext"></select>
+							<!-- <button type="button" id="btnMtrSect" class="btn btn-primary mr-2 minibtn"><i class="icon-search"></i></button> -->
 						</div>
 						
 						<div class="rowdiv">
@@ -113,14 +123,14 @@ hr{
 						<div class="rowdiv">
 							<label class="labeltext">안전재고&nbsp;</label>
 							<input id="safeStck" name="safeStck" class="inputtext">
-							<input type="hidden" id="std" name="std">
+							<!-- <input type="hidden" id="std" name="std">
 							<input type="hidden" id="unit" name="unit">
-							<input type="hidden" id="mtrSect" name="mtrSect">
+							<input type="hidden" id="mtrSect" name="mtrSect"> -->
 							<input type="hidden" id="compCd" name="compCd">
 						</div>
 						
 						<div class="rowdiv">
-							<label class="labeltext colline2">사용여부</label>&emsp;&nbsp;
+							<label class="labeltext">사용여부</label>&emsp;&nbsp;
 							<span class="form-check form-check-flat form-check-primary inline">
 								<label class="form-check-label chkboxalign">
 									<!-- 사용여부&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -180,21 +190,22 @@ hr{
 
 
 <script type="text/javascript">
-	let Grid = tui.Grid;
+	/* let Grid = tui.Grid; */
+	let rowk;
+	let mtrCodeVal;
 	
+	//페이지 로드되면 수정막기
 	document.getElementById('btnEdit').setAttribute('disabled', true);
+	document.getElementById('btnDel').setAttribute('disabled', true);
 	
-	Grid.applyTheme('default',{
+	/* Grid.applyTheme('default',{
 		cell:{
-			/* header:{
-				background:'#eef'
-			} */
 			header: {
 	            background: '#4B49AC',
 	            text: '#fff'
 	        }
 		}
-	})
+	}) */
 	
 	const columns = [{
 		
@@ -207,6 +218,43 @@ hr{
 			name : 'mtrNm',
 			sortable : true
 		}];
+	
+	//자재규격 상세코드에서 받아오기
+	$.ajax({
+		url: './mtrSizeList',
+		dataType:'json',
+		async : false
+	}).done(function(datas){
+		for(data of datas) {
+			$('#stdNm').append("<option value="+data.std+">"+data.stdNm+"</option>")
+			document.getElementById('stdNm').value = '';
+		}
+	});
+	
+	//단위구분 상세코드에서 받아오기
+	$.ajax({
+		url: './mtrUnitList',
+		dataType:'json',
+		async : false
+	}).done(function(datas){
+		console.log(datas)
+		for(data of datas) {
+			$('#unitNm').append("<option value="+data.mngUnit+">"+data.mngUnitNm+"</option>")
+			document.getElementById('unitNm').value = '';
+		}
+	});
+	
+	//자재구분 상세코드에서 받아오기
+	$.ajax({
+		url: './mtrSectList',
+		dataType:'json',
+		async : false
+	}).done(function(datas){
+		for(data of datas) {
+			$('#mtrSectNm').append("<option value="+data.mtrSect+">"+data.mtrSectNm+"</option>")
+			document.getElementById('mtrSectNm').value = '';
+		}
+	});
 	
 	const dataSource = {
 			api: {
@@ -226,16 +274,14 @@ hr{
 		el: document.getElementById('grid'),
 		data: dataSource,
 		columns,
-		bodyHeight: 520,
-		minBodyHeight: 520,
-		rowHeaders : [ 'checkbox' ]
+		bodyHeight: 612,
+		minBodyHeight: 612,
 	});
 	
 	grid.on("click", (ev) => {
 		if(ev.columnName === 'mtrCd' || ev.columnName === 'mtrNm') {
 			
 			mtrCode = {'mtrCd': grid.getValue(ev.rowKey,'mtrCd')};
-			console.log(mtrCode);
 			
 			//자재상세정보 받아오기
 			$.ajax({
@@ -246,19 +292,16 @@ hr{
 			}).done(function(datas) {
 				MtrDtl = datas.data.contents[0];
 				console.log(MtrDtl);
-				document.getElementById('mtrCd').setAttribute('value',MtrDtl.mtrCd);
-				document.getElementById('mtrNm').setAttribute('value',MtrDtl.mtrNm);
-				document.getElementById('stdNm').setAttribute('value',MtrDtl.stdNm);
-				document.getElementById('unitNm').setAttribute('value',MtrDtl.unitNm);
-				document.getElementById('mtrSectNm').setAttribute('value',MtrDtl.mtrSectNm);
-				document.getElementById('compNm').setAttribute('value',MtrDtl.compNm);
-				document.getElementById('mngAmt').setAttribute('value',MtrDtl.mngAmt);
-				document.getElementById('safeStck').setAttribute('value',MtrDtl.safeStck);
-				document.getElementById('std').setAttribute('value',MtrDtl.std);
-				document.getElementById('unit').setAttribute('value',MtrDtl.unit);
-				document.getElementById('mtrSect').setAttribute('value',MtrDtl.mtrSect);
-				document.getElementById('compCd').setAttribute('value',MtrDtl.compCd);
-				//console.log($('#mtrFrm').serialize());
+				document.getElementById('mtrCd').value = MtrDtl.mtrCd;
+				document.getElementById('mtrNm').value = MtrDtl.mtrNm;
+				document.getElementById('stdNm').value = MtrDtl.std;
+				document.getElementById('unitNm').value = MtrDtl.unit;
+				document.getElementById('mtrSectNm').value = MtrDtl.mtrSect;
+				document.getElementById('compNm').value = MtrDtl.compNm;
+				document.getElementById('mngAmt').value = MtrDtl.mngAmt;
+				document.getElementById('safeStck').value = MtrDtl.safeStck;
+				document.getElementById('compCd').value = MtrDtl.compCd;
+				
 				
 				if(MtrDtl.useYn == 'Y') {
 					document.getElementById('useYn').checked = true
@@ -269,13 +312,14 @@ hr{
 				//자재코드는 수정 안되게 막아주기
 				document.getElementById('mtrCd').setAttribute('readonly',true);
 				document.getElementById('btnAdd').setAttribute('disabled', true);
-				document.getElementById('btnEdit').disabled = undefined;	
+				document.getElementById('btnEdit').disabled = undefined;
+				document.getElementById('btnDel').disabled = undefined;
 			})
 		}
 	})
 	
 
-	//자재규격검색버튼
+/* 	//자재규격검색버튼
 	btnStd.addEventListener("click", function() {
 		mBas('MTR_SIZE');
 		$('#ui-id-1').html('자재규격종류');
@@ -291,7 +335,7 @@ hr{
 	btnMtrSect.addEventListener("click", function() {
 		mBas('MTR_SECT');
 		$('#ui-id-1').html('자재구분');
-	});
+	}); */
 	
 	//업체명검색버튼
 	btnCompCd.addEventListener("click", function() {
@@ -345,17 +389,50 @@ hr{
 			//contentType: 'application/json',
 			success: function(result) {
 				console.log("수정완료!!!!!!!!!!!")
-				console.log(result)
+				grid.resetData(result);
+				mtrCodeVal = document.getElementById('mtrCd').value;
+				for(mtrCdData of grid.getData()) {
+					if(mtrCodeVal == mtrCdData.mtrCd) {
+						console.log("if문 들어오는지");
+						grid.focus(mtrCdData.rowKey, 'mtrCd', true);
+					}
+				}
 			}
 		})
-		$('#mtrFrm')[0].submit();
+		alert("수정되었습니다~~");
 	})
 	
 
 	//등록버튼
 	btnAdd.addEventListener("click", function() {
-		if(!confirm("등록하시겠습니까?")){
-			return false;
+		if(document.getElementById('mtrCd').value == '') {
+			alert("자재코드는 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('mtrNm').value == '') {
+			alert("자재명은 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('stdNm').value == '') {
+			alert("자재규격은 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('unitNm').value == '') {
+			alert("관리단위는 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('mtrSectNm').value == '') {
+			alert("자재구분은 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('compNm').value == '') {
+			alert("업체명은 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('mngAmt').value == '') {
+			alert("관리수량은 필수입력칸입니다!!");
+			return;
+		} else if(document.getElementById('safeStck').value == '') {
+			alert("안전재고는 필수입력칸입니다!!");
+			return;
+		} else{
+			if(!confirm("등록하시겠습니까?")){
+				return false;
+			}
 		}
 		$.ajax({
 			url: "./insertMtr",
@@ -364,10 +441,19 @@ hr{
 			dataType: 'json',
 			success: function(result) {
 				console.log("등록완료!!!!!!!!!!!")
-				console.log(result)
+				grid.resetData(result);
+				mtrCodeVal = document.getElementById('mtrCd').value;
+				for(mtrCdData of grid.getData()) {
+					if(mtrCodeVal == mtrCdData.mtrCd) {
+						console.log("if문 들어오는지");
+						grid.focus(mtrCdData.rowKey, 'mtrCd', true);
+						document.getElementById('btnAdd').setAttribute('disabled', true);
+						document.getElementById('btnEdit').disabled = undefined;	
+						document.getElementById('btnDel').disabled = undefined;	
+					}
+				}
 			}
 		})
-		$('#mtrFrm')[0].submit();
 	})	
 	
 	//초기화버튼
@@ -375,14 +461,89 @@ hr{
 		if(!confirm("초기화하시겠습니까?")){
 			return false;
 		}
-		$('#mtrFrm')[0].submit();
+		formClear();
 	})
+	
+	//초기화함수
+	function formClear() {
+		document.getElementById('mtrCd').value = '';
+		document.getElementById('mtrNm').value = '';
+		document.getElementById('stdNm').value = '';
+		document.getElementById('unitNm').value = '';
+		document.getElementById('mtrSectNm').value = '';
+		document.getElementById('compNm').value = '';
+		document.getElementById('mngAmt').value = '';
+		document.getElementById('safeStck').value = '';
+		document.getElementById('compCd').value = '';
+		document.getElementById('mtrCd').readOnly = false;
+		document.getElementById('useYn').checked = false;
+		document.getElementById('btnAdd').disabled = undefined;
+		document.getElementById('btnEdit').setAttribute('disabled', true);
+		document.getElementById('btnDel').setAttribute('disabled', true);
+	}
 	
 	//삭제버튼
 	btnDel.addEventListener("click", function() {
-		grid.removeCheckedRows(true);
-		grid.request('modifyData');
+		if(!confirm("삭제하시겠습니까?")){
+			return false;
+		}
+		$.ajax({
+			url: "./deleteMtr",
+			method: "POST",
+			data: $('#mtrFrm').serializeObject(),
+			dataType: 'json',
+			success: function(result) {
+				console.log("삭제완료!!!!!!!!!!!")
+				grid.resetData(result);
+				grid.focus(grid.getRowCount()-1,'mtrCd',true);
+			}
+		}) 
+		formClear();
 	})
+	
+	//자재검색 대문자로 입력받기
+	$("#mtrCd").bind("keyup", function() {
+     		console.log("대문자로 입력받기")
+       		$(this).val($(this).val().toUpperCase());
+  	});
+	
+	//자재검색 엔터키
+	function entermtrCd() {
+		mtrCodeVal = document.getElementById('mtrCd').value;
+		if(window.event.keyCode == 13){
+			console.log('엔터키 이벤트 성공')
+			let flag = true
+			for(mtrCdData of grid.getData()) {
+				if(mtrCdData.mtrCd == mtrCodeVal) {
+					document.getElementById('mtrCd').value = mtrCdData.mtrCd;
+					document.getElementById('mtrNm').value = mtrCdData.mtrNm;
+					document.getElementById('stdNm').value = mtrCdData.std;
+					document.getElementById('unitNm').value = mtrCdData.unit;
+					document.getElementById('mtrSectNm').value = mtrCdData.mtrSect;
+					document.getElementById('compNm').value = mtrCdData.compNm;
+					document.getElementById('mngAmt').value = mtrCdData.mngAmt;
+					document.getElementById('safeStck').value = mtrCdData.safeStck;
+					document.getElementById('compCd').value = mtrCdData.compCd;
+					
+					if(mtrCdData.useYn == 'Y') {
+						document.getElementById('useYn').checked = true
+					} else {
+						document.getElementById('useYn').checked = false
+					}
+					document.getElementById('btnAdd').setAttribute('disabled', true);
+					document.getElementById('btnEdit').disabled = undefined;	
+					document.getElementById('btnDel').disabled = undefined;	
+					flag = true;
+					break;
+				} else {
+					flag = false;
+				}
+			}
+			if(flag == false){
+				alert("등록가능한 자재코드입니다");
+			}
+		}
+	}
 	
 	
 </script>

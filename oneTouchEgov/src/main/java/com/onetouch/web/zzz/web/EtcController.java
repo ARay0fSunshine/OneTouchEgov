@@ -1,6 +1,8 @@
 package com.onetouch.web.zzz.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,7 +25,6 @@ import com.onetouch.web.adm.mng.service.MngService;
 import com.onetouch.web.adm.mtr.dao.MtrVO;
 import com.onetouch.web.adm.mtr.service.MtrService;
 import com.onetouch.web.zzz.dao.MsgAltVO;
-import com.onetouch.web.zzz.dao.RoleVO;
 import com.onetouch.web.zzz.service.MsgAltService;
 import com.onetouch.web.zzz.service.RoleService;
 
@@ -80,50 +81,81 @@ public class EtcController {
 		service.updateAltChkY(vo);
 	}
 	
+	/*
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(value="selectRole", method = RequestMethod.POST) public
+	 * String selectRole(String uniqId, HttpServletRequest request){ List<RoleVO>
+	 * list = roleService.selectRole(uniqId);
+	 * 
+	 * String rtn = "|"; System.out.println(rtn); if (list.size() > 0) { for(RoleVO
+	 * rv : list) { rtn = rtn + rv.getMenu() + "|"; } }
+	 * 
+	 * System.out.println(rtn); System.out.println(list.size());
+	 * 
+	 * if (rtn.contains("sec")) { request.getSession().setAttribute("role",
+	 * "ADMIN"); } else if (rtn.contains("pdt")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "PDTADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else if (rtn.contains("mtr")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "MTRADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else if (rtn.contains("fct")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "FCTADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else { request.getSession().setAttribute("role", ""); }
+	 * 
+	 * return rtn; }
+	 */
+	
+	/*
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(value="selectRole", method = RequestMethod.POST) public
+	 * String selectRole(String uniqId, HttpServletRequest request){ List<RoleVO>
+	 * list = roleService.selectRole(uniqId);
+	 * 
+	 * String rtn = "|"; System.out.println(rtn); if (list.size() > 0) { for(RoleVO
+	 * rv : list) { rtn = rtn + rv.getChkUrl() + "|"; } }
+	 * 
+	 * System.out.println(rtn); System.out.println(list.size());
+	 * 
+	 * if (rtn.contains("sec")) { request.getSession().setAttribute("role",
+	 * "ADMIN"); } else if (rtn.contains("pdt")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "PDTADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else if (rtn.contains("mtr")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "MTRADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else if (rtn.contains("fct")) { if (rtn.contains("adm")) {
+	 * request.getSession().setAttribute("role", "FCTADM"); } else {
+	 * request.getSession().setAttribute("role", "PDT"); }
+	 * 
+	 * } else { request.getSession().setAttribute("role", ""); }
+	 * 
+	 * return rtn; }
+	 */
+	
 	@ResponseBody
 	@RequestMapping(value="selectRole", method = RequestMethod.POST)
-	public String selectRole(String uniqId, HttpServletRequest request){
-		List<RoleVO> list = roleService.selectRole(uniqId);
+	public Map<String, Object> selectRole(String uniqId, HttpServletRequest request){		
+		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> datas = new HashMap<String, Object>();
+		datas.put("contents", roleService.selectRole(uniqId));
+		data.put("result", true);
+		data.put("data", datas);
 		
-		String rtn = "|";
-		System.out.println(rtn);
-		if (list.size() > 0) {
-			for(RoleVO rv : list) {
-				rtn = rtn  + rv.getMenu() + "|";
-			}
-		}
-
-		System.out.println(rtn);
-		System.out.println(list.size());
 		
-		if (rtn.contains("sec")) {
-			request.getSession().setAttribute("role", "ADMIN");
-		} else if (rtn.contains("pdt")) {
-			if (rtn.contains("adm")) {
-				request.getSession().setAttribute("role", "PDTADM");
-			} else {
-				request.getSession().setAttribute("role", "PDT");
-			}
-			
-		} else if (rtn.contains("mtr")) {
-			if (rtn.contains("adm")) {
-				request.getSession().setAttribute("role", "MTRADM");
-			} else {
-				request.getSession().setAttribute("role", "PDT");
-			}
-			
-		} else if (rtn.contains("fct")) {
-			if (rtn.contains("adm")) {
-				request.getSession().setAttribute("role", "FCTADM");
-			} else {
-				request.getSession().setAttribute("role", "PDT");
-			}
-			
-		} else {
-			request.getSession().setAttribute("role", "");
-		}
+		request.getSession().setAttribute("role", data);
 		
-		return rtn;
+		return data;
+		
+		
 	}
 	
 

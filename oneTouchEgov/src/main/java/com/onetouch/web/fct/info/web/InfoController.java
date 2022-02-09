@@ -7,10 +7,10 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.onetouch.web.adm.bas.dao.BasDtlVO;
 import com.onetouch.web.adm.bas.dao.BasMapper;
@@ -43,11 +44,51 @@ public class InfoController {
 	@Autowired InfoMapper infomapper;
 	@Autowired BasMapper basservice;
 	
+	//엑셀출력
+		@RequestMapping("/fctExcelView.do")
+		public ModelAndView excelView() throws IOException{
+			List<Map<String, Object>> list = infomapper.findFctList();
+			HashMap<String, Object> map = new HashMap<String, Object>(); 
+			
+			map.put("filename", "excel_dept");
+			map.put("datas", list);
+			return new ModelAndView("excelView", map);
+		}
+	
+	//설비가 등록된 라인
+	@ResponseBody
+	@PostMapping("/selectFctLineNo")
+	public LineVO selectFctLineNo(@RequestBody LineVO lineVO) {
+		return infoservice.selectLineNo(lineVO);
+	}
+	
+	
+	//공정 시작 설비상태 가동으로 변경
+	@ResponseBody
+	@PostMapping("/updateStringFctPhs")
+	public List<InfoVO> changeStartFctPhs(@RequestBody InfoVO infoVO) {
+		infoservice.updateStartFctPhs();
+		 return infoservice.selectFctInfoAll(infoVO); 
+	}
+	
+	
+	//설비이름 조회
+	@ResponseBody
+	@PostMapping("/selectFctNm")
+	public InfoVO selectFctNm(@RequestBody InfoVO infoVO) {
+		System.out.println("설비이름 조회 ");
+		System.out.println(infoVO.getFctCd());
+		return infoservice.selectFctNm(infoVO);
+		
+		
+	}
 	
 	//현재 날자 조회
 	@ResponseBody
 	@GetMapping("/selectTodayDate")
 	public InfoVO selectTodaDate(){
+		System.out.println("날짜가져오는 메서드 ");
+		System.out.println(infoservice.todayDate());
 		return infoservice.todayDate();
 	}
 	//라인 수정
@@ -91,10 +132,8 @@ public class InfoController {
   @PostMapping(value ="/Updateinfo" ,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public List<InfoVO> InfoUpdate(MultipartFile uploadFile, InfoVO infoVO) {
 
-	  String uploadFolder = "/resources/upload/";	//C:\\upload			
+	  String uploadFolder = "C:\\upload";			
 	  String uploadFolderPath = getFolder();
-	  System.out.println("겟 폴더 출력");
-	  System.out.println(uploadFolderPath);
 	  
 	  if(uploadFile != null && uploadFile.getSize() >0) {
 		  
@@ -197,22 +236,22 @@ public class InfoController {
 	
 	  @ResponseBody      
 	  @PostMapping("/deleteInfo")
-	  public List<InfoVO> delete(@RequestBody List<InfoVO> del,InfoVO infoVO) {
+	  public List<InfoVO> delete(@RequestBody InfoVO infoVO) {
 		 
-		  infoservice.deleteFctInfo(del);
+		  infoservice.deleteFctInfo(infoVO);
 		  return infoservice.selectFctInfoAll(infoVO);
 	  }
 	  
 	  // 설비 등록 아작스 -------------------------------------------------------------------------------------------//
 	  @ResponseBody
 	  @PostMapping(value = "/infoInsert", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	  public ResponseEntity<InfoVO> InfoInsert(MultipartFile uploadFile, InfoVO infoVO ,HttpServletRequest request) {
+	  public ResponseEntity<InfoVO> InfoInsert(MultipartFile uploadFile, InfoVO infoVO) {
+		  System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		  log.info("update ahax post.......");
-		    System.out.println(request.getContextPath());
 		  
-		  String uploadFolder ="/resources/upload/";			
+		  
+		  String uploadFolder = "C:\\upload";			
 		  String uploadFolderPath = getFolder();
-		  
 		  
 			/* uploadFile 매개변수에 값이 있는지 확인 */
 		  if(uploadFile != null && uploadFile.getSize() >0) {
@@ -300,7 +339,7 @@ public class InfoController {
 		@ResponseBody
 		public ResponseEntity<byte[]> getFile(String fileName)  {
 			log.info("fileName:" + fileName);
-			File file = new File("/resources/img/" + fileName);
+			File file = new File("c:\\upload\\" + fileName);
 			
 			log.info("file" + file);
 			

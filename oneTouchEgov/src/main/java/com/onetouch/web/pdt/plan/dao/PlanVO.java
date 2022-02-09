@@ -19,15 +19,25 @@ public class PlanVO extends LotVO {
 	private String needCnt;
 	private String instrCnt;
 	private String workStrDate;
+	private String workEndDate;
 	private String workPlanTime;
 	private String nowPhs;
 	private String prdCd1;
+	private String prdNm;
+	private String upd;
 	//bom 테이블 컬럼
 	private String useAmt;
 	private String mtrLot;
 	private String realCnt;
 	private String safeStck;
-	
+	//date차이
+	private int date;
+	//uph
+	private String uphPdtAmt;
+	private String prcNm;
+	private String pecSeq;
+	private String startDate;
+	private String endDate;
 	
 	
 }

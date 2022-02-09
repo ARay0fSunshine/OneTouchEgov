@@ -53,6 +53,10 @@
 			A.MTR_CD = B.MTR_CD
 		AND
 			B.MTR_CD = #{mtrCd}
+		<if test='calSect == "MTR_CAL002"'>
+		AND
+			A.STCK_CNT > 0
+		</if>
 	</select>
 	
 	<insert id="insertCal">
@@ -63,7 +67,8 @@
 			CAL_SECT,
 			CAL_AMT,
 			<if test='cmt != null and cmt != ""'>CMT,</if>
-			UNIT
+			UNIT,
+			EMP_NO
 			)
 		VALUES(
 			PKG_MAKE_CODE.CODE('CAL', 'MTR_STCK_CAL', 'CAL_NO', 'CAL_DATE'),
@@ -72,7 +77,8 @@
 			#{calSect},
 			#{calAmt},
 			<if test='cmt != null and cmt != ""'>#{cmt},</if>
-			#{unit}
+			#{unit},
+			#{empNo}
 			)
 	</insert>
 	<update id="updateCal">
@@ -83,6 +89,24 @@
 			</if>
 			<if test='calSect == "MTR_CAL002"'> 
 				STCK_CNT = STCK_CNT-#{calAmt}				
+			</if>
+		WHERE
+			MTR_LOT = #{mtrLot} 
+	</update>
+	
+	<delete id="deleteCal">
+		DELETE 
+		FROM MTR_STCK_CAL 
+		WHERE CAL_NO = #{calNo}
+	</delete>
+	<update id="minusCal">
+		UPDATE MTR_LOT_STCK
+		SET
+			<if test='calSect == "MTR_CAL001"'> 
+				STCK_CNT = STCK_CNT-#{calAmt}				
+			</if>
+			<if test='calSect == "MTR_CAL002"'> 
+				STCK_CNT = STCK_CNT+#{calAmt}				
 			</if>
 		WHERE
 			MTR_LOT = #{mtrLot} 

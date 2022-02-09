@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.onetouch.web.pdt.plan.dao.PlanMapper">
 <select id="list" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-	select PLAN_NO,DUE_DATE,ORD_SHT_NO,WORK_PROT,PLAN_DATE from pdt_plan
+	select PLAN_NO,to_char(DUE_DATE,'yyyy-MM-dd') dueDate,ORD_SHT_NO,WORK_PROT,to_char(PLAN_DATE,'yyyy-MM-dd') plan_date from pdt_plan
 	where 1=1
 	<if test='nowPhs =="Y"'>
 		and now_phs ='Y'
@@ -11,42 +11,51 @@
 		and now_phs ='N'
 	</if>
  	<if test='startDate!="" and startDate!=null'>
-		and due_date>#{startDate}
+		and due_date>=#{startDate}
 	</if>
  	<if test='endDate!="" and endDate!=null'>
-		and #{endDate}>due_date
+		and #{endDate}>=due_date
 	</if>  
+	order by plan_no
 	
 </select>
 <select id="pdtPlanDtllist" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-		select plan_no , line_no , prd_cd, need_cnt , instr_cnt , work_str_date , work_plan_time  
-		from pdt_plan_dtl 
-		group by plan_no , line_no , prd_cd, need_cnt , instr_cnt , work_str_date , work_plan_time
-		having 1=1
+		select distinct a.plan_no , a.line_no , a.prd_cd , a.need_cnt , a.instr_cnt  , a.work_plan_time ,to_char(b.plan_date,'yyyy-MM-dd') work_str_date
+		from pdt_plan_dtl a join pdt_plan b
+		on a.plan_no = b.plan_no
+		where 1=1
 		<if test='planNo!="" and planNo!=null'>
-			and plan_no=#{planNo}
+			and a.plan_no=#{planNo}
 		</if>
 		<if test='prdCd!="" and prdCd!=null' >
-			and prd_cd like '%'||#{prdCd}||'%'
+			and a.prd_cd like '%'||#{prdCd}||'%'
 		</if>
+	 	<if test='startDate!="" and startDate!=null'>
+			and b.plan_date>=#{startDate}
+		</if>
+	 	<if test='endDate!="" and endDate!=null'>
+			and #{endDate}>=b.plan_date
+		</if>  
+		order by work_str_date
 </select>
 <select id="selectDtl" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-	select prd_cd, cnt as need_cnt from pdt_ord_view where ORD_SHT_NO=#{ordShtNo}
+	select prd_cd , (select prd_nm from adm_prd where prd_cd = prd_cd) as prd_nm , cnt as need_cnt from pdt_ord_view where ORD_SHT_NO=#{ordShtNo}
+</select>
+<select id="dateCal" resultType="integer">
+	select to_date(#{workEndDate},'yyyy-MM-dd') - to_date(#{workStrDate},'yyyy-MM-dd') from dual
 </select>
 <select id="findPrcCd" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
 	<!-- select a.line_no,a.fct_cd , a.fct_nm , a.prc_cd
 	from fct_info a join (select prc_cd from adm_prc_flow where prd_cd=#{prdCd}) b
 	on(a.prc_cd = b.prc_cd)
 	order by 1,3 -->
-select a.plan_no as planNo ,b.stckCnt as stckCnt
-, a.line_no as lineNo, a.prc_cd as prcCd , a.prd_cd as prdCd , a.need_cnt as needCnt , a.instr_cnt as instrCnt 
-, b.mtrLot as mtrLot , b.instrNo as instrNo ,b.dtlSelect as dtlSelect, b.mtrCd as mtrCd  , b.stckCnt-b.hldCnt as realCnt
-from pdt_plan_dtl a join (select a.mtr_lot as mtrLot , a.instr_no as instrNo , a.line_no as lineNo , a.prc_cd as prcCd 
-                            , a.dtl_select as dtlSelect ,b.mtr_cd as mtrCd , b.hld_cnt as hldCnt ,b.stck_cnt as stckCnt
+select distinct a.mtrLot , a.instrNo , a.lineNo , a.prcCd , a.dtlSelect , a.mtrCd , a.hldCnt , a.stckCnt , a.realCnt , b.use_amt 
+from (select a.mtr_lot as mtrLot , a.instr_no as instrNo , a.line_no as lineNo , a.prc_cd as prcCd 
+                            , a.dtl_select as dtlSelect ,b.mtr_cd as mtrCd , b.hld_cnt as realCnt , 0 as hldCnt ,b.stck_cnt as stckCnt 
                             from used_mtr_lot a join mtr_lot_stck b
-                            on (a.mtr_lot = b.mtr_lot)
-                            where a.instr_no = #{planNo} and a.prc_cd=#{prcCd}) b
-on (a.plan_no = b.instrNo AND a.line_no=b.lineNo AND a.prc_cd=b.prcCd)
+                            on (a.mtr_lot = b.mtr_lot)) a join adm_bom b
+on a.mtrCd=b.mtr_cd and a.prcCd = b.prc_cd
+                            where a.instrNo = #{planNo} and a.prcCd=#{prcCd}
 </select>
 <insert id="insertPlan">
 	<!-- <foreach collection="list" item="alist">
@@ -57,35 +66,46 @@ on (a.plan_no = b.instrNo AND a.line_no=b.lineNo AND a.prc_cd=b.prcCd)
    ,#{alist.ordShtNo},#{alist.workProt},sysdate
 	)     동적쿼리하다감
 	</foreach> -->
-	insert into pdt_plan (WORK_PROT,PLAN_NO,DUE_DATE,ORD_SHT_NO,PLAN_DATE,now_phs) 
+	insert into pdt_plan (WORK_PROT,PLAN_NO,DUE_DATE,
+	<if test='ordShtNo!=null and ordShtNo!=""'>
+		ORD_SHT_NO,
+	</if>
+	PLAN_DATE,now_phs) 
 	values
    (
    #{workProt}
    ,#{planNo}
    ,to_date(#{dueDate},'yyyy-mm-dd HH24:MI:SS')
-   ,#{ordShtNo},sysdate,'N')
+   ,
+	<if test='ordShtNo!=null and ordShtNo!=""'>
+	   #{ordShtNo},
+	</if>
+   sysdate,'N')
 </insert>
 	<delete id="deletePlan">
 		delete from pdt_plan where plan_no=#{planNo}	
 	</delete>
 <!-- 제품명검색해서 로트별 재고보기 -->
 <select id="lotCntSelect" parameterType="com.onetouch.web.pdt.plan.dao.PlanVO" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-    select a.use_amt as useAmt,a.mtrlot as mtrLot , a.stckCnt as stckCnt , a.hldCnt as hldCnt , a.mtrcd as mtrCd , b.prd_cd as prdCd , b.need_cnt*a.use_amt as needCnt 
+    select a.use_amt as useAmt,a.mtrlot as mtrLot , a.stckCnt as stckCnt , a.hldCnt as hldCnt , a.mtrcd as mtrCd , b.prd_cd as prdCd , (select prd_nm from adm_prd where prd_cd = b.prd_cd) as prd_nm , b.need_cnt*a.use_amt as needCnt 
     from (select a.prc_cd as prcCd,a.use_amt as use_amt,b.mtr_lot as mtrLot ,b.stck_cnt as stckCnt,b.hld_cnt as hldCnt ,b.mtr_cd as mtrCd ,a.prd_cd as prd_cd
             from adm_bom a join mtr_lot_stck b
             on (a.mtr_cd = b.mtr_cd)
             where a.prd_cd=#{prdCd} AND a.prc_cd = #{prcCd}) a join (select prd_cd, cnt as need_cnt from pdt_ord_view where ORD_SHT_NO=#{ordShtNo}) b
             on(a.prd_cd= b.prd_cd) 
+    order by useAmt     
 </select>	
  <select id="addPlanLotSelect" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as stckCnt,b.hld_cnt as hldCnt ,b.mtr_cd as mtrCd ,a.prd_cd as prdCd
+select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as stckCnt,(b.stck_cnt-b.hld_cnt) as realCnt,0 as hldCnt ,b.mtr_cd as mtrCd ,a.prd_cd as prdCd
             from adm_bom a join mtr_lot_stck b
             on (a.mtr_cd = b.mtr_cd)
             where a.prd_cd=#{prdCd} AND a.prc_cd = #{prcCd} 
+            and b.stck_cnt-b.hld_cnt>0
+            order by b.mtr_cd
 
 </select> 
 <insert id="planDtlInsert">
-	insert into pdt_plan_dtl (line_no, plan_no,prd_cd, prc_cd, need_cnt, instr_cnt,work_plan_time,work_str_date) 
+	insert into pdt_plan_dtl (line_no, plan_no,prd_cd, prc_cd, need_cnt, instr_cnt,work_str_date) 
 	values(
 	#{lineNo},
 	#{planNo},
@@ -93,8 +113,7 @@ select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as 
 	#{prcCd},
 	#{needCnt},
 	#{instrCnt},
-	#{workPlanTime},
-	to_date(#{workStrDate},'yyyy-MM-dd'))
+	to_date(#{workStrDate},'yyyy-MM-dd')+#{date})
 </insert>
 <insert id="LotFindInsert">
 	insert into used_mtr_lot (prc_cd,mtr_lot,instr_no ,line_no, dtl_select) 
@@ -111,15 +130,16 @@ select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as 
 	select prd_cd , prd_nm, able_line_no as lineNo from adm_prd where prd_cd=#{prdCd}
 </select>
 <update id="planCheck">
-	update pdt_plan set now_phs = 'Y' where plan_no=#{planNo}
+	update pdt_plan set now_phs = #{nowPhs} where plan_no=#{planNo}
 </update>
 
 <!-- 안전 재고 생산 -->
 <select id="safeStckView" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
-	select a.mtr_cd as prdCd , a.safe_stck ,nvl(a.safe_stck,0) - nvl(b.stck_cnt,0) need_cnt
+	select a.mtr_cd as prdCd , a.safe_stck ,(nvl(a.safe_stck,0) -sum(nvl( b.stck_cnt,0))) needCnt
 	from adm_mtr a left join mtr_lot_stck b
 	on a.mtr_cd = b.mtr_cd
-	where a.mtr_cd like 'PRD%' and a.safe_stck > (nvl(b.stck_cnt,0)-nvl(b.hld_cnt,0))
+    where a.mtr_cd like 'PRD%' and a.safe_stck > (nvl(b.stck_cnt,0)-nvl(b.hld_cnt,0))
+	group by a.mtr_Cd , a.safe_Stck,a.safe_stck
 	order by 1
 </select>
 <select id="selectPrd" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
@@ -133,5 +153,51 @@ select a.prc_cd as prcCd,a.use_amt as useAmt,b.mtr_lot as mtrLot ,b.stck_cnt as 
 	        able_line_no
 	from    adm_prd
 </select>
+<select id="test" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select to_date(#{workStrDate},'yyyy-MM-dd')+#{date} as workStrDate from dual
+</select>
 
+<select id="slectDate" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select a.line_no , a.uph_pdt_amt*24-instr_cnt uphPdtAmt , b.work_str_date , a.uph_pdt_amt*24 upd
+	from fct_line a join (select  line_no ,  work_str_date , sum(instr_cnt) instr_cnt from (    
+	                        select distinct plan_no , line_no , work_str_date , instr_cnt from pdt_plan_dtl)
+	                        group by  line_no , work_str_date) b
+	on a.line_no = b.line_no
+	where a.line_no=#{lineNo}
+	
+</select>
+
+<select id="useFct" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select DISTINCT a.line_no
+	from fct_line a join fct_info b
+	on (a.line_no = b.line_no)
+	where fct_phs='비가동'
+	order by 1
+</select>
+
+<select id="lineUphFind" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select line_no , uph_pdt_amt*24 uphPdtAmt from fct_line
+	where line_no in
+	<foreach collection="list" item="vo" open="(" close=")" separator=",">
+		#{vo.lineNo}
+	</foreach>
+</select>
+
+<select id="strDateEndDateMinus" resultType="int">	
+	select to_date(#{workEndDate},'yyyy-MM-dd')-to_date(#{workStrDate},'yyyy-MM-dd') from dual
+</select>
+
+<select id="dateArr" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select (to_date(#{workStrDate},'yyyy-MM-dd')+to_number(#{date})) as workStrDate from dual
+</select>
+<select id="updFind" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select uph_pdt_amt*24 as upd from fct_line
+	where line_no = #{lineNo}
+</select>
+<select id="lineNoAndSeqFind" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+	select distinct b.prc_cd ,b.prc_seq , (select prc_nm from adm_prc_mng where prc_cd = b.prc_cd) prc_nm
+	from (select prd_cd from adm_prd where able_line_no like '%'||#{lineNo}||'%') a join adm_prc_flow b
+	on a.prd_cd = b.prd_cd
+	order by b.prc_seq
+</select>
 </mapper>

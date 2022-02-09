@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class RoleVO {
-	private String menu;
+	private String menuNo;
+	private String menuNm;
+	private String chkUrl;
 }

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
+<c:set var="path" value="${pageContext.request.contextPath}"/>	 	
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,17 +19,123 @@
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
+<script src="${path}/resources/js/grid-common.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
+<link rel="stylesheet" href="${path}/resources/jquery-ui/images">
+
+<style>
+.labeltext{
+width: 100px !important;
+}
+.colline2{
+	margin-left: 60px;
+	width: 100px !important;
+}
+.bascard1{
+	height:176px;
+}
+.rowdiv{
+	margin-bottom: 10px !important;
+}
+hr{
+	margin-top: -20px;
+}
+.checkwidth{
+	width:110px;
+}
+</style>
 
 </head>
+
 <body>
-	<form id="planSearchFrm" name="planSearchFrm">
-		계획일자<input type="date" id="startDate" name="startDate"> ~
-		<input type="date" id="endDate" name="endDate"> 
-		<select name="nowPhs" id="nowPhs">
-			<option value="N">미지시</option>
-			<option value="Y">지시완료</option>
-		</select>
+
+<div class="content-wrapper">
+	<div class="row">
+		<div class="col-md-12 grid-margin">
+			<div class="row">
+				<div class="col-12 col-xl-8 mb-4 mb-xl-0">
+					<h3 class="font-weight-bold page-title">생산계획조회</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12 grid-margin stretch-card"><!-- <div style="margin-top: 50px; border-top: 2px solid black; border-bottom : 2px solid black; padding: 5px;">  -->
+			<div class="card bascard1">
+				<div class="card-body">
+					<!-- <h4 class="card-title">조회조건</h4> -->
+					<form id="planSearchFrm" name="planSearchFrm">
+						<div class="rowdiv">
+							<label class="labeltext">계획일자</label>
+							<input type="text" id="startDate" name="startDate" class="datepicker">
+							<label> ~ </label> 
+							<input type="text" id="endDate" name="endDate" class="datepicker">
+						</div>
+						
+						<div class="rowdiv">
+							<label class="labeltext">지시상태</label>
+							<div class="form-check checkwidth" style="display:inline-block">
+								<label class="form-check-label schCondLabel" for="checked">
+							  		<input type="radio" class="form-check-input" id="checked" name="nowPhs" value="" checked>
+							  		전체
+									<i class="input-helper"></i>
+								</label>
+							</div>
+							                
+							<div class="form-check checkwidth" style="display:inline-block">
+								<label class="form-check-label schCondLabel" for="checkedN">
+							  		<input type="radio" class="form-check-input" id="checkedN" name="nowPhs" value="N">
+							  		미지시
+									<i class="input-helper"></i>
+								</label>
+							</div>
+							                
+							<div class="form-check checkwidth" style="display:inline-block">
+							    <label class="form-check-label schCondLabel" for="checkedY">
+							  		<input type="radio" class="form-check-input" id="checkedY" name="nowPhs" value="Y">
+							  		지시완료
+									<i class="input-helper"></i>
+								</label>
+							</div>
+						</div>
+						
+						<div class="rowdiv" style="display:inline-block">
+							<label class="labeltext">제품코드</label>
+							<input id="prdCd" name="prdCd" class="inputtext" readonly>
+							<!-- <button type="button" id="btnPrcCd" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
+							<label class="labeltext colline2">제품명</label>
+							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
+						</div>
+						
+						<span>
+							<button type="button" id="searchBtn" name="searchBtn" class="btn btn-primary mr-2 floatrightbtn">조회</button>
+						</span>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	
+	<div id="plan-dialog-form" title="계획서 조회">계획서 조회
+		<div id="modalGrid"></div>
+	</div>
+	<div id="mainGrid"></div>
+</div>
+
+	<!-- <form id="planSearchFrm" name="planSearchFrm">
+		계획일자<input type="text" id="startDate" name="startDate" class="datepicker"> ~
+		<input type="text" id="endDate" name="endDate" class="datepicker"> 
+		<input type="radio" id="checked" name="nowPhs" value="" checked>
+		<label for="checked">전체</label>
+		<input type="radio" id="checkedN" name="nowPhs" value="N">
+		<label for="checkedN">미지시</label>
+		<input type="radio" id="checkedY" name="nowPhs" value="Y">
+		<label for="checkedY">지시완료</label>
+		<button type="button" id="searchBtn" name="searchBtn">조회</button>
 		<button type="button" id="findPlan" name="findPlan">계획서 조회</button>
 		<br>
 		제품코드<input type="text" id="prdCd" name="prdCd">
@@ -36,11 +144,38 @@
 	<div id="plan-dialog-form" title="계획서 조회">계획서 조회
 		<div id="modalGrid"></div>
 	</div>
-	<div id="mainGrid"></div>
+	<div id="mainGrid"></div> -->
+	
 	<script>
-	let Grid = tui.Grid;
+	$( function() {
+	    $( ".datepicker" ).datepicker({
+	      dateFormat:"yy-mm-dd",
+	      regional:"ko",
+          dateFormat: 'yy-mm-dd' //달력 날짜 형태
+        ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+        ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+        ,changeYear: true //option값 년 선택 가능
+        ,changeMonth: true //option값  월 선택 가능                
+        ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
+       	,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+ 	    ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
+        //,buttonText: "선택" //버튼 호버 텍스트              
+        ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+        ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+        ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+        ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+        ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+        ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후) 
+	   //  ,beforeShowDay: disableAllTheseDays
+	    /*  ,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png"
+	,buttonImageOnly: true */
+
+	    });
+  } );
+	/* let Grid = tui.Grid; */
 	//그리드 테마적용
-	Grid.applyTheme('striped',{
+	/* Grid.applyTheme('striped',{
 		cell:{
 			header:{
 				background:'#eef'
@@ -49,38 +184,48 @@
 				background:'#fee'
 			}
 		}
-	})
+	}) */
 	///////////////////////////////////////////그리드//////////////////////////////////////////
 	const modalColumns = [{
 		header : '계획서번호',
-		name : 'planNo'
+		name : 'planNo',
+        align:'center',
 	},{
 		header : '주문번호',
 		name : 'ordShtNo',
- 		editor : 'text'		
+ 		editor : 'text'	,
+        align:'center',	
 	},{
 		header : '납기일자',
 		name : 'dueDate',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'center',
 	},{
 		header : '계획일자',
 		name : 'planDate',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'center',
 	},{
 		header : '작업우선순위',
 		name : 'workProt',
- 		editor : 'text'
+ 		editor : 'text',
+ 		hidden : true,
+        align:'center',
 	},{
 		header : '현재상태',
 		name : 'nowPhs',
- 		editor : 'text'
+ 		editor : 'text',
+ 		hidden : true,
+        align:'center',
 	}];
 	//그리드 생성
 	modalGrid = new Grid({
 		  el: document.getElementById('modalGrid'),
 		  data: null,
-		  rowHeaders:['checkbox'],
 		  columns:modalColumns,
+	      scrollY:true,
+		  minBodyHeight : 200,
+		  bodyHeight : 200,
 		  columnOptions: {
 			  frozenCount :6,
 			  frozenBorderWidth:2
@@ -88,38 +233,49 @@
 		});
 	const mainColumns = [{
 		header : '계획서번호',
-		name : 'planNo'
+		name : 'planNo',
+        align:'center',
+		
 	},{
 		header : '라인번호',
 		name : 'lineNo',
- 		editor : 'text'		
+ 		editor : 'text'	,
+        align:'center',	
 	},{
 		header : '제품코드',
 		name : 'prdCd',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'center',
 	},{
 		header : '필요수량',
 		name : 'needCnt',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'right',
 	},{
 		header : '지시수량',
 		name : 'instrCnt',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'right',
 	},{
 		header : '작업시작일',
 		name : 'workStrDate',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'center',
 	},{
 		header : '가동시간',
 		name : 'workPlanTime',
- 		editor : 'text'
+ 		editor : 'text',
+        align:'center',
+        hidden:true
 	}];
 	//메인그리드 생성
 	mainGrid = new Grid({
 		  el: document.getElementById('mainGrid'),
 		  data: null,
-		  rowHeaders:['checkbox'],
 		  columns:mainColumns,
+	      scrollY:true,
+		  minBodyHeight : 477,
+		  bodyHeight : 477,
 		  columnOptions: {
 			  frozenCount :6,
 			  frozenBorderWidth:2
@@ -130,13 +286,50 @@
 	planDialog = $( "#plan-dialog-form" ).dialog({
 		autoOpen: false,
 		modal:true,
-		height: 500,
-		width: 1000,
-		buttons:{"save":function(){alert("save")}}
+		height: 350,
+		width: 600,
+		//buttons:{"save":function(){alert("save")}}
 	});
 	
 	//////////////////////////////이벤트리스너/////////////////////////////////
-	findPlan.addEventListener("click",ev=>{
+	searchBtn.addEventListener('click',ev=>{
+		
+		if(document.getElementById('prdCd').value!=''){
+			console.log("ifff")
+			let searchData=$('#planSearchFrm').serializeObject();
+			searchData.planNo='';
+			fetch('planDtlList',{
+					method:'POST',
+					headers:{
+					"Content-Type": "application/json",
+				},
+				body:JSON.stringify(searchData)
+			})
+			.then(response=>response.json())
+			.then(result=>{
+				mainGrid.resetData(result);
+			})
+		}
+		else{
+			console.log("elseeee")
+			planDialog.dialog("open");
+			modalGrid.refreshLayout();
+			//계획서 조회
+			let searchData=$('#planSearchFrm').serializeObject();
+			fetch('planSearchList',{
+					method:'POST',
+					headers:{
+					"Content-Type": "application/json",
+				},
+				body:JSON.stringify(searchData)
+			})
+			.then(response=>response.json())
+			.then(result=>{
+				modalGrid.resetData(result);
+			})
+		}
+	})
+	/* findPlan.addEventListener("click",ev=>{
 		planDialog.dialog("open");
 		modalGrid.refreshLayout();
 		//계획서 조회
@@ -168,7 +361,7 @@
 		.then(result=>{
 			mainGrid.resetData(result);
 		})
-	})
+	}) */
 	//모달 계획서 클릭시 디테일 메인에띄움
 	modalGrid.on('click',ev=>{
 		fetch('./planDtlList',{

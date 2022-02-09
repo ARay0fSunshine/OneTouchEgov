@@ -1,5 +1,7 @@
 package com.onetouch.web.prd.prc.service.impl;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,8 @@ public class PrcServiceImpl implements PrcService{
 		int flowMin=100;
 		PrcVO vo100 = new PrcVO();
 		vo100=vo;
+		System.out.println("111111111111111111");
+		System.out.println(vo100);
 		// flow min max 구하는 for문
 		for(PrcVO resultVo: list) {
 			System.out.println(resultVo);
@@ -99,7 +103,9 @@ public class PrcServiceImpl implements PrcService{
 			System.out.println(vo);
 			vo.setMsg("공정종료");
 			mapper.endUpdate(vo); //시간업데이트
+			System.out.println("11111111111111111");
 			vo=mapper.endTimeSelect(vo);  //입력된시간불러와서 리턴
+			System.out.println("2222222222222222");
 			vo.setMsg("공정종료.");
 			return vo;
 		}
@@ -121,25 +127,28 @@ public class PrcServiceImpl implements PrcService{
 			mapper.endUpdate(vo100); //시간업데이트
 			vo=mapper.endTimeSelect(vo100);
 			//lot 번호 부여
+			
 			System.out.println(vo100);
 			String sect=mapper.sectSelect(vo100);
 			System.out.println(sect);
-			if(sect.equals("PDT_SECT001")) {
+			if(sect.equals("PDT_SECT002")) {
 				String lot=(mapper.insertHrdLotSelect(vo100)).getPrdLot();
 				vo100.setPrdLot(lot);
 				vo.setPrdLot(lot);
+				System.out.println(vo100);
 				mapper.hrdInsert(vo100);
 			}
-			else if(sect.equals("PDT_SECT002")) {
+			else if(sect.equals("PDT_SECT001")) {
 				String lot=(mapper.insertLotSelect(vo100)).getPrdLot();
 				vo100.setPrdLot(lot);
 				vo.setPrdLot(lot);
 				System.out.println(vo100);
 				mapper.prdInsert(vo100);
 			}
-			System.out.println("kkkkkkkkkkkkkkkkkkkkkkk");
 			System.out.println(vo100);
 			mapper.planPhsUpdate(vo100);
+			System.out.println("ㄴㄴ.");
+			System.out.println(vo100.getLineNo().substring(0,7));
 			vo.setMsg("라인가동 종료!!.");
 			return vo;
 		}
@@ -156,18 +165,30 @@ public class PrcServiceImpl implements PrcService{
 	
 	@Override
 	public PrcVO selectCheck(PrcVO vo) {
-
-		PrcVO vo2=new PrcVO();
-		vo2=vo;
-		String fltSave=mapper.realFlt(vo).getSumFlt();
-		String pdtSave=mapper.realFlt(vo).getPdtCnt();
-		while(true){
-			String flt=mapper.realFlt(vo2).getSumFlt();
-			String pdt=mapper.realFlt(vo2).getPdtCnt();
-			if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
-				return mapper.realFlt(vo);
+		try {
+			Robot robot=new Robot();
+			PrcVO vo2=new PrcVO();
+			int i=0;
+			vo2=vo;
+			String fltSave=mapper.realFlt(vo).getSumFlt();  
+			String pdtSave=mapper.realFlt(vo).getPdtCnt();
+			while(true){
+				String flt=mapper.realFlt(vo2).getSumFlt(); 
+				String pdt=mapper.realFlt(vo2).getPdtCnt();
+				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
+					return mapper.realFlt(vo);
+				}
+				robot.delay(3000);
+				i++;
+				if(i==9) {
+					return null;
+				}
 			}
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	
@@ -186,13 +207,28 @@ public class PrcServiceImpl implements PrcService{
 
 	@Override
 	public List<PrcVO> prcMovingView(PrcVO vo) {
-		int upCheck=mapper.updateCheck();
-		
-		while(true) {
-			if(upCheck!=mapper.updateCheck()) {
-				return mapper.prcMovingView(vo);
+		try {
+			Robot robot=new Robot();
+			int upCheck=mapper.updateCheck();
+			System.out.println("1111");
+			System.out.println(vo);
+			System.out.println(upCheck);
+			int i=0;
+			while(true) {
+				if(upCheck!=(mapper.updateCheck())) {
+					return mapper.prcMovingView(vo);
+				}
+				robot.delay(2000);
+				i++;
+				if(i==9) {
+					return null;
+				}
 			}
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
@@ -208,21 +244,33 @@ public class PrcServiceImpl implements PrcService{
 		}
 	}
 	
+	
+	
 	/*
 	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void selectTask1()
 	 * { List<PrcVO> list= new ArrayList<>(); list=mapper.autoSelect();
 	 * System.out.println(list); for(PrcVO vo : list) {
-	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) { int
-	 * uph=mapper.uphFind(vo); System.out.println(uph);
+	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) {
+	 * 
+	 * int uph=mapper.uphFind(vo); System.out.println(uph);
 	 * System.out.println(vo.getPdtCnt());
 	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
-	 * System.out.println(vo); mapper.autoUpdate(vo); } }
-	 * 
-	 * }
+	 * System.out.println(vo); mapper.autoUpdate(vo); } } }
 	 */
+
+	@Override
+	public List<List<PrcVO>> dashBoardData() {
+		List<PrcVO> list=mapper.playStartInstr();
+		List<List<PrcVO>> bigList=new ArrayList<>();
+		for(PrcVO vo1 : list) {
+			
+			bigList.add(mapper.liveInstr(vo1));
+			
+		}
+		return bigList;
+	}
 	
-	
-	
+
 	
 
 }

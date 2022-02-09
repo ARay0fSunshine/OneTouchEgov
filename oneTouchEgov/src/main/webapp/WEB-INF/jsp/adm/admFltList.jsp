@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 
 <style>
 hr{
@@ -64,11 +65,12 @@ hr{
 	//--------변수선언--------
 	let rowk;
 	let fltCnt;
-	let Grid = tui.Grid;
+	let modifyList=[];
+	/* let Grid = tui.Grid; */
 	//--------변수선언 끝--------
 	
 	//--------그리드 css--------
-	Grid.applyTheme('default',{
+	/* Grid.applyTheme('default',{
 		cell:{
 			header: {
 	            background: '#4B49AC',
@@ -78,7 +80,7 @@ hr{
 	        	background:'#F5F7FF'
 	        }
 		}
-	}) 
+	})  */
 	//--------그리드 css 끝--------
 	
 	//--------그리드컬럼 선언--------
@@ -154,8 +156,8 @@ hr{
 		data: dataSource, 
 		rowHeaders : [ 'checkbox' ],
 		columns,
-		bodyHeight: 450,
-		minBodyHeight: 450
+		bodyHeight: 612,
+		minBodyHeight: 612
 	}); 
 	//--------그리드 그리기 끝--------	
 	
@@ -194,27 +196,34 @@ hr{
 		btnSave.addEventListener("click", function() {
 			grid.blur();
 			rowk = grid.getRowCount();
-			if(fltCnt <= rowk) {
-				for(i=fltCnt; i<rowk; i++) {
-					if(grid.getRow(i).fltNm == '') {
-						alert("불량명은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).fltMtt == '') {
-						alert("불량내역은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).fltSect == '') {
-						alert("불량구분은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).prcNm == '') {
-						alert("발생공정명은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).seq == '') {
-						alert("표시순서는 필수입력칸입니다!!");
-						return;
-					} 
-				}
-				grid.request('modifyData');
+			for(i=0; i<rowk; i++) {
+				if(grid.getRow(i).fltNm == '') {
+					alert("불량명은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).fltMtt == '') {
+					alert("불량내역은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).fltSect == '') {
+					alert("불량구분은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).prcNm == '') {
+					alert("발생공정명은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).seq == '') {
+					alert("표시순서는 필수입력칸입니다!!");
+					return;
+				} 
 			}
+			let create = grid.getModifiedRows().createdRows;
+			let update = grid.getModifiedRows().updatedRows;
+			for(let i=0; i<create.length; i++) {
+				modifyList.push(create[i].fltCd);
+			}
+			for(let i=0; i<update.length; i++) {
+				modifyList.push(update[i].fltCd);
+			}
+			console.log(modifyList);
+			grid.request('modifyData');
 		})
 		
 		//모달설정
@@ -269,12 +278,17 @@ hr{
 		})
 		
 		//자재불량 선택했을때 발생공정명 컬럼에 '해당사항없음' 붙여주기----덜됨
-		grid.on("editingFinish", (ev) => {
+ 		grid.on("editingFinish", (ev) => {
+			if(ev.columnName === 'fltSect' && ev.value == '자재불량') {
+				grid.setValue(ev.rowKey, 'prcNm', '해당사항없음', false);
+			}
+		}) 
+		
+		/* grid.on("onAfterChange", (ev) => {
 			if(ev.columnName === 'fltSect' && fltSectVal == '자재불량') {
 				grid.setValue(ev.rowKey, 'prcNm', '해당사항없음', false);
 			}
-		})
-		
+		}) */
 		
 		//사용공정명 더블클릭한 모달창 안에서 더블클릭
 		function getModalPrc(param) {
@@ -286,9 +300,19 @@ hr{
 		
 		//그리드 readData(등록수정삭제 후에)
 		grid.on("response", function(ev) {
-			if(ev.xhr.response == "fltCont") {
-				grid.readData();
-				console.log("그리드 readData했음");
+			if(JSON.parse(ev.xhr.response).result != true) {
+				grid.resetData(JSON.parse(ev.xhr.response));
+				for(fltCdData of grid.getData()) {
+					//console.log(fltCdData.fltCd);
+					//console.log(modifyList[modifyList.length-1]);
+					if(modifyList[modifyList.length-1] == fltCdData.fltCd) {
+						grid.focus(fltCdData.rowKey, 'fltCd', true);
+						break;
+					} else {
+						grid.focus(grid.getRowCount()-1,'fltCd',true);
+					}
+				}
+				console.log("그리드1 readData했음");
 			}
 		})
 

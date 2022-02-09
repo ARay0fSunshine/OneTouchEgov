@@ -75,7 +75,7 @@ public class PlanController {
 	@PostMapping("planDtlInsert")
 	public void planDtlInsert(@RequestBody Map<String,List<PlanVO>> map){
 		System.out.println("zzzzzzzzzz");
-		System.out.println(map.get("lot").get(0).getMtrLot());
+		//System.out.println(map.get("lot").get(0).getMtrLot());
 		service.insertPlanDtl(map);
 	}
 	@ResponseBody
@@ -119,7 +119,7 @@ public class PlanController {
 	
 	@ResponseBody
 	@GetMapping("lotLineFind/{lineNo}")
-	public List<InfoVO> prcLineFind(@PathVariable String lineNo,PlanVO vo){
+	public List<PlanVO> prcLineFind(@PathVariable String lineNo,PlanVO vo){
 		vo.setLineNo(lineNo);
 		
 		
@@ -142,8 +142,24 @@ public class PlanController {
 	@ResponseBody
 	@GetMapping("safeStckView")
 	public List<PlanVO> safeStckView(){
-		
 		return service.safeStckView();
 	}
+	//지시가능날짜 확인
+	@ResponseBody
+	@PostMapping("slectDate")
+	public List<PlanVO> slectDate(@RequestBody PlanVO vo){
+		return service.slectDate(vo);
+	}
+	@ResponseBody
+	@PostMapping("planDateCal")
+	public List<PlanVO> planDateCal(@RequestBody PlanVO vo){
+		return service.planDateCal(vo);
+	}
+	@ResponseBody
+	@GetMapping("updFind/{lineNo}")
+	public PlanVO updFind(@PathVariable String lineNo){
+		return service.updFind(lineNo);
+	}
+	
 }
 

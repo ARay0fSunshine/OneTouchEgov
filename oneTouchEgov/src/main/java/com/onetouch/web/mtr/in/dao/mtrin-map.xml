@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.onetouch.web.mtr.in.dao.MtrInMapper">
+
+	<!-- 엑셀출력 -->
+	<select id="selectExcelIn" resultType="map" >
+		SELECT 
+			A.IN_NO,
+			A.MTR_CD, 
+			A.ORD_NO, 
+			A.FLT_AMT, 
+			A.IN_AMT,
+			A.TOT_COST,
+			A.UNIT_COST, 
+			B.MTR_NM,
+			B.UNIT,
+			C.ORD_AMT,
+			C.NOTIN_AMT,
+			TO_CHAR(A.IN_DATE, 'yyyy-MM-dd') AS IN_DATE,
+			FN_GET_BAS_DTL_CD_TO_NM(B.UNIT) AS UNIT_NM,
+			FN_GET_BAS_DTL_CD_TO_NM(B.COMP_CD) AS COMP_NM
+		FROM 
+			MTR_IN A, ADM_MTR B, MTR_ORD_DTL C
+		WHERE 
+			A.MTR_CD = B.MTR_CD
+	</select>
 	<!-- 자재입고 조건 조회 -->
 	<select id="selectIn" resultType="com.onetouch.web.mtr.in.dao.MtrInVO">
 		SELECT 
@@ -23,9 +46,9 @@
 		WHERE 
 			A.MTR_CD = B.MTR_CD
 		AND
-			A.MTR_CD = C.MTR_CD
+			A.MTR_CD = C.MTR_CD(+)
 		AND
-			A.ORD_NO = C.ORD_NO 
+			A.ORD_NO = C.ORD_NO(+) 
 		
 		<if test="startDate != null and startDate != ''"> 
 			<![CDATA[AND TO_CHAR(A.IN_DATE, 'yyyy-MM-dd') >= #{startDate}]]>
@@ -58,9 +81,10 @@
 			ORD_NO,
 			UNIT,
 			IN_AMT,
-			FLT_AMT,
+			<if test='fltAmt != null and fltAmt != ""'>FLT_AMT,</if>
 			UNIT_COST,
-			TOT_COST
+			TOT_COST,
+			EMP_NO
 			)
 		VALUES(
 			#{inNo},
@@ -69,25 +93,21 @@
 			#{ordNo},
 			#{unit},
 			#{inAmt},
-			#{fltAmt},
+			<if test='fltAmt != null and fltAmt != ""'>#{fltAmt},</if>
 			#{unitCost},
-			(#{unitCost}*#{inAmt})
+			(#{unitCost}*#{inAmt}),
+			#{empNo}
 			)
 	</insert>
 	<!-- 입고등록후 발주디테일에 수량업데이트 -->
-	<update id="updateOrd">
+	<update id="plusOrd">
 		UPDATE MTR_ORD_DTL
 		SET
-			IN_AMT = (NVL(IN_AMT,0)+#{inAmt}),
-			FLT_AMT = (NVL(FLT_AMT,0)+#{fltAmt}),
-			NOTIN_AMT = ((SELECT 
-								ORD_AMT FROM MTR_ORD_DTL 
-							WHERE 
-								ORD_NO = #{ordNo}
-							AND
-								MTR_CD = #{mtrCd})
-						-(NVL(IN_AMT,0)+#{inAmt})
-						-(NVL(FLT_AMT,0)+#{fltAmt}))
+			IN_AMT = (NVL(IN_AMT,0)+NVL(#{inAmt},0)),
+			FLT_AMT = (NVL(FLT_AMT,0)+NVL(#{fltAmt},0)),
+			NOTIN_AMT = (#{notinAmt}
+						-NVL(#{inAmt},0)
+						-NVL(#{fltAmt},0))
 		WHERE
 			ORD_NO = #{ordNo} 
 		AND
@@ -99,9 +119,9 @@
 			MTR_CD = #{mtrCd},
 			UNIT = #{unit},
 			IN_AMT = #{inAmt},
-			FLT_AMT = #{fltAmt},
-			UNIT_COST = #{unitCost},
-			TOT_COST = (#{unitCost}*#{inAmt})
+			<if test='fltAmt != null and fltAmt != ""'>FLT_AMT = #{fltAmt},</if>
+			<if test='unitCost != null and unitCost != ""'>UNIT_COST = #{unitCost},
+														TOT_COST = (#{unitCost}*#{inAmt})</if>
 		WHERE
 			IN_NO = #{inNo}
 	</update>
@@ -111,33 +131,28 @@
 		FROM MTR_IN
 		WHERE IN_NO = #{inNo}
 	</delete>
+	<!-- 삭제 후 발주디테일에 수량업데이트 -->
+	<update id="minusOrd">
+		UPDATE MTR_ORD_DTL
+		SET
+			IN_AMT = (NVL(IN_AMT,0)-NVL(#{inAmt},0)),
+			<if test='fltAmt =! null and fltAmt =! ""'>
+				FLT_AMT = (NVL(FLT_AMT,0)-NVL(#{fltAmt},0)),
+			</if>
+			NOTIN_AMT = NOTIN_AMT
+						+NVL(#{inAmt},0)
+						+NVL(#{fltAmt},0)
+		WHERE
+			ORD_NO = #{ordNo} 
+		AND
+			MTR_CD = #{mtrCd}
+	</update>
+	
 	<update id="prdNeed">
 		update MTR_LOT_STCK
 		set 
-		HLD_CNT = #{hldCnt}
+		HLD_CNT = hld_cnt+ #{hldCnt}
 		WHERE 
 		MTR_LOT = #{mtrLot}
 	</update>
-	<!-- 자재출고테이블 지시때 출고처리해야댐 -->
-	<!-- 지시때 lot재고에도 반영해야댐 -->
-	<insert id="prdOut">
-		<!-- hldCnt: "3"
-instrCnt: "3"
-mtrCd: "MF001"
-mtrLot: "MLT2022010061"
-needCnt: "100"
-planNo: "PPL202201110001"
-prdCd: "prd_001"
-stckCnt: "1" -->
-	</insert>
-
-	<!-- 리스트로받아서 for문으로 다 삭제하는쿼리 -->
-	<!-- <delete id="delete">
-		DELETE 
-		FROM MTR_IN
-		WHERE IN_NO IN
-		<foreach collection="list" item="vo" open="(" close=")" separator=",">
-		#{vo.inNo}
-	</foreach>
-	</delete> -->
 </mapper>

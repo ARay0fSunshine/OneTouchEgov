@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +10,7 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script src="${path}/resources/js/grid-common.js"></script>
 
 <style>
 hr{
@@ -61,15 +63,13 @@ hr{
 	let value3;
 	let mngCnt;
 	let rowk;
-	let Grid = tui.Grid;
+	let modifyList = [];
+	/* let Grid = tui.Grid; */
 	//--------변수선언 끝--------
 	
 	//--------그리드 css--------
-	Grid.applyTheme('default',{
+	/* Grid.applyTheme('default',{
 		cell:{
-			/* header:{
-				background:'#eef'
-			} */
 			header: {
 	            background: '#4B49AC',
 	            text: '#fff'
@@ -78,7 +78,7 @@ hr{
 	        	background:'#F5F7FF'
 	        }
 		}
-	})
+	}) */
 	//--------그리드 css 끝--------
 
 	//--------그리드컬럼 선언--------
@@ -147,14 +147,12 @@ hr{
 		{
 			header : '공정구분코드',
 			name : 'prcSect',
-			hidden : true,
-			
+			hidden: true	
 		},
 		{
 			header : '단위구분코드',
 			name : 'mngUnit',
-			hidden : true,
-			
+			hidden: true			
 		}];
 	//--------그리드컬럼 선언 끝--------
 	
@@ -166,6 +164,7 @@ hr{
 			async : false
 		}).done(function(datas){
 			prcLists = datas;
+			console.log(prcLists);
 		});
 		
 		//단위구분 상세코드에서 받아오기
@@ -216,8 +215,8 @@ hr{
 		data: dataSource, //변수명과 필드명이 같으면 생략가능 원래: data : data,
 		rowHeaders : [ 'checkbox' ],
 		columns,
-		bodyHeight: 500,
-		minBodyHeight: 500
+		bodyHeight: 612,
+		minBodyHeight: 612
 	}); 
 	//--------그리드 그리기 끝--------	
 	
@@ -258,32 +257,49 @@ hr{
 			grid.blur();
 			rowk = grid.getRowCount();
 			if(mngCnt <= rowk) {
-				for(i=mngCnt; i<rowk; i++) {
-					if(grid.getRow(i).prcCd == '') {
-						alert("공정코드는 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).prcNm == '') {
-						alert("공정명은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).mngUnitNm == '') {
-						alert("단위 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).pdtDay == '') {
-						alert("생산일수는 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).prcSectNm == '') {
-						alert("공정구분은 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).seq == '') {
-						alert("표시순서는 필수입력칸입니다!!");
-						return;
-					} else if(grid.getRow(i).useYn == '') {
-						alert("사용여부는 필수입력칸입니다!!");
-						return;
+				for(let i=mngCnt; i<rowk; i++) {		
+					for(let j=0; j<mngCnt; j++) {
+						if(grid.getRow(j).prcCd == grid.getRow(i).prcCd) {
+							alert("이미 존재하는 공정코드입니다.");
+							return;
+						}
 					}
 				}
-				grid.request('modifyData');
 			}
+			for(let i=0; i<rowk; i++) {			
+				if(grid.getRow(i).prcCd == '') {
+					alert("공정코드는 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).prcNm == '') {
+					alert("공정명은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).mngUnitNm == '') {
+					alert("단위 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).pdtDay == '') {
+					alert("생산일수는 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).prcSectNm == '') {
+					alert("공정구분은 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).seq == '') {
+					alert("표시순서는 필수입력칸입니다!!");
+					return;
+				} else if(grid.getRow(i).useYn == '') {
+					alert("사용여부는 필수입력칸입니다!!");
+					return;
+				}
+				
+			}
+			let create = grid.getModifiedRows().createdRows;
+			let update = grid.getModifiedRows().updatedRows;
+			for(let i=0; i<create.length; i++) {
+				modifyList.push(create[i].prcCd);
+			}
+			for(let i=0; i<update.length; i++) {
+				modifyList.push(update[i].prcCd);
+			}
+			grid.request('modifyData');
 		})
 
 	
@@ -299,7 +315,7 @@ hr{
 		
 		
 		//수정할때 공정구분명 선택하면 공정구분코드도 히든컬럼에 들어가게 하기
-		grid.on("editingFinish", ev => {
+		grid.on("editingFinish", (ev) => {
 			if(ev.columnName == 'prcSectNm') {
 				for(i=0; i<prcLists.length; i++) {
 					if(prcLists[i].prcSectNm == grid.getValue(ev.rowKey,'prcSectNm')) {
@@ -311,11 +327,12 @@ hr{
 		})
 		
 		//수정할때 단위 선택하면 단위구분코드도 히든컬럼에 들어가게 하기
-		grid.on("editingFinish", ev => {
+		grid.on("editingFinish", (ev) => {
 			if(ev.columnName == 'mngUnitNm') {
 				for(i=0; i<unitLists.length; i++) {
 					if(unitLists[i].mngUnitNm == grid.getValue(ev.rowKey,'mngUnitNm')) {
 						value3 = unitLists[i].mngUnit
+						console.log(value3)
 					}
 				}
 				grid.setValue(ev.rowKey, 'mngUnit', value3, false );
@@ -324,9 +341,17 @@ hr{
 		
 	    //그리드 readData(등록수정삭제 후에)
 		grid.on("response", function(ev) {
-			if(ev.xhr.response == "mngCont") {
-				grid.readData();
-				console.log("그리드 readData했음");
+			if(JSON.parse(ev.xhr.response).result != true) {
+				grid.resetData(JSON.parse(ev.xhr.response));
+				for(prcCdData of grid.getData()) {
+					if(modifyList[modifyList.length-1] == prcCdData.prcCd) {
+						grid.focus(prcCdData.rowKey, 'prcCd', true);
+						break;
+					} else {
+						grid.focus(grid.getRowCount()-1,'prcCd',true);
+					}
+				}
+				console.log("그리드1 readData했음");
 			}
 		})
 	

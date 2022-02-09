@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.onetouch.web.prd.prc.dao.PrcMapper;
 import com.onetouch.web.prd.prc.dao.PrcVO;
 import com.onetouch.web.prd.prc.service.PrcService;
 @RequestMapping("pdt/")
@@ -18,6 +19,7 @@ import com.onetouch.web.prd.prc.service.PrcService;
 public class PrcController {
 	
 	@Autowired PrcService service;
+	@Autowired PrcMapper mapper;
 	
 	@RequestMapping("prdPrcList")
 	public String pdtListPage() {
@@ -52,10 +54,16 @@ public class PrcController {
 		
 		return service.prcEnd(list.get(0));
 	}
+	
 	@ResponseBody
 	@PostMapping("fltCheck")
 	public PrcVO fltCheck(@RequestBody List<PrcVO> list) {
 		return service.selectCheck(list.get(0));
+	}
+	@ResponseBody
+	@PostMapping("selectPrcReal")
+	public PrcVO selectPrcReal(@RequestBody List<PrcVO> list) {
+		return mapper.realFlt(list.get(0));
 	}
 	@ResponseBody
 	@PostMapping("fltUpdate")
@@ -68,5 +76,12 @@ public class PrcController {
 		
 		service.fastStop(list.get(0));
 	}
+	
+	@ResponseBody
+	@PostMapping("playingPrcFind")
+	public List<PrcVO> playingPrcFind(@RequestBody PrcVO vo){
+		return mapper.playingPrcFind(vo);
+	}
+
 	
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.onetouch.web.brd.dao.BrdMapper">
+	<select id="mtrList" resultType="com.onetouch.web.mtr.stck.dao.LotVO">
+		SELECT
+			a.MTR_CD,
+			SUM(a.HLD_CNT) AS HLD_CNT,
+			SUM(a.STCK_CNT) AS MTR_STCK_CNT,
+			b.SAFE_STCK,
+			(SUM(a.STCK_CNT)-SUM(a.HLD_CNT)) AS STCK_USE,
+			b.USE_YN,
+			FN_GET_MTR_CD_TO_NM(a.MTR_CD) AS MTR_NM,
+			FN_GET_BAS_DTL_CD_TO_NM(b.UNIT) AS UNIT_NM,
+			FN_GET_BAS_DTL_CD_TO_NM(b.MTR_SECT) AS MTR_SECT_NM
+		FROM
+			MTR_LOT_STCK a, ADM_MTR b, MTR_IN c
+		WHERE
+			a.MTR_CD = b.MTR_CD
+		AND
+			a.IN_NO = c.IN_NO
+		GROUP BY
+            a.MTR_CD, b.SAFE_STCK, b.USE_YN, FN_GET_BAS_DTL_CD_TO_NM(a.MTR_CD),FN_GET_BAS_DTL_CD_TO_NM(b.UNIT), FN_GET_BAS_DTL_CD_TO_NM(b.MTR_SECT)
+		ORDER BY
+			MTR_CD
+	</select>
+	<select id="fctList" resultType="com.onetouch.web.fct.prod.dao.ProdVO">
+	<![CDATA[ select a.*,  (to_date(chkExpectDt, 'yyyy-MM-dd') - trunc(sysdate)) as day_diff
+			from 
+			(SELECT distinct p.fct_cd as fctCd, 
+			       p.prod_chk_no as prodChkNo,
+			       f.fct_nm as fctNm, 
+			       (select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) as chkDt, 
+			       p.chk_rslt as chkRslt, 
+			       p.msr_mtt as msrMtt, 
+			       p.msr_cmt as msrCmt,
+			       case when f.chk_prod_unit = 'Y' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), (f.chk_prod * 12)), 'yyyy-MM-dd')
+			            when f.chk_prod_unit = 'M' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), f.chk_prod), 'yyyy-MM-dd')
+			            when f.chk_prod_unit = 'W' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + (f.chk_prod * 7), 'yyyy-MM-dd')
+			            when f.chk_prod_unit = 'D' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + f.chk_prod, 'yyyy-MM-dd')
+			           end as chkExpectDt
+			        From fct_prod_chk p, fct_info f
+			      WHERE p.fct_cd= f.fct_cd) a
+			   where chkExpectDt >= to_char(sysdate, 'yyyy-MM-dd')
+			   and chkExpectDt <= to_char(sysdate + 7, 'yyyy-MM-dd')
+   	]]>
+	</select>
+	<select id="pdtList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
+	select instr_no , line_no , prd_cd , prd_nm , goal_cnt , pdt_cnt , nvl(flt_cnt,0) flt_cnt , now_phs
+		from (select 
+			b.instr_no, 
+			b.line_no, 
+			b.prd_cd, 
+			c.prd_nm, 
+			nvl(a.goal_cnt,0) goal_cnt, 
+			nvl(a.pdt_cnt,0) pdt_cnt, 
+			(select sum(x.flt_cnt) from prd_prc_mng x where x.instr_no=a.instr_no group by x.instr_no) as flt_cnt, 
+            (case when a.now_phs is null and nvl(a.goal_cnt,0) =0  then '생산대기' 
+                    when a.now_phs is null and a.goal_cnt != 0  then '가동중'  else a.now_phs end) now_phs
+		from 
+			prd_prc_mng a, pdt_work_instr_dtl b, adm_prd c
+		where 
+			a.instr_no(+) = b.instr_no
+		and 
+			a.line_no(+) = b.line_no
+		and 
+			a.prc_cd(+) = b.prc_cd
+		and 
+			b.prd_cd = c.prd_cd
+		and to_char(a.work_str_dt, 'yyyy-MM-dd') = to_char(sysdate, 'yyyy-MM-dd') 
+		--오늘날짜 가져올 때 사용 지금은 없어서 주석처리 해둠
+		and 
+			(b.prc_cd, b.prd_cd) in (select prc_cd, prd_cd from adm_prc_flow where (prd_cd, prc_seq) in (select prd_cd, max(prc_seq) as prc_cd from adm_prc_flow  group by prd_cd))
+		order by 
+			instr_no)
+	</select>
+</mapper>

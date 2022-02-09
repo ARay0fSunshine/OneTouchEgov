@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.onetouch.web.fct.dwtm.dao.DwtmMapper">
+
 	<select id="dwtmSelect" resultType="com.onetouch.web.fct.dwtm.dao.DwtmVO">
 		SELECT 
 			d.dwtm_cd,
@@ -28,7 +29,7 @@
 		<if test='proceedCheck == "done"'>
 			AND d.fin_dt is not null
 		</if>
-		
+		order by str_dt desc
 	</select>
 	<insert id="dwtmInsert">
 		INSERT  INTO fct_dwtm VALUES(PKG_MAKE_CODE.CODE('DWT','FCT_DWTM','DWTM_CD') , #{fctCd}, to_date(#{strDt},'yy-MM-dd HH24:MI:SS'), '', #{empNo}, #{msrMtt}, '')

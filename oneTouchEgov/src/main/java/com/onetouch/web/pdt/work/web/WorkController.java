@@ -39,7 +39,7 @@ public class WorkController {
 
 	@ResponseBody
 	@GetMapping("modalPlanList/{planCheck}")
-	public List<PlanVO> modalPlanCheckList(@PathVariable String planCheck){
+	public List<WorkVO> modalPlanCheckList(@PathVariable String planCheck){
 		/*
 		 * System.out.println("dddd"); Map<String,Object> map=new HashMap<>();
 		 * map.put("contents",service.planList()); Map<String,Object> map2=new
@@ -65,10 +65,10 @@ public class WorkController {
 	//공정데이터
 	@ResponseBody
 	@PostMapping("planDtlPrc")
-	public List<PlanVO> planDtlPrc(@RequestBody List<PlanVO> list){
+	public List<PlanVO> planDtlPrc(@RequestBody PlanVO vo){
 		System.out.println("mmmmmm");
-		System.out.println(planMapper.findPrcCd(list.get(0)));
-		return planMapper.findPrcCd(list.get(0));
+		System.out.println(planMapper.findPrcCd(vo));
+		return planMapper.findPrcCd(vo);
 	}
 	//지시 인서트
 	@ResponseBody

@@ -17,7 +17,7 @@
 2020.08.28   정진호                   표준프레임워크 v3.10 개선
 
 -->
-
+	<!-- <security:http pattern="selectRole" security="none"/> -->
 	<security:http pattern="/css/**" security="none"/>
 	<security:http pattern="/html/**" security="none"/>
     <security:http pattern="/images/**" security="none"/>

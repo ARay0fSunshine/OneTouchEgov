@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
+<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
 
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
@@ -20,6 +20,38 @@
 <!-- modal창 호출 시 필요 -->
 <script src="${path}/resources/js/modal.js"></script>
 
+<link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
+<link rel="stylesheet" href="${path}/resources/jquery-ui/images">
+
+<link rel="stylesheet" href="${path}/resources/jquery-ui/MonthPicker.css">
+<script src="${path}/resources/jquery-ui/jquery.ui.monthpicker.js"></script>
+
+
+
+
+
+
+
+<style>
+
+
+/* .jquerydtpicker{
+	z-index: 1000000 !important;
+	position: relative;
+}
+.ui-datepicker-trigger{
+	padding: 2.9px 5px 4.5px 5px !important;   
+	border-radius: 8px !important;
+	background-color: #7DA0FA !important;
+	border-color: #7DA0FA !important;
+	border-style: solid;
+} */
+/* .dtpickerimg{
+	width: 8px;
+	height: 8px;
+} */
+
+</style>
 
 </head>
 <body>
@@ -39,14 +71,111 @@
 	
 	
 	<form>
-		<input type='date' id='altSendDt'>
+		<!-- <input type='date' id='altSendDt'> -->
+		<input type="text" name="datepicker" id="datepicker" class="datepicker jquerydtpicker"/>
 		<button action='' id='selBtn' name='selBtn' onClick='selectDate()'>조회</button>
 		<button type='button' id='delBtn' name='delBtn' onClick='DeleteChecked()'>선택삭제</button>
+		<input type="text" id="month" name="month" class="monthPicker1" class="datepicker jquerydtpicker"/>
+		
+		<br>
+		
+	<!-- <input id="ImageButton" type="text" /> -->
+	<input type="text" id="monthpicker" name="monthpicker" class="monthpicker" class="monthpicker jquerymonpicker"/>
+
+		
+
 	</form>
 	
 	<div id='grid'></div>
 	
 	<script type="text/javascript">
+	
+		$(function() {
+	       //input을 datepicker로 선언
+	       $("#datepicker").datepicker({
+	           dateFormat: 'yy-mm-dd' //달력 날짜 형태
+	           ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+	           ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+	           ,changeYear: true //option값 년 선택 가능
+	           ,changeMonth: true //option값  월 선택 가능                
+	           ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
+	           ,buttonImage: "${path}/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+	           ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
+	           //,buttonText: "선택" //버튼 호버 텍스트              
+	           ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+	           ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+	           ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+	           ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+	           ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+	           ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+	           ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
+	       });                    
+	       
+	       //초기값을 오늘 날짜로 설정해줘야 합니다.  //디폴트값 셋팅
+	       $('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)     
+	       	       
+	       
+	   });
+		/* $('.ui-datepicker-trigger').children("img").attr("class", "dtpickerimg"); */
+		
+		
+//------------------------------------------------------------------------------------------------
+		 
+		 
+		 $(document).ready(function()
+		 {
+		     $(".monthPicker1").datepicker({
+		         dateFormat: 'yy-mm',
+		         changeMonth: true,
+		         changeYear: true,
+		         showButtonPanel: true,
+
+		         onClose: function(dateText, inst) {
+		             var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+		             var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+		             $(this).val($.datepicker.formatDate('yy-mm', new Date(year, month, 1)));
+		         }
+		     });
+
+		     $(".monthPicker1").focus(function () {
+		         $(".ui-datepicker-calendar").hide();
+		         $("#ui-datepicker-div").position({
+		             my: "center top",
+		             at: "center bottom",
+		             of: $(this)
+		         });
+		     });
+		 });
+		
+
+//------------------------------------------------------------------------------------------------
+		
+/* $(document).ready(function() {
+   
+    $("#ImageButton").MonthPicker({
+        Button: '<img class="icon" src="/oneTouch/resources/template/images/cal_lb_sm.png" />'
+    });
+   
+}); */
+
+//------------------------------------------------------------------------------------------------
+
+$("#monthpicker").monthpicker({
+	monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+	,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+	,showOn: "both" 
+	,buttonImage: "${path}/resources/template/images/cal_lb_sm.png"
+	,buttonImageOnly: true
+	,changeYear: true
+	,yearRange: 'c-2:c+2'
+	,dateFormat: 'yy-mm'
+});
+
+$('#monthpicker').monthpicker('setDate', 'today'); //디폴트값 셋팅
+		    
+//------------------------------------------------------------------------------------------------
+		
+		
 		
 		//Modal~~~~
 		

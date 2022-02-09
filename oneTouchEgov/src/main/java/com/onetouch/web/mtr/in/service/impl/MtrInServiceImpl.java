@@ -23,7 +23,6 @@ public class MtrInServiceImpl implements MtrInService {
 	@Autowired MtrLotMapper lotMapper;
 	@Override
 	public List<MtrInVO> selectIn(MtrSearchVO inSearchVO) {
-		System.out.println(inMapper.selectIn(inSearchVO));
 		return inMapper.selectIn(inSearchVO);
 	}
 	
@@ -49,9 +48,17 @@ public class MtrInServiceImpl implements MtrInService {
 				vo = mvo.getCreatedRows().get(i);
 				vo.setInNo(in);
 				vo.setStckCnt(vo.getMngAmt());
-				inMapper.insertIn(vo);
-				inMapper.updateOrd(vo);
-				
+				if(vo.getFltAmt() == null || vo.getFltAmt() == "") {
+					vo.setFltAmt("0");
+				}
+				if( vo.getInAmt() == "0") {
+					System.out.println("발주업데이트만");
+					inMapper.plusOrd(vo);
+				} else {
+					System.out.println("입고insert+발주update");
+					inMapper.insertIn(vo);
+					inMapper.plusOrd(vo);
+				}
 				
 				inAmt = Integer.parseInt(vo.getInAmt());
 				mngAmt = Integer.parseInt(vo.getMngAmt());
@@ -75,13 +82,21 @@ public class MtrInServiceImpl implements MtrInService {
 		}
 		if(mvo.getUpdatedRows() != null) {
 		    for(MtrInVO data : mvo.getUpdatedRows()){
-		    	inMapper.updateIn(data);
+			    	inMapper.plusOrd(data);
+			    	inMapper.minusOrd(data);
+			    	inMapper.updateIn(data);
 		    	};
 		}
-		if(mvo.getDeletedRows() != null) {
-		    for(MtrInVO data : mvo.getDeletedRows()){
-		    	inMapper.deleteIn(data); };
-		}
+	}
+
+	@Override
+	public void deleteIn(ModifyVO<MtrInVO> mvo) {
+		for(MtrInVO data : mvo.getDeletedRows()){
+			if(data.getInNo() != null) {
+				inMapper.deleteIn(data);
+			}
+	    	inMapper.minusOrd(data);
+		};
 	}
 
 

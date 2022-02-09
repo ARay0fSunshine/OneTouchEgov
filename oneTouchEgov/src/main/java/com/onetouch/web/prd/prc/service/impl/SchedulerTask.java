@@ -22,6 +22,7 @@ public class SchedulerTask {
 		System.out.println(list);
 		for(PrcVO vo : list) {
 			if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) {
+				
 				int uph=mapper.uphFind(vo);
 				System.out.println(uph);
 				System.out.println(vo.getPdtCnt());
@@ -30,6 +31,5 @@ public class SchedulerTask {
 				mapper.autoUpdate(vo);
 			}
 		}
-		
 	}
 }

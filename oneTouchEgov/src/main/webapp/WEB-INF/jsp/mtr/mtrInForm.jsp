@@ -21,14 +21,100 @@
 <script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
 <script src="${path}/resources/js/toastr-options.js"></script>
-
 </head>
 <style type="text/css">
-	.tui-grid-cell-summary{
-		text-align: right;
-	}
+.tui-grid-cell-summary{
+	text-align: right;
+}
+.labeltext{
+width: 100px !important;
+}
+.colline2{
+	margin-left: 60px;
+	width: 100px !important;
+}
+.rowdiv{
+	margin-bottom: 10px !important;
+}
+.bascard1{
+	height:165px;
+}
+.modal .ui-dialog{
+  position:fixed;
+  top:50%; 
+  left:50%;
+  transform: translate(-50%,-50%);
+ }
 </style>
 <body>
+<div class="content-wrapper">
+	<div class="row">
+		<div class="col-md-12 grid-margin">
+			<div class="row">
+				<div class="col-12 col-xl-8 mb-4 mb-xl-0">
+					<h3 class="font-weight-bold page-title">입고자재관리</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div align="right"> 
+		<button type="button" id="btnOrdFind" class="btn btn-primary newalign2">발주내역조회</button>
+	</div>
+	<br>
+	
+	<div class="row">
+		<div class="col-md-12 grid-margin stretch-card"><!-- <div style="margin-top: 50px; border-top: 2px solid black; border-bottom : 2px solid black; padding: 5px;">  -->
+			<div class="card bascard1">
+				<div class="card-body">
+					<!-- <h4 class="card-title">조회조건</h4> -->
+					<form id="frm" method="post">
+						<div class="rowdiv">
+							<label class="labeltext">해당일자</label>
+							<input type="Date" id="startDate" name="startDate" class="datepicker"> 
+							<label> ~ </label> 
+							<input type="Date" id="endDate" name="endDate" class="datepicker">
+						</div>
+						
+						<div class="rowdiv">
+							<label class="labeltext">입고업체코드</label>
+							<input id="compCd" name="compCd" class="inputtext" readonly>
+							<button type="button" id="btnInCom" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
+							<label class="labeltext colline2">입고업체명</label>
+							<input id="compNm" name="compNm" class="inputtext" readonly>
+						</div>
+						
+						<span class="rowdiv">
+							<label class="labeltext">자재코드</label>
+							<input type="text" id="ditemCode" name="ditemCode" class="inputtext" readonly>
+							<button type="button" id="btnMtrCd" class="btn btn-primary mr-2 minibtn" ><i class="icon-search"></i></button>
+							<label class="labeltext colline2">자재명</label>
+							<input type="text" id="ditemCodeNm" name="ditemCodeNm" class="inputtext" readonly>
+						</span>
+						
+						<span>
+							<button type="button" id="btnFind" class="btn btn-primary mr-2 floatrightbtn">조회</button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<span class="floatright">
+		<button type="button" id='btnAdd' class="btn btn-main newalign">추가</button>
+		<button	type="button" id='btnDel' class="btn btn-main newalign">삭제</button>
+		<button type="button" id='btnSave' class="btn btn-primary newalign">저장</button> 
+	</span>
+	<br><br>
+	<hr>
+	<div id="grid"></div>
+	<div id="dialog-form" class="modal"></div>
+	<div id="dialog-ord" class="modal"></div>
+	<div id="dialog-lot" class="modal"></div>
+</div>
+			
+<!-- 
 	<div class="container">
 		<h3>자재입고 관리</h3>
 		<div align="right">
@@ -70,25 +156,54 @@
 <div id="grid"></div>
 <div id="dialog-form"></div>
 <div id="dialog-ord"></div>
-<div id="dialog-lot"></div>
+<div id="dialog-lot"></div> -->
 
 <script type="text/javascript">
-let dt = new Date();
 let rowk = -1;
+let modifyList = [];
 
+//---------포맷에 맞게 날짜 구하는 function---------
+function getDateStr(dt){
+	let year = dt.getFullYear();
+	let month = (dt.getMonth() + 1);
+	let day = dt.getDate();
+	
+	month = (month < 10) ? "0" + String(month) : month;
+	day = (day < 10) ? "0" + String(day) : day;
+	
+	return  year + '-' + month + '-' + day;
+};
+function today() {
+	let dt = new Date();
+	return getDateStr(dt);
+};
+function lastWeek() {
+	let dt = new Date();
+	let day = dt.getDate();
+	dt.setDate(day -7);
+	return getDateStr(dt);
+};
+document.getElementById('startDate').value = lastWeek();
+document.getElementById('endDate').value = today();
+//---------포맷에 맞게 날짜 구하는 function 끝---------
+
+
+//---------mainGrid---------
 let mainGrid = new Grid({
      el : document.getElementById('grid'),
      data : {
 		  api: {
 			    readData: { url: './mtrInForm', method: 'POST' },
+			    deleteData: { url: './mtrDelete', method: 'POST'},
 		    	modifyData: { url: './mtrModify', method: 'POST' }
-			  },
-			  contentType: 'application/json',
-			  initialRequest: false
-			},  // 컬럼명과 data명이 같다면 생략가능 
+			   },
+			   contentType: 'application/json',
+			   initialRequest: false
+			},
 	 scrollX : false,
 	 scrollY : true,
-	 bodyHeight: 400,
+	 bodyHeight: 325,
+	 minBodyHeight: 325,
      rowHeaders : [ 'checkbox'],
      columns : [
 				{
@@ -100,14 +215,18 @@ let mainGrid = new Grid({
 				   header: '입고일자',
 				   name: 'inDate',
 				   editor: {
-					type: 'datePicker',
-					options: {
-					language: 'ko',
-					format: 'yyyy-MM-dd'
-					}
-				 },
+							type: 'datePicker',
+								options: {
+								language: 'ko',
+								format: 'yyyy-MM-dd',
+								showAlways: true
+								}
+				  },
+					validation: {
+					   required:true
+				  },
 					align: 'center',
-				   sortable: true
+					sortable: true
 				 },
 				 {
 				   header: '자재코드',
@@ -120,6 +239,9 @@ let mainGrid = new Grid({
 				   name: 'mtrNm',
 				   align: 'left',
 				   editor: 'text',
+				   validation: {
+					   required:true
+				   },
 				   sortable: true
 				 },
 				 {
@@ -129,12 +251,14 @@ let mainGrid = new Grid({
 				   sortable: true
 				 },
 				 {
+				   header: '단위',
+				   name: 'unit',
+				   hidden: true
+				 },
+				 {
 				   header: '업체',
 				   name: 'compNm',
 				   align: 'left',
-				   /* validation: {
-		            	required: true
-		          	}, */
 				   sortable: true
 				 },
 				 {
@@ -171,9 +295,6 @@ let mainGrid = new Grid({
 				   formatter({value}){
 					   return format(value);
 				   },
-					/* validation: {
-						dataType: 'number'
-		          	}, */
 				   sortable: true
 				 },
 				 {
@@ -184,10 +305,10 @@ let mainGrid = new Grid({
 				   formatter({value}){
 					   return format(value);
 				   },
-					/* validation: {
+					validation: {
 						dataType: 'number',
 		            	required: true
-		          	}, */
+		          	},
 				   sortable: true
 				 },
 				 {
@@ -198,6 +319,10 @@ let mainGrid = new Grid({
 				   formatter({value}){
 					   return format(value);
 				   },
+				   validation: {
+						dataType: 'number',
+		            	required: true
+		          	},
 				   sortable: true
 				 },
 				 {
@@ -213,6 +338,11 @@ let mainGrid = new Grid({
 				   header: '관리수량',
 				   name: 'mngAmt',
 				   hidden: true
+				 },
+				 {
+				   header: '등록자',
+				   name: 'empNo',
+				   hidden: true
 				 }
 				],
 				summary : {
@@ -224,6 +354,18 @@ let mainGrid = new Grid({
 			        			return '합 계';
 			                }
 			            },	
+			            ordAmt: {
+			                template(summary) {
+			        			var sumResult = (summary.sum);
+			        			return format(sumResult);
+			                } 
+			            },
+			            notinAmt: {
+			                template(summary) {
+			        			var sumResult = (summary.sum);
+			        			return format(sumResult);
+			                } 
+			            },
 			            fltAmt: {
 			                template(summary) {
 			        			var sumResult = (summary.sum);
@@ -238,7 +380,7 @@ let mainGrid = new Grid({
 			            },
 			            unitCost: {
 			                template(summary){
-			        			return "MIN: "+summary.min+"<br>"+"MAX: "+summary.max;
+			        			return "MIN: "+format(summary.min)+"<br>"+"MAX: "+format(summary.max);
 			                } 
 			            },
 			            totCost: {
@@ -250,30 +392,53 @@ let mainGrid = new Grid({
 					}
 				}
    		});
-//삼항연산자 예시
-/* let greeting = person => {
-	  let name = person ? person.name : `stranger`
-	  return `Howdy, ${name}`
-	} */
-//단가 * 입고량 바로 총금액으로 반영
+//---------mainGrid 끝---------
+
+
+//---------숫자데이터 구분자주는 기능---------
+function format(value){
+	value = value * 1;
+	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+//---------숫자데이터 구분자주는 기능 끝---------
+
+
+//---------합계금액 입력해주는 function---------
+function totCal(){
+	let data;
+		data = mainGrid.getData()
+		for(i=0; i<data.length; i++){
+			let val = data[i].inAmt*data[i].unitCost
+			mainGrid.setValue(i,"totCost",val)
+		}
+};
+//---------합계금액 입력해주는 function 끝---------
+
+
+//---------mainGrid 입고량 validation & 합계금액 산출---------
 mainGrid.on('editingFinish', (ev) => {
 	if(ev.columnName == 'inAmt'){
 		if(mainGrid.getValue(ev.rowKey, 'notinAmt') != ''){
 			if(mainGrid.getValue(ev.rowKey, 'inAmt')*1 > mainGrid.getValue(ev.rowKey, 'notinAmt')*1){
 				toastr["info"]("입고량이 해당자재의 미입고량보다 많습니다.")
-				ev.stop();
-				//mainGrid.setValue(ev.rowKey, 'inAmt', '')
+				mainGrid.setValue(ev.rowKey, 'inAmt', mainGrid.getValue(ev.rowKey, 'inAmt'))
 			} else {
 				let inAmt = mainGrid.getValue(ev.rowKey,"inAmt")
 				let unitCost = mainGrid.getValue(ev.rowKey,"unitCost")
-				if(inAmt != 0){
-					mainGrid.setValue(ev.rowKey,"totCost",inAmt*unitCost)
-				}
+				mainGrid.setValue(ev.rowKey,"totCost",inAmt*unitCost)
 			}
 		}
 	}
-}) 
-//기존의 데이터는 수정이안되게 하는것
+	if(ev.columnName == 'unitCost'){
+		let inAmt = mainGrid.getValue(ev.rowKey,"inAmt")
+		let unitCost = mainGrid.getValue(ev.rowKey,"unitCost")
+		mainGrid.setValue(ev.rowKey,"totCost",inAmt*unitCost)
+	}
+});
+//---------mainGrid 입고량 validation & 합계금액 산출 끝---------
+
+
+//---------mainGrid 기존의 발주번호는 수정불가 & 자재모달 open---------
 mainGrid.on('editingStart', (ev) => {
     if(ev.columnName == 'mtrNm') {
        var value = mainGrid.getValue(ev.rowKey, 'mtrCd');
@@ -282,105 +447,59 @@ mainGrid.on('editingStart', (ev) => {
     }else if(ev.columnName == 'ordNo') {
        value = mainGrid.getValue(ev.rowKey, 'ordNo');
        if(value != '') {
-          /* alert('발주번호는 수정이 불가능합니다'); */
-          /* toastr.info('hi'); */
-    	   toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+    	  toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
           ev.stop();
        }
     }
-})
+});
+//---------mainGrid 기존의 발주번호는 수정불가 & 자재모달 open 끝---------
+
+
+//---------mainGrid 단위, 업체 수정불가 alert---------
 mainGrid.on('dblclick', (ev) => {
 	if(ev.columnName == 'unitNm' || ev.columnName == 'compNm') {
 	       toastr["info"]("자재명 수정해 주세요.")
 	    }
-})
-//셀에 오늘날짜 넣는 function
-function today(ev) {
-	let year = dt.getFullYear()
-	let month = ('0' + (dt.getMonth()+1)).slice(-2)
-	let day = ('0' + (dt.getDate())).slice(-2)
-	let str = year + '-' + month + '-' + day
-	mainGrid.setValue(ev, 'inDate', str)
-}
-
-//숫자 천의 자릿수마다 , 찍어주는 function
-function format(value){
-	value = value * 1;
-	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-//전체 row 총금액 계산해주는 function
-function totCal(){
-	let data;
-	window.setTimeout(()=>{
-		data = mainGrid.getData()
-		for(i=0; i<data.length; i++){
-			let val = data[i].inAmt*data[i].unitCost
-			mainGrid.setValue(i,"totCost",val)
-		}
-	},100)
-}
-
-//클릭한 셀의 rowKey와 columnName을 가지고오는 함수
-/* grid.on("click",(ev)=>{
-	console.log(grid.getFocusedCell());
-}) */
-
-//모달 설정
-let dialog = $( "#dialog-form" ).dialog({
-	autoOpen : false,
-	modal : true,
-	resizable: false,
-	height: "auto",
-	width: 500
 });
-//발주내역모달 설정
-let ordDialog = $( "#dialog-ord" ).dialog({
-	autoOpen : false,
-	modal : true,
-	resizable: false,
-	height: "auto",
-	width: 800
+//---------mainGrid 단위, 업체 수정불가 alert 끝---------
+
+
+//---------mainGrid row갯수 파악---------
+mainGrid.on('onGridUpdated', ev => {
+	rowk = mainGrid.getRowCount();
 });
+//---------mainGrid row갯수 파악 끝---------
 
-//업체검색모달 row더블클릭 이벤트
-//메인의 input박스 채우는거랑, 모달속 input박스채우는거 구분
-function getModalBas(param,ev){
-	if(ev.id == "InCom"){
-		$('#mCompCd').val(param.dtlCd);
-		$('#mCompNm').val(param.dtlNm);
-	} else if(ev.id == "btnInCom"){
-		$('#compCd').val(param.dtlCd);
-		$('#compNm').val(param.dtlNm);
-	}
-		dialog.dialog("close");
-};
-		
-//자재검색모달 row더블클릭 이벤트
-//input채우는 거랑, 그리드의 셀 채우는거 구분
-function getModalMtr(param){
-	dialog.dialog("close");
-	if(rowk >= 0){
-		mainGrid.blur();
-		mainGrid.setValue(rowk, "mtrCd", param.mtrCd, false);
-		mainGrid.setValue(rowk, "mtrNm", param.mtrNm, false);
-		mainGrid.setValue(rowk, "unit", param.unit, false);
-		mainGrid.setValue(rowk, "compNm", param.compNm, false);
-		mainGrid.setValue(rowk, "mngAmt", param.mngAmt, false);
-		rowk = -1;
-	} else {
-		$('#ditemCode').val(param.mtrCd);
-		$('#ditemCodeNm').val(param.mtrNm);
-	}
-};
 
-//발주내역 모달
+//---------mainGrid modify후 focus---------
+mainGrid.on("response", function(ev) {
+	if(JSON.parse(ev.xhr.response).result != true) {
+		let param= $("#frm").serializeObject();
+		mainGrid.readData(1,param,true);
+		setTimeout(function(){
+			for(inNoData of mainGrid.getData()) {
+				if(modifyList[modifyList.length-1] == inNoData.inNo) {
+					mainGrid.focus(inNoData.rowKey, 'inDate', true);
+					break;
+				} else {
+					mainGrid.focus(mainGrid.getRowCount()-1,'inDate',true);
+					break;
+				}
+			}
+		},100);
+	}
+});
+//---------mainGrid modify후 focus 끝---------
+
+
+//---------ordGrid---------
 let ordDataSource = {
-		  api: {
-			  	readData: { url: './mtrOrdModal',method: 'GET'
-		     	 }
-		  },
-		  contentType: 'application/json'
+	api: {
+		readData: { url: './mtrOrdModal',method: 'GET'
 		}
+	},
+	contentType: 'application/json'
+};
 
 let ordGrid = new Grid({
 el : document.getElementById('dialog-ord'),
@@ -388,7 +507,8 @@ data : ordDataSource,
 scrollX : false,
 scrollY : true,
 bodyHeight: 300,
-columns : [ 
+rowHeaders : [ 'checkbox'],
+columns : [
 			{
 				header: '발주일자',
 				name: 'ordDate',
@@ -420,6 +540,11 @@ columns : [
 				align: 'right'
 			},
 			{
+				header: '발주번호',
+				name: 'ordNo',
+				hidden: true
+			},
+			{
 				header: '단위',
 				name: 'unit',
 				hidden: true
@@ -428,170 +553,182 @@ columns : [
 				header: '관리수량',
 				name: 'mngAmt',
 				hidden: true
-			},		
-			{
-				header: '발주번호',
-				name: 'ordNo',
-				hidden: true
-			}
+			}	
 			]
 });
-
-ordGrid.on('dblclick', ev => {
-	getModalOrd(ordGrid.getRow(ev.rowKey));
-});
-
-function getModalOrd(param){
-	param.rowKey = mainGrid.getRowCount();
-	param.inAmt = 0;
-	mainGrid.appendRow(param);
-	totCal();
-	today(param.rowKey);
-	ordDialog.dialog("close");
-};
-
-//추가버튼
-btnAdd.addEventListener("click", function(){
-	mainGrid.appendRow();
-	console.log(mainGrid.getRowCount()-1)
-	today(mainGrid.getRowCount()-1)
-	
-});
-//삭제버튼
-btnDel.addEventListener("click", function(){
-	mainGrid.removeCheckedRows(true);
-	mainGrid.request('modifyData');
-});
-//저장버튼
-btnSave.addEventListener("click", function(){
-	mainGrid.blur();
-	mainGrid.request('modifyData');
-	
-});
-//조회버튼
-btnFind.addEventListener("click", function(){
-   let param= $("#frm").serializeObject();
-   mainGrid.readData(1,param,true);
-});
-//발주내역버튼
-btnOrdFind.addEventListener("click", function(){
-	ordDialog.dialog("open");
-	ordGrid.readData();
-	$('#ui-id-2').html('발주 내역');
-	ordGrid.refreshLayout();
-});
-//업체검색버튼 function
-function inComList(){
-	mBas('MTR_COM',event.target);
-	$('#ui-id-1').html('업체 검색');
-};
-//자재검색버튼
-btnMtrCd.addEventListener("click", function(){
-	mMtr();
-	$('#ui-id-1').html('자재 검색');
-});
+//---------ordGrid 끝---------
 
 
+//---------ordGrid (mainGrid에 있는 데이터 제거)---------
+ordGrid.on('onGridUpdated', ev => {
+	let datas = mainGrid.getData();
+	let rows = ordGrid.getData();
+	if(rowk == -1){
+		rowk = 0;	
+	}
+	for(i=rowk; i<mainGrid.getRowCount(); i++){
+		for(row of rows){
+			if(datas[i].ordNo == row.ordNo 
+					&& datas[i].notinAmt == row.notinAmt
+					&& datas[i].mtrNm == row.mtrNm){
+				ordGrid.removeRow(row.rowKey)
+			}
+		}
+	}
+});
+//---------ordGrid (mainGrid에 있는 데이터 제거) 끝---------
 
-/* //반품처리모달 설정
-let rtnDialog = $( "#dialog-rtn" ).dialog({
+
+//---------모달 설정---------
+let dialog = $( "#dialog-form" ).dialog({
+	autoOpen : false,
+	modal : true,
+	resizable: false,
+	height: "auto",
+	width: 500
+});
+//---------모달 설정 끝---------
+
+
+//---------발주내역모달 설정---------
+let ordDialog = $( "#dialog-ord" ).dialog({
 	autoOpen : false,
 	modal : true,
 	resizable: false,
 	height: "auto",
 	width: 800,
 	buttons:{
-		"반품처리":()=>{
-			rtnGrid.blur();
-			rtnGrid.request('modifyData', {
-				checkedOnly: true
-			});
-			
-			//modify 처리 후 모달 자동으로 꺼주는 기능 **************************모르겠음
-			rtnGrid.on('successResponse',function(ev){
-				console.log(ev)
-				rtnDialog.dialog("close");
-			});
+		"확인":()=>{
+		let rows = ordGrid.getCheckedRows();
+		for(row of rows){
+			row.inDate = today();
+			row.rowKey = mainGrid.getRowCount();
+			row.inAmt = row.notinAmt;
+			mainGrid.appendRow(row,{focus:true});
+			mainGrid.setValue(row.rowKey,"totCost",row.notinAmt*row.unitCost)
+		}
+		mainGrid.uncheckAll();
+		ordDialog.dialog("close");
 		}
 	}
 });
-//반품 모달
-let rtnDataSource = {
-		  api: {
-			  	readData: { url: './mtrRtnModal',method: 'POST'},
-			  	modifyData: { url: './mtrRtnModify', method: 'POST'}
-		  },
-		  contentType: 'application/json'
-		}
+//---------발주내역모달 설정 끝---------
 
-let rtnGrid = new Grid({
-el : document.getElementById('dialog-rtn'),
-data : rtnDataSource,
-rowHeaders : [ 'checkbox'],
-columns : [ 
-			{
-				header: '발주번호',
-				name: 'ordNo',
-				hidden: true
-			},
-			{
-				header: '발주일자',
-				name: 'ordDate'
-			},
-			{
-				header: '입고업체명',
-				name: 'compNm'
-			},
-			{
-				header: '자재명',
-				name: 'mtrNm'
-			},
-			{
-				header: '단위',
-				name: 'unit'
-			},
-			{
-				header: '반품량',
-				name: 'rtnAmt',
-				editor: 'text'
-			},	
-			{
-				header: '반품사유',
-				name: 'cmt',
-				editor: 'text'
-			}
-			]
-});
-rtnGrid.on('dblclick',function(ev){
-	if(ev.columnName == "ordDate" || ev.columnName == "compNm" || ev.columnName == "mtrNm" || ev.columnName == "unit"){
-		 toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+
+//---------업체검색모달 row더블클릭 이벤트---------
+//메인의 input박스 채우는거랑, 모달속 input박스채우는거 구분
+function getModalBas(param,ev){
+		$('#compCd').val(param.dtlCd);
+		$('#compNm').val(param.dtlNm);
+		dialog.dialog("close");
+};
+//---------업체검색모달 row더블클릭 이벤트 끝---------
+
+
+//---------업체검색버튼 클릭 event---------
+function inComList(){
+	mBas('MTR_COM',event.target);
+	$('#ui-id-1').html('업체 검색');
+};
+//---------업체검색버튼 클릭 event 끝---------
+
+
+//---------자재검색모달 row더블클릭 이벤트---------
+//input채우는 거랑, 그리드의 셀 채우는거 구분
+function getModalMtr(param){
+	dialog.dialog("close");
+	if(rowk >= 0){
+		mainGrid.blur();
+		mainGrid.setValue(rowk, "mtrCd", param.mtrCd, false);
+		mainGrid.setValue(rowk, "mtrNm", param.mtrNm, false);
+		mainGrid.setValue(rowk, "unit", param.unit, false);
+		mainGrid.setValue(rowk, "unitNm", param.unitNm, false);
+		mainGrid.setValue(rowk, "compNm", param.compNm, false);
+		mainGrid.setValue(rowk, "mngAmt", param.mngAmt, false);
+		rowk = -1;
+	} else {
+		$('#ditemCode').val(param.mtrCd);
+		$('#ditemCodeNm').val(param.mtrNm);
 	}
-});
-rtnGrid.on('successResponse',function(ev){
-	console.log("성공")
-});
-rtnGrid.on('failResponse',function(ev){
-	console.log("실패")
-});
+};
+//---------자재검색모달 row더블클릭 이벤트 끝---------
 
 
-//반품처리버튼
-btnRtn.addEventListener("click", function(){
-	document.getElementById("mStartDate").value = null;
-	document.getElementById("mEndDate").value = null;
-	document.getElementById("mCompCd").value = null;
-	document.getElementById("mCompNm").value = null;
-	rtnDialog.dialog("open");
-	rtnGrid.readData(1,{},true);
-	rtnGrid.refreshLayout();
+//---------자재검색버튼---------
+btnMtrCd.addEventListener("click", function(){
+	mMtr();
+	$('#ui-id-1').html('자재 검색');
 });
-//조회버튼 in 반품모달
-rtnSearch.addEventListener("click", function(){
-   let param= $("#rtnFrm").serializeObject();
-   rtnGrid.readData(1,param,true);
+//---------자재검색버튼 끝---------
+
+//---------추가버튼---------
+btnAdd.addEventListener("click", function(){
+	mainGrid.appendRow({'mtrNm':''},
+						 {focus:true});
+	mainGrid.setValue(mainGrid.getRowCount()-1, 'inDate', today())
 });
- */
+//---------추가버튼 끝---------
+
+
+//---------조회버튼---------
+btnFind.addEventListener("click", function(){
+   let param= $("#frm").serializeObject();
+   mainGrid.readData(1,param,true);
+});
+//---------조회버튼 끝---------
+
+
+//---------삭제버튼---------
+btnDel.addEventListener("click", function(){
+	mainGrid.removeCheckedRows(true);
+	mainGrid.request('deleteData');
+});
+//---------삭제버튼 끝---------
+
+
+//---------저장버튼---------
+btnSave.addEventListener("click", function(){
+	mainGrid.blur();
+	
+	 rowk = mainGrid.getRowCount();
+     
+     for(i=0; i<rowk; i++) {
+        if(mainGrid.getRow(i).mtrNm == '') {
+           alert("자재명은 필수입력칸입니다!!");
+           return;
+        }
+       /*  else if(mainGrid.getRow(i).inAmt == 0) {
+           alert("입고량은 필수입력칸입니다!!");
+           return;
+        } */
+        else if(mainGrid.getRow(i).unitCost == 0) {
+           alert("단가는 필수입력칸입니다!!");
+           return;
+        }
+     }  
+	
+	let create = mainGrid.getModifiedRows().createdRows;
+	let update = mainGrid.getModifiedRows().updatedRows;
+	for(let i=0; i<create.length; i++) {
+		modifyList.push(create[i].inNo);
+	}
+	for(let i=0; i<update.length; i++) {
+		modifyList.push(update[i].inNo);
+	 }
+	mainGrid.request('modifyData');
+	mainGrid.focus(mainGrid.getRowCount()-1,'inNo')
+});
+//---------저장버튼 끝---------
+
+
+//---------발주내역버튼---------
+btnOrdFind.addEventListener("click", function(){
+	ordDialog.dialog("open");
+	ordGrid.readData();
+	$('#ui-id-2').html('발주 내역');
+	ordGrid.refreshLayout();
+});
+//---------발주내역버튼 끝---------
 </script>
-
 </body>
 </html>

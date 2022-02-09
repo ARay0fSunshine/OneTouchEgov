@@ -11,22 +11,28 @@
 		select sum(nvl2(work_fin_dt,1,0)) as prcEndNull from prd_prc_mng where instr_no= #{instrNo}
 	</select>
 	<select id="prcList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-			select distinct prc_cd,prc_seq
+		select distinct prc_cd,prc_seq
 		from adm_prd a join adm_prc_flow b
 		on a.prd_cd = b.prd_cd
 		where a.able_line_no like '%'||#{lineNo}||'%'
+		order by prc_seq
 	</select>
 	<select id="prdPrcList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select p.instr_no, p.work_str_time, p.pdt_cnt, f.prc_seq
-		from pdt_work_instr_dtl p, 
-		    (select a.prd_cd, a.prd_nm, a.prd_std, a.mng_unit, a.prd_sect, a.able_line_no, a.use_yn,    b.prc_cd, b.prc_seq, b.work_cmt, b.std_load, b.unit_cost, b.lead_time
-		     from adm_prd a join adm_prc_flow b
-		     on a.prd_cd = b.prd_cd 
-		     where a.able_line_no like '%'||#{lineNo}||'%' and b.prc_cd=#{prcCd}) f
-		where p.prd_cd = f.prd_cd
-		AND p.line_no=#{lineNo}
-		and p.prc_cd=#{prcCd}
-		order by p.work_str_time
+		select p.instr_no, p.work_str_time,p.work_str_date,p.goalCnt goalCnt, p.prc_seq
+		from pdt_work_instr a join (select p.instr_no, p.work_str_time,p.work_str_date,p.pdt_cnt goalCnt, f.prc_seq
+				from pdt_work_instr_dtl p, 
+				    (select a.prd_cd, a.prd_nm, a.prd_std, a.mng_unit, a.prd_sect, a.able_line_no, a.use_yn,    b.prc_cd, b.prc_seq, b.work_cmt, b.std_load, b.unit_cost, b.lead_time
+				     from adm_prd a join adm_prc_flow b
+				     on a.prd_cd = b.prd_cd 
+				     where a.able_line_no like '%'||#{lineNo}||'%' and b.prc_cd=#{prcCd}) f
+				where p.prd_cd = f.prd_cd
+				and to_date(p.work_str_date,'yyyy-MM-dd')=to_date(sysdate,'yyyy-MM-dd')
+		        AND p.line_no=#{lineNo}
+				and p.prc_cd=#{prcCd}
+				order by p.work_str_time) p
+		on a.instr_no = p.instr_no
+		where a.now_phs='N'
+		order by 1
 	</select>
 	<select id="prcFlowMinMax" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
 		select *
@@ -51,7 +57,7 @@
  		on(a.prc_Cd=b.prc_cd AND a.prd_cd=b.prd_cd)                        
 	</select>
 	<insert id="defaultInsert">
-		insert into prd_prc_mng (instr_no , line_no ,prc_cd , goal_cnt) values (#{instrNo},#{lineNo},#{prcCd},#{instrCnt})
+		insert into prd_prc_mng (instr_no , line_no ,prc_cd , goal_cnt) values (#{instrNo},#{lineNo},#{prcCd},#{pdtCnt})
 	</insert>
 	<update id="startUpdate">
 		update prd_prc_mng set
@@ -99,13 +105,14 @@
 					 WHERE instr_no=#{instrNo}   and line_no=#{lineNo}  and prc_cd=#{prcCd}),#{pdtCnt})
 	</insert>
 	<insert id="hrdInsert">
-		insert into mtr_lot_stck (MTR_LOT,MTR_CD,STCK_CNT) values(PKG_MAKE_CODE.CODE('HRD','MTR_LOT_STCK','MTR_LOT'),#{prdCd},#{pdtCnt})
+		insert into mtr_lot_stck (MTR_LOT,MTR_CD,STCK_CNT,HLD_CNT) values(PKG_MAKE_CODE.CODE('HRD','MTR_LOT_STCK','MTR_LOT'),(select prd_Cd from pdt_work_instr_dtl
+					 WHERE instr_no=#{instrNo} and line_no=#{lineNo}  and prc_cd=#{prcCd}),#{pdtCnt},0)
 	</insert>
 	<update id="updateFlt"><!--생산량 , 불량량  -->
 		update prd_prc_mng set flt_cnt = #{fltCnt} where instr_no=#{instrNo} AND line_no=#{lineNo} And prc_cd=#{prcCd}
 	</update>
 	<select id="realFlt" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select instr_no,flt_cnt,prc_cd,pdt_cnt ,nvl((select sum(flt_cnt) 
+		select now_phs,work_str_dt,instr_no,nvl(flt_cnt,0) fltCnt,prc_cd,nvl(pdt_cnt,0) pdt_cnt ,nvl((select sum(flt_cnt) 
                                     from prd_prc_mng
                                     where instr_no=#{instrNo}
                                     group by instr_no),0) as sumFlt
@@ -145,21 +152,25 @@
 		  
 	</select>
 	<select id="prcMovingView" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select instr_No , line_No , prc_Cd , work_Str_Dt , work_Fin_Dt , goal_Cnt ,pdt_cnt , flt_cnt ,now_phs , prd_lot
+		select instr_No , line_No , prc_Cd , to_char(work_Str_Dt,'yyyy-MM-dd') work_str_dt ,to_char(work_Fin_Dt,'yyyy-MM-dd') work_fin_dt , goal_Cnt ,pdt_cnt , flt_cnt ,now_phs , prd_lot
 		from prd_prc_mng where instr_no=#{instrNo} AND line_no = #{lineNo}	
 	</select>
 	<select id="updateCheck" resultType="_int">
-		select (to_number(sum(nvl2(work_fin_dt,1,0)))+to_number(sum(nvl2(work_str_dt,1,0)))+to_number(sum(nvl(flt_cnt,0)))+to_number(sum(nvl2(now_phs,1,0)))) as upCheck from prd_prc_mng
+		select (to_number(sum(nvl2(work_fin_dt,1,0)))+to_number(sum(nvl2(work_str_dt,1,0)))+to_number(sum(nvl(flt_cnt,0)))+to_number(sum(nvl2(now_phs,1,0)))+to_number(sum(nvl(pdt_cnt,0)))) as upCheck from prd_prc_mng
 	</select>
 	<select id="movingSearchListFinish" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select a.instr_no , a.mtr_lot , a.line_no , a.work_str_dt , a.work_fin_dt , a.goal_cnt, a.pdt_cnt
-		from (select distinct a.instr_no , a.mtr_lot, a.line_no , to_char(b.work_str_dt,'yyyy-MM-dd') work_str_dt, to_char(b.work_fin_dt,'yyyy-MM-dd') work_fin_dt, b.goal_cnt , (select min(pdt_cnt)
+		select a.instr_no ,  a.line_no , a.work_str_dt , a.work_fin_dt , a.goal_cnt, a.pdt_cnt
+		from (select distinct a.instr_no , a.line_no , to_char(b.work_str_dt,'yyyy-MM-dd') work_str_dt, to_char(b.work_fin_dt,'yyyy-MM-dd') work_fin_dt, b.goal_cnt , (select min(pdt_cnt)
                                                                                                                                                                     from prd_prc_mng
                                                                                                                                                                     where instr_no=a.instr_no) as pdt_cnt 
 		from used_mtr_lot a join prd_prc_mng b
 		on a.instr_no = b.instr_no
 		where 1=1
-		and a.instr_no like '%PWO%') a join pdt_work_instr b
+		and a.instr_no like '%PWO%' 
+	 	<if test='mtrLot!="" and mtrLot!=null'>
+			and mtr_lot=#{mtrLot}
+		</if> 
+		) a join pdt_work_instr b
 		on a.instr_no = b.instr_no
 		where b.now_phs='Y'
 	 	<if test='startDate!="" and startDate!="null"'>
@@ -168,19 +179,28 @@
 	 	<if test='endDate!="" and endDate!="null"'>
 			and #{endDate}>work_str_dt
 		</if>  
+
 	</select>
 	<select id="movingSearchList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select distinct b.line_no , a.instr_no , to_char(a.instr_date,'yyyy-MM-dd') work_str_dt , b.instr_cnt goal_cnt, a.now_phs
-		from pdt_work_instr a join pdt_work_instr_dtl b
+		select distinct b.line_no , b.instr_no ,b.work_str_dt , b.goal_cnt , b.now_phs
+		from used_mtr_lot a join 
+								(select line_no , instr_no ,work_str_dt , goal_cnt , now_phs
+								from( select distinct b.line_no , a.instr_no , to_char(a.instr_date,'yyyy-MM-dd') work_str_dt , b.instr_cnt goal_cnt, a.now_phs
+										from pdt_work_instr a join pdt_work_instr_dtl b
+										on a.instr_no = b.instr_no
+								        where a.now_phs='N')) b
 		on a.instr_no = b.instr_no
-        where a.now_phs='N'
+		where 1=1
 	 	<if test='startDate!="" and startDate!="null"'>
-			and a.instr_date>#{startDate}
+			and b.work_str_dt>#{startDate}
 		</if>
 	 	<if test='endDate!="" and endDate!="null"'>
-			and #{endDate}>a.instr_date
-		</if>  
-		order by a.instr_no
+			and #{endDate}>b.work_str_dt
+		</if>
+	 	<if test='mtrLot!="" and mtrLot!=null'>
+			and a.mtr_lot=#{mtrLot}
+		</if>   
+		order by b.work_str_dt
 	</select>
 	
 	<select id="prcFlowCount" resultType="integer">
@@ -206,6 +226,36 @@
 		order by a.line_no
 	</select>
 	<update id="autoUpdate">
-		update prd_prc_mng set pdt_cnt=#{pdtCnt} where instr_no = #{instrNo}
+		update prd_prc_mng set pdt_cnt=#{pdtCnt} where instr_no = #{instrNo} and prc_cd=#{prcCd}
 	</update>	
+	
+	
+	<select id="playStartInstr" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
+		select distinct instr_no
+		from prd_prc_mng
+		where to_date(work_str_dt,'yyyy-MM-dd') = to_date(sysdate,'yyyy-MM-dd')
+	</select>
+	
+	<select id="liveInstr" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
+		select a.prc_seq,b.line_no , a.prc_cd , b.goal_cnt , b.pdt_cnt , nvl(b.flt_cnt,0) as fltCnt , b.now_phs
+		from(select prc_seq , prc_cd
+		        from adm_prc_flow
+		        where prd_Cd = (select distinct prd_cd
+		                        from pdt_work_instr_dtl
+		                        where instr_no=#{instrNo} ) ) a join (select *
+		                                                            from prd_prc_mng
+		                                                            where to_date(work_str_dt,'yyyy-MM-dd') = to_date(sysdate,'yyyy-MM-dd')
+		                                                            and instr_no=#{instrNo}) b
+		on a.prc_cd=b.prc_cd
+		order by 1
+		
+	</select>
+	<select id="playingPrcFind" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
+		select * from prd_prc_mng
+		where to_char(work_str_dt,'yyyy-MM-dd') = to_char(sysdate , 'yyyy-MM-dd')
+		and line_no =#{lineNo}
+		and instr_no !=#{instrNo}
+		and prc_cd = #{prcCd}
+		and now_phs = '가동중'
+	</select>
 </mapper>

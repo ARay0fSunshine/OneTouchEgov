@@ -90,5 +90,21 @@ public class BomServiceImpl implements BomService {
 		mapper.updatePrd(prdvo);
 	}
 
+	@Override
+	public void deletePrd(PrdVO prdvo) {
+		mapper.deletePrd(prdvo);
+		
+	}
+
+	@Override
+	public List<PrdVO> selectPrdSize() {
+		return mapper.selectPrdSize();
+	}
+
+	@Override
+	public List<PrdVO> selectPrdSect() {
+		return mapper.selectPrdSect();
+	}
+
 
 }

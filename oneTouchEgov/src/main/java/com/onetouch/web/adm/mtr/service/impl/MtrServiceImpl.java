@@ -40,6 +40,10 @@ public class MtrServiceImpl implements MtrService{
 	}
 
 	@Override
+	public void deleteMtr(MtrVO mtrvo) {
+		mapper.deleteMtr(mtrvo);
+	}
+	@Override
 	public void modify(ModifyVO<MtrVO> mvo) {
 		if(mvo.getDeletedRows() != null) {
 			for(MtrVO mtrvo : mvo.getDeletedRows()) {
@@ -47,6 +51,18 @@ public class MtrServiceImpl implements MtrService{
 			};
 		}
 	}
+
+	@Override
+	public List<MtrVO> selectMtrSize() {
+		return mapper.selectMtrSize();
+	}
+
+	@Override
+	public List<MtrVO> selectMtrSect() {
+		return mapper.selectMtrSect();
+	}
+
+
 
 
 

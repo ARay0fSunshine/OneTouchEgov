@@ -1,5 +1,5 @@
 //자재
-function mMtr(){
+function mMtr(btn){
 	let mtrData;
 		
 	$.ajax({
@@ -82,7 +82,7 @@ function mMtr(){
 		});
 		
 		mtrGrid.on('dblclick', ev => {
-			getModalMtr(mtrGrid.getRow(ev.rowKey));
+			getModalMtr(mtrGrid.getRow(ev.rowKey),btn);
 		})
 		
 		mtrGrid.on('successResponse',function(ev){
@@ -126,7 +126,12 @@ function mPrd(){
 			},
 			{
 				header: '제품규격',
-				name: 'prdStd'
+				name: 'prdStdNm'
+			},
+			{
+				header: '제품규격',
+				name: 'prdStd',
+				hidden: true
 			},
 			{
 				header: '관리단위코드',
@@ -139,18 +144,27 @@ function mPrd(){
 			},
 			{
 				header: '가능라인',
-				name: 'ableLineNo'
+				name: 'ableLineNo',
+				width: 300
 			},
 			{
 				header: '제품구분',
-				name: 'prdSect'
+				name: 'prdSectNm'
+			},
+			{
+				header: '제품구분',
+				name: 'prdSect',
+				hidden: true
 			}
 		];
 		
 		let prdGrid = new Grid({
 			el : document.getElementById('prd_grid'),
 			data : prdData,
-			columns : prdColumns
+			columns : prdColumns,
+			scrollX : false,
+			scrollY : true,
+			bodyHeight: 500
 		});
 		
 		prdGrid.on('dblclick', ev => {
@@ -233,7 +247,10 @@ function mPrc(){
 		let prcGrid = new Grid({
 			el : document.getElementById('prc_grid'),
 			data : prcData,
-			columns : prcColumns
+			columns : prcColumns,
+			scrollX : false,
+			scrollY : true,
+			bodyHeight: 400
 		});
 	
 		prcGrid.on('dblclick', ev => {
@@ -258,8 +275,8 @@ function mBas(basCd){
 	$.ajax({
 		url : '../modalBasList',
 		method : 'POST',
-		async: false,
 		data : 'basCd=' + basCd,
+		async : false,
 		success : function(result){
 			basData = result;
 		}
@@ -354,7 +371,6 @@ function mBas(basCd,btn){
 	$.ajax({
 		url : '../modalBasList',
 		method : 'POST',
-		async: false,
 		data : 'basCd=' + basCd,
 		success : function(result){
 			basData = result;
@@ -442,6 +458,66 @@ function mBas(basCd,btn){
 		})
 	});
 }
+
+//공통코드2
+function mBas2(){
+	let bas2Data;
+
+		
+	$.ajax({
+		url : '../modalBas2List',
+		dataType : 'json',
+		async : false,
+		success : function(result){
+			console.log(result);
+			bas2Data = result;
+		}
+	});
+		
+	dialog.dialog("open");
+			
+	$("#dialog-form").attr('title', '공통');
+	
+	$("#dialog-form").load("../modalBas2", function(){
+		const bas2Columns = [ 
+			{
+				header: '제품코드',
+				name: 'basCd',
+				align: 'center'
+			},
+			{
+				header: '제품명',
+				name: 'basNm',
+				align: 'center'
+			},
+			{
+				header: '제품설명',
+				name: 'basCmt',
+				align: 'center'
+			}
+		]; 
+
+		
+		let bas2Grid = new Grid({
+			el : document.getElementById('bas_grid2'),
+			data : bas2Data,
+			columns : bas2Columns
+		});
+		
+		bas2Grid.on('dblclick', ev => {
+			getModalBas2(bas2Grid.getRow(ev.rowKey));
+		})
+		
+		bas2Grid.on('successResponse',function(ev){
+			console.log("성공")
+		})
+		bas2Grid.on('failResponse',function(ev){
+			console.log("실패")
+		})
+		
+
+	});
+}
 	
 	
 	//라인 모달 
@@ -452,7 +528,6 @@ function mBas(basCd,btn){
 	$.ajax({
 		url : '../fct/LineSelect',
 		method:'post',
-		async: false,
 		data: JSON.stringify(lineStatusVO),
 		contentType: "application/json",
 		success : function(result){
