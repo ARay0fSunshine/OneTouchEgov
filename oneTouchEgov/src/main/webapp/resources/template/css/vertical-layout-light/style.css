@@ -116,7 +116,7 @@
 /* === Import template variables === */
 /*-------------------------------------------------------------------*/
 @font-face{
-	src:url("/onetouch/resources/template/fonts/font/웰컴체 Bold.ttf");
+	src:url("${path}/resources/template/fonts/font/웰컴체 Bold.ttf");
 	font-family: "welcomeB";
 } 
 
