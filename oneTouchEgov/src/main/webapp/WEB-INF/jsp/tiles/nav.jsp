@@ -11,17 +11,17 @@
 <script>
  $(document).ready(function() {
 	var uniqId = '${loginVO.uniqId}';
-	var temp = location.href;
+	/* var temp = location.href;
 	
 	if (temp.indexOf("localhost") >= 0) { 
 		temp = temp.substring(0, 30);
 	}else {
 		temp = temp.substring(0, 25);
-	}
+	} */
 	
 	$.ajax({
 		//url: 'selectRole',
-		url : temp + 'selectRole',
+		url : ${path}/ + 'selectRole',
 		//url : ${path} + 'selectRole',
 		type: 'POST',
 		async : false,
