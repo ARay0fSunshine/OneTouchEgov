@@ -65,7 +65,7 @@ hr{
 			<div class="card bascard1">
 				<div class="card-body">
 					<!-- <h4 class="card-title">조회조건</h4> -->
-					<form id="planSearchFrm" name="planSearchFrm">
+					<form id="workSearchFrm" name="workSearchFrm">
 						<div class="rowdiv">
 							<label class="labeltext">지시일자</label>
 							<input type="text" id="startDate" name="startDate" class="datepicker">
@@ -102,7 +102,7 @@ hr{
 						
 						<div class="rowdiv" style="display:inline-block">
 							<label class="labeltext">제품코드</label>
-							<input id="prdCd" name="prdCd" class="inputtext" readonly>
+							<input id="prdCd" name="prdCd" class="inputtext">
 							<!-- <button type="button" id="btnPrcCd" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
 							<label class="labeltext colline2">제품명</label>
 							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
@@ -154,7 +154,7 @@ hr{
             ,changeYear: true //option값 년 선택 가능
             ,changeMonth: true //option값  월 선택 가능                
             ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
-           	,buttonImage: "${path}/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+           	,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
         	,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
             //,buttonText: "선택" //버튼 호버 텍스트              
             ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트

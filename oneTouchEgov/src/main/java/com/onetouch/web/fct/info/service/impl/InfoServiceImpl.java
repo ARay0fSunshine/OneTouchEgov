@@ -86,17 +86,24 @@ public class InfoServiceImpl implements InfoService {
 	}
 
 
-	@Scheduled(fixedDelay = 10000)
-	public void updateStartFctPhs( ) {
-		System.out.println("가동상태전환");
-		mapper.updateStartFctPhs();
-		
-	}
+	/*
+	 * @Scheduled(fixedDelay = 10000) public void updateStartFctPhs( ) {
+	 * System.out.println("가동상태전환"); mapper.updateStartFctPhs();
+	 * 
+	 * }
+	 */
 
 
 	@Override
 	public LineVO selectLineNo(LineVO lineVO) {
 		return mapper.selectLineNo(lineVO);
+	}
+
+
+	@Override
+	public void updateStartFctPhs() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
