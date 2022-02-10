@@ -28,6 +28,24 @@
 %>
 <html lang="ko">
 <head>
+
+<style type="text/css">
+.s_btn, .btn_b{
+	background: #4747A1 !important;
+	height: 24px !important;
+	vertical-align: top !important;
+    padding: 0 8px;
+    border: none;
+    color: #fff;
+    border-radius: 5px !important;
+    cursor: pointer;
+}
+div.board{
+	margin-bottom: 207px;
+}
+</style>
+
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
 <title><spring:message code="comSymMnuMpm.menuManage.title"/></title><!-- 메뉴관리리스트 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
@@ -175,7 +193,7 @@ function fMenuManageSelect(){
 				<label for=""><spring:message code="comSymMnuMpm.menuManage.menuNm"/> : </label><!-- 메뉴명 -->
 				<input class="s_input2 vat" name="searchKeyword" type="text" value="${searchVO.searchKeyword }" size="25" title="<spring:message code="title.searchCondition"/>" /><!-- 검색조건 -->
 				
-				<input class="s_btn" type="submit" value='<spring:message code="button.inquire" />' title='<spring:message code="button.inquire" />' onclick="selectMenuManageList(); return false;" /><!-- 조회 -->
+				<input class="btn_b btn_c" type="submit" value='<spring:message code="button.inquire" />' title='<spring:message code="button.inquire" />' onclick="selectMenuManageList(); return false;" /><!-- 조회 -->
 				<span class="btn_b"><a href="<c:url value='/sym/mnu/mpm/EgovMenuRegistInsert.do'/>" onclick="bndeInsertMenuManage(); return false;" title="<spring:message code="button.bulkUpload" />"><spring:message code="button.bulkUpload" /></a></span><!-- 일괄등록 -->
 				<span class="btn_b"><a href="<c:url value='/sym/mnu/mpm/EgovMenuRegistInsert.do'/>" onclick="insertMenuManage(); return false;" title='<spring:message code="button.create" />'><spring:message code="button.create" /></a></span><!-- 등록 -->
 				<span class="btn_b"><a href="#" onclick="fDeleteMenuList(); return false;" title='<spring:message code="button.delete" />'><spring:message code="button.delete" /></a></span><!-- 삭제 -->

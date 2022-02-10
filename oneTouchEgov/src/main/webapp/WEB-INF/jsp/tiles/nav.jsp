@@ -4,6 +4,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
 	<ul id="nav" class="nav"></ul>
 </nav>
@@ -33,12 +35,14 @@
 			console.log(result.data.contents);
 			console.log(result.data.contents.length);
 			
-			var str = '<li class="nav-item">'
+			var chk = 0;
+			var str =  '';
+				/* str += '<li class="nav-item">'
 	            str += '<a class="nav-link" href="${path}/brd/dashBoard">'
-                str += '<i class="icon-grid menu-icon"></i>'
-            	str += '<span class="menu-title">Dashboard</span>'
+                str += '	<i class="icon-grid menu-icon"></i>'
+            	str += '	<span class="menu-title">Dashboard</span>'
           		str += '</a>'
-        		str += '</li>'
+        		str += '</li>' */
         		
 			for (var i = 1; i < result.data.contents.length; i++) {
 				if (i != 1 && result.data.contents[i].chkUrl == 'dir') {
@@ -49,7 +53,7 @@
 					if (result.data.contents[i].menuNo == '1000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#ui-usermng" aria-expanded="false" aria-controls="ui-usermng">'
-						str += '  <i class="icon-head menu-icon"></i>'
+						str += '  <i class="icon-contract menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -58,7 +62,7 @@
 					}else if (result.data.contents[i].menuNo == '2000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#ui-scrt" aria-expanded="false" aria-controls="ui-scrt">'
-						str += '  <i class="icon-head menu-icon"></i>'
+						str += '  <i class="bi bi-lock-fill menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -67,7 +71,7 @@
 					}else if (result.data.contents[i].menuNo == '3000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#ui-system" aria-expanded="false" aria-controls="ui-system">'
-						str += '  <i class="icon-ban menu-icon"></i>'
+						str += '  <i class="bi bi-gear-wide menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -76,7 +80,7 @@
 					}else if (result.data.contents[i].menuNo == '4000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#ui-usersupport" aria-expanded="false" aria-controls="ui-usersupport">'
-						str += '  <i class="icon-ban menu-icon"></i>'
+						str += '  <i class="bi bi-person-bounding-box menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -85,7 +89,7 @@
 					}else if (result.data.contents[i].menuNo == '6000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">'
-						str += '  <i class="icon-layout menu-icon"></i>'
+						str += '  <i class="bi bi-pencil-square menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -94,7 +98,7 @@
 					}else if (result.data.contents[i].menuNo == '7000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">'
-						str += '  <i class="icon-columns menu-icon"></i>'
+						str += '  <i class="bi bi-speedometer menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -103,7 +107,7 @@
 					}else if (result.data.contents[i].menuNo == '8000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">'
-						str += '  <i class="icon-bar-graph menu-icon"></i>'
+						str += '  <i class="bi bi-box-seam menu-icon"></i>' 
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
@@ -112,12 +116,14 @@
 					}else if (result.data.contents[i].menuNo == '9000000') {
 						str += '<li class="nav-item">'
 						str += '<a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">'
-						str += '  <i class="icon-grid menu-icon"></i>'
+						str += '  <i class="bi bi-tools menu-icon"></i>'
 						str += '  <span class="menu-title">' + result.data.contents[i].menuNm + '</span>'
 						str += '  <i class="menu-arrow"></i>'
 						str += '</a>'
 						str += '<div class="collapse" id="tables">'
 						str += '  <ul class="nav flex-column sub-menu">'
+					}else if (result.data.contents[i].menuNo == '10000000') {
+						chk = 1;
 					}
 				
 				} else if (result.data.contents[i].chkUrl != '') {
@@ -126,6 +132,15 @@
 			}
 			
 			str += '</ul></div></li>' 
+			
+			if (chk == 1) { 
+				str += '<li class="nav-item">'
+				str += '<a class="nav-link" href="${path}/sts/stsList">'
+				str += '	<i class="icon-bar-graph menu-icon"></i>'
+				str += '	<span class="menu-title">통계</span>'
+				str += '</a>'
+				str += '</li>'
+			}
 			
 			$('#nav').append(str); 
 		}

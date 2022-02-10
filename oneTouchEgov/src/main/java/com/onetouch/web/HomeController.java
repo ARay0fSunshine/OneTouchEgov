@@ -34,7 +34,7 @@ public class HomeController {
 		model.addAttribute("serverTime", formattedDate );
 		
 		
-		return "tiles/home";
+		return "tiles/brd/dashBoard";
 	}
 	
 

@@ -9,6 +9,14 @@
 <head>
 <meta charset="utf-8">
 <title>Insert title here</title>
+
+<style>
+.loginout{
+	height: 30px !important;
+	width: 80px !important;
+	padding: 9px 10px 10px 10px !important;
+}
+</style>
   
 </head>
 <body>
@@ -86,7 +94,11 @@
 		<c:if test="${loginVO == null}">
 		    
 			<li class="nav-item">
-			  	<a href="${pageContext.request.contextPath }/uat/uia/egovLoginUsr.do">Login</a>
+			  	<a href="${pageContext.request.contextPath }/uat/uia/egovLoginUsr.do">
+					<button type="button" id="" class="btn btn-primary loginout">
+		     			LOGIN
+		     		</button>
+				</a>
 			</li>
 			<!-- <li class="nav-item">
 			  	<a class="nav-link" href="emailPermissionForm.do">Join</a>
@@ -96,10 +108,14 @@
 		<c:if test="${loginVO != null}">
 			<c:if test='${loginVO.id != null}'>
 				<li class="nav-item">
-					${loginVO.name}(${loginVO.id})  
-					<spring:message code="comCmm.unitContent.2"/>
+					${loginVO.name}(${loginVO.id})
+					<spring:message code="comCmm.unitContent.2"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			        <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">
-			     	<spring:message code="comCmm.unitContent.3"/></a>  	
+			     		<%-- <spring:message code="comCmm.unitContent.3"/> --%>
+			     		<button type="button" id="" class="btn btn-primary loginout">
+			     			LOGOUT
+			     		</button>
+			     	</a>  	
 			     </li>
 			<%-- <li class="nav-item" id="btnivinfo" onclick=adminDropDown("btnIvInfo") style="position:relative;">
 			  	<a class="nav-link" href="#">${name }님▾</a>

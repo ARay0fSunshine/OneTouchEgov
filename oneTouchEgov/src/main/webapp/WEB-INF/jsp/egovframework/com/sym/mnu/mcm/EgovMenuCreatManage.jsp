@@ -27,6 +27,23 @@
 %>
 <html lang="ko">
 <head>
+
+<style type="text/css">
+.s_btn, .btn_b{
+	background: #4747A1 !important;
+	height: 24px !important;
+	vertical-align: top !important;
+    padding: 0 8px;
+    border: none;
+    color: #fff;
+    border-radius: 5px !important;
+    cursor: pointer;
+}
+div.board{
+	margin-bottom: 163px;
+}
+</style>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
 <title><spring:message code="comSymMnuMpm.menuCreatManage.title" /></title><!-- 메뉴생성관리 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">

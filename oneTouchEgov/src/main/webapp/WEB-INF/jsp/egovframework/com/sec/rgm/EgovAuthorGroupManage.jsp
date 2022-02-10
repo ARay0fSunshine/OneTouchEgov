@@ -26,6 +26,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<style>
+.s_btn, .btn_b{
+	background: #4747A1 !important;
+	height: 24px !important;
+    padding: 0 8px;
+    border: none;
+    color: #fff;
+    border-radius: 5px !important;
+    cursor: pointer;
+}
+div.board{
+	margin-bottom: 180px;
+}
+</style>
+
 <title>${pageTitle} <spring:message code="title.list" /></title><!-- 권한그룹관리 목록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
