@@ -55,7 +55,7 @@
 	 </c:if>
   </c:if>    --%>
   
-	<c:if test="${loginVO != null}">
+	<%-- <c:if test="${loginVO != null}">
 	 <c:if test='${loginVO.uniqId != null}'>
 	 	 <script>
 		 	$.ajax({
@@ -71,7 +71,10 @@
 			})
 	 	 </script>
 	 </c:if>
-  </c:if> 
+  </c:if>  --%>
+  
+  
+
 
 </head>
 <body>
@@ -87,7 +90,15 @@
       <!-- partial -->
       
       <!-- partial:partials/_sidebar.html -->
-      <nav><tiles:insertAttribute name="nav" /></nav>
+     <%--  <nav><tiles:insertAttribute name="nav" /></nav> --%>
+     <nav>
+		<c:if test="${loginVO != null}">
+			<c:if test='${loginVO.uniqId != null}'>
+				<tiles:insertAttribute name="nav" />
+			</c:if>
+		</c:if> 
+     
+     </nav>
       
       <!-- partial -->
       <div class="main-panel">
@@ -104,7 +115,8 @@
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
-
+  
+  
 
   <!-- endinject -->
   <!-- Plugin js for this page -->
