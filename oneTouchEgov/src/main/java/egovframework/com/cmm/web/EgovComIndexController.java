@@ -120,7 +120,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		
 		//return "egovframework/com/cmm/EgovUnitContent";
 		
-		return "tiles/home";
+		return "tiles/home"; //return "tiles/brd/dashBoard";
 	}
 
 	@RequestMapping("/EgovLeft.do")
