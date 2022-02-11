@@ -140,7 +140,7 @@ hr{
 
 <script type="text/javascript">
 let rowk = -1;
-
+let datas = [];
 
 //---------포맷에 맞게 날짜 구하는 function---------
 function getDateStr(dt){
