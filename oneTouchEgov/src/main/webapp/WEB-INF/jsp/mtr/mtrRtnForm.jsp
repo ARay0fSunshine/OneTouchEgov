@@ -465,8 +465,8 @@ btnSave.addEventListener("click", function(){
 			mod();
 			mainGrid.blur();
 			mainGrid.clear();
-			console.log(datas)
-			mainGrid.appendRows(datas);
+			mainGrid.resetData(datas);
+			mainGrid.uncheckAll();
 		} else {
 			mainGrid.uncheckAll();
 			return;
