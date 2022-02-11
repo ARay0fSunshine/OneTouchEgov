@@ -4,13 +4,23 @@
 <c:set var="path" value="${pageContext.request.contextPath}"/>
 <%@ page session="false"%>
 <html>
+
+<style>
+.image{
+	height: 90vh !important;
+    width: 130vh !important;
+    /* margin-left: 350px !important; */
+    margin-left: 21% !important;
+}
+</style>
+
 <head>
 <title>Home</title>
 </head>
 <body>
 	<!-- <h1>Hello world! ㅋㅋ</h1> -->
-
-	<img src="${path}/resources/template/images/main.jpg" style="width:100% ; height: auto;"> 
+	
+	<img src="${path}/resources/template/images/main.jpg" class="image"> 
 	
 	<script>
 	
