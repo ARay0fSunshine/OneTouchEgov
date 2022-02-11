@@ -153,7 +153,7 @@
 /* $(document).ready(function() {
    
     $("#ImageButton").MonthPicker({
-        Button: '<img class="icon" src="/oneTouch/resources/template/images/cal_lb_sm.png" />'
+        Button: '<img class="icon" src="${path}/resources/template/images/cal_lb_sm.png" />'
     });
    
 }); */
