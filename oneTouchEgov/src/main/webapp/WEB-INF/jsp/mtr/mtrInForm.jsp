@@ -420,7 +420,6 @@ function totCal(){
 //---------mainGrid 입고량 validation & 합계금액 산출---------
 mainGrid.on('editingFinish', (ev) => {
 	if(ev.columnName == 'inAmt'){
-		console.log(mainGrid.getValue(ev.rowKey, 'ordAmt'))
 		if(mainGrid.getValue(ev.rowKey, 'ordAmt') != null && mainGrid.getValue(ev.rowKey, 'ordAmt') != ""){
 			let inAmt = mainGrid.getValue(ev.rowKey,"inAmt")
 			let unitCost = mainGrid.getValue(ev.rowKey,"unitCost")

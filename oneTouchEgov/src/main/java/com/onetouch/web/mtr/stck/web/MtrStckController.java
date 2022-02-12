@@ -32,8 +32,6 @@ public class MtrStckController {
 		public ModelAndView excelTwoView( MtrSearchVO searchVO ) throws IOException{
 			List<Map<String, Object>> list = LotMapper.listExcelCheckMtr(searchVO);
 			HashMap<String, Object> map = new HashMap<String, Object>(); 
-			System.out.println("컨트롤러 연결 성공 ");
-			System.out.println(searchVO);
 			map.put("filename", "excel_dept");
 			map.put("datas", list);
 			return new ModelAndView("mtrExcelTwoView", map);
@@ -44,8 +42,6 @@ public class MtrStckController {
 	public ModelAndView excelView(MtrSearchVO searchVO) throws IOException{
 		List<Map<String, Object>> list = LotMapper.listExcelLot(searchVO);
 		HashMap<String, Object> map = new HashMap<String, Object>(); 
-		System.out.println("lot엑셀컨트롤러 연결 성공 ");
-		System.out.println(searchVO);
 		map.put("filename", "excel_dept");
 		map.put("datas", list);
 		return new ModelAndView("LotExcelView", map);
