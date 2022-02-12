@@ -487,9 +487,10 @@ mainGrid.on('editingFinish', function(ev) {
 	};
 	if(ev.columnName == 'calAmt'){
 		if(mainGrid.getValue(ev.rowKey,'calSectNm') == '출고정산'){
-			if(mainGrid.getValue(ev.rowKey,'calAmt') > mainGrid.getValue(ev.rowKey,'stckCnt')){
+			if(mainGrid.getValue(ev.rowKey,'calAmt')*1 > mainGrid.getValue(ev.rowKey,'stckCnt')*1){
 				alert("출고정산량이 현재고보다 많습니다.")
-				ev.stop();
+				mainGrid.blur();
+				mainGrid.setValue(ev.rowKey,'calAmt',mainGrid.getValue(ev.rowKey,'calAmt'));
 			}
 		}
 	};
@@ -659,6 +660,7 @@ columns : [
 			]
 });
 //---------lotGrid 끝---------
+
 
 //***************************************************************************************************
 //---------lotGrid (mainGrid에 있는 데이터 제거)---------
