@@ -7,10 +7,10 @@
 
 <style>
 .image{
-	height: 90vh !important;
-    width: 130vh !important;
-    /* margin-left: 350px !important; */
-    margin-left: 21% !important;
+	height: 95vh !important;
+    width: 210vh !important; 
+   	/*  width: 130vh !important; */
+    /* margin-left: 21% !important; */
 }
 </style>
 
@@ -20,7 +20,7 @@
 <body>
 	<!-- <h1>Hello world! ㅋㅋ</h1> -->
 	
-	<img src="${path}/resources/template/images/main.jpg" class="image"> 
+	<img src="${path}/resources/template/images/main2.jpg" class="image"> 
 	
 	<script>
 	
