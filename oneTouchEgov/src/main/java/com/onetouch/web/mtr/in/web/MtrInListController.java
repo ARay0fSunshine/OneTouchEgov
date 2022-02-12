@@ -33,11 +33,8 @@ public class MtrInListController {
 	//엑셀출력
 	@RequestMapping("/MtrExcelView.do")
 	public ModelAndView excelView() throws IOException{
-		System.out.println("통신완료");
 		List<Map<String, Object>> list = mapper.selectExcelIn();
 		HashMap<String, Object> map = new HashMap<String, Object>(); 
-		System.out.println("리스트 보여주기");
-		System.out.println(list );
 		map.put("filename", "excel_dept");
 		map.put("datas", list);
 		return new ModelAndView("mtrExcelView", map);
@@ -53,8 +50,6 @@ public class MtrInListController {
 		data.put("result", true);
 		datas.put("contents", service.selectIn(searchVO));
 		data.put("data", datas);
-		System.out.println(searchVO);
-		System.out.println(service.selectIn(searchVO));
 		return data;
 	}
 	
@@ -62,8 +57,6 @@ public class MtrInListController {
 	 @ResponseBody
 	  @PostMapping("/inputOrdList")
 	  public List<MtrInVO> inputOrdList(MtrSearchVO searchVO){
-		 System.out.println(searchVO);
-		 System.out.println(mapper.selectOrdNo(searchVO));
 	  return mapper.selectOrdNo(searchVO);
 	  }
 }

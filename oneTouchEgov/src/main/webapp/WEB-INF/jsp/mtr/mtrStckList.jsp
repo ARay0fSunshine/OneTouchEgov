@@ -692,7 +692,6 @@ btnLotFind.addEventListener("click", function(){
 //---------자재검색모달 row더블클릭 이벤트---------
 function getModalMtr(param,btn){
 	dialog.dialog("close");
-	console.log(btn)
 	if( btn == "mtrBtn"){
 		$('#ditemCode').val(param.mtrCd);
 		$('#ditemCodeNm').val(param.mtrNm);

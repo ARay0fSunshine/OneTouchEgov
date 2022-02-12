@@ -208,7 +208,6 @@
     }
    abc();
       function drawChart() {
-         console.log(i)
           let data ; 
           let arr=[];
         var aa =[
@@ -230,24 +229,15 @@
                fltSum+=obj.fltCnt*1;
                cc.push([obj.prcCd,obj.pdtCnt*1+obj.fltCnt*1])
                pdtSum+=obj.goalCnt-(obj.pdtCnt*1+obj.fltCnt*1)
-               //console.log(pdtSum)
             }
 
-            console.log(cc)
             cc.push(['잔여진행률',pdtSum])
-            //console.log(fltSum)
             let pdtCnt=result[i][result[i].length-1].pdtCnt
             let fltCnt=result[i][result[i].length-1].fltCnt
             let goalCnt=result[i][result[i].length-1].goalCnt
             aa.push(['생산량',pdtCnt*1])
             aa.push(['불량량',fltSum*1])
             aa.push(['남은수량',goalCnt*1-(pdtCnt*1+fltSum)])
-         	console.log(aa)
-         	console.log(goalCnt)
-         	console.log(pdtCnt)
-         	console.log(fltSum)
-			console.log("aa")
-            console.log("불량률"+fltSum)
             /* for(obj of result[i]){
                let a=[obj.prcCd, obj.pdtCnt*1];
                aa.push(a)   
