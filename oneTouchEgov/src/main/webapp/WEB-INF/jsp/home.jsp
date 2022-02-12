@@ -9,7 +9,7 @@
 .image{
 	height: 94vh !important;
     width: 210vh !important; 
-    margin-left: -9% !important;
+    margin-left: -9% !important; 
    	/*  width: 130vh !important; */
     /* margin-left: 21% !important; */
 }
