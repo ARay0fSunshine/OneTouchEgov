@@ -1109,6 +1109,8 @@
 				})
 				.then(response=>response.json())
 				.then(dateResult=>{
+					console.log("date")
+					console.log(dateResult)
 					let resultDate=result.map(ev=>{
 						return ev.workStrDate;
 					})
@@ -1193,7 +1195,7 @@
 	
  	delBtn.addEventListener("click",function(){
  		planGridNeedCnt=0;
-		lotGrid.setValue(0,'hldCnt',0)
+		//lotGrid.setValue(0,'hldCnt',0)
 		grid.clear();
 		planGrid.clear();
 		insertDtlGrid.clear();
@@ -1495,10 +1497,9 @@ function needOrdCd(){
 							hiddenGrid.removeRow(obj.rowKey);
 						}
 					}
-					
 					console.log(ev)
 					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
-					lotGrid.setValue(0,'hldCnt',0)
+					//lotGrid.setValue(0,'hldCnt',0)
 				})
 			
 		}
@@ -1577,6 +1578,8 @@ function needOrdCd(){
 		let hiddenGetData=hiddenGrid.getData();
 		let m=0;
 		let hiddenInsertData =hiddenGetData.map(x=>{
+			console.log("확인")
+			console.log(x.hldCnt)
 			if(lotData1.mtrLot == x.mtrLot && lotData1.prdCd == x.prdCd){
 				lotData1.rowKey=m;
 				m++;
@@ -1587,8 +1590,12 @@ function needOrdCd(){
 				m++;
 				return x;
 			}
+		}).filter(obj=>{
+			if(obj.hldCnt!=0&&obj.hldCnt!='0'){
+				return obj;
+			}
 		})
-		
+		console.log(hiddenInsertData)
 		hiddenGrid.resetData(hiddenInsertData)
 	})
 	
@@ -1687,12 +1694,43 @@ function needOrdCd(){
 			fetch("addPlanLotSelect/"+ev.target.getAttribute('data-id')+'/'+ev.target.getAttribute('data-prc')+'/'+ev.target.value)
 				.then(response=>response.json())
 				.then(result=>{
-										
-					lotGrid.resetData(result);
+					console.log("dddddd")
+					console.log(planGridNeedCnt*1 * result[0].useAmt*1)		
+					let resultSave=result;
+					let needCnt=planGridNeedCnt;
+					if(resultSave.length!=0){
+						for(obj of resultSave){
+							console.log(planGridNeedCnt*1)
+							console.log(resultSave[0].useAmt*1)
+							for(let i=1; i<=planGridNeedCnt*1 * resultSave[0].useAmt*1;i++){
+								console.log("aaaaaa")
+								if(i==obj.realCnt*1||i==planGridNeedCnt*1 * resultSave[0].useAmt*1){
+									console.log("i??"+i)
+									obj.hldCnt=i;
+									planGridNeedCnt= planGridNeedCnt-(i/resultSave[0].useAmt*1);
+									break;
+								}
+							}
+						}
+					}
+					//planGridNeedCnt.
+					console.log(resultSave);
+					console.log("여기");
+					planGridNeedCnt=needCnt;
+					lotGrid.resetData(resultSave);
+					for(obj of resultSave){
+						if(obj.hldCnt!=0){
+							obj.planNo=planGrid.getRowAt(0).planNo;
+							obj.lineNo=planGrid.getValue(ev,'lineNo');
+							hiddenGrid.appendRow(obj);
+						}
+					}
 				}).then(()=>{
-					
-					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					let pCnt=lotGrid.getValue(0,'hldCnt')
 					lotGrid.setValue(0,'hldCnt',0)
+					lotGrid.setValue(0,'hldCnt',pCnt)
+					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					//lotGrid.setValue(0,'hldCnt',0)
 					lotGridUseAmt=lotGrid.getData()[0].useAmt
 				})
 			
