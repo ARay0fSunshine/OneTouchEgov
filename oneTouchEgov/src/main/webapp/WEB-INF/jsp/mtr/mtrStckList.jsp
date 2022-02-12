@@ -596,7 +596,7 @@ var lotGrid = new Grid({
 					height: 40,
 				   	position: 'bottom',
 				   	columnContent: {
-				   		mtrLot: {
+				   		mtrSectNm: {
 			                template(summary) {
 			        			return '합 계';
 			                } 
