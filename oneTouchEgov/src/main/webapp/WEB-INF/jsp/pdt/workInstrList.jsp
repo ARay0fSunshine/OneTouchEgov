@@ -279,6 +279,10 @@ class abc{
 	        }
 	      } */
 		,{
+			header : '제품명',
+			name : 'prdNm',
+	        align:'center',
+		},{
 			header : '계획번호',
 			name : 'planNo',
 	        align:'center',
@@ -568,7 +572,7 @@ class abc{
 			},{
 				header : '공정코드',
 				name : 'prcCd',
-				hidden : true,
+				hidden : false,
 		        align:'center',
 			},{
 				header : '자재코드',

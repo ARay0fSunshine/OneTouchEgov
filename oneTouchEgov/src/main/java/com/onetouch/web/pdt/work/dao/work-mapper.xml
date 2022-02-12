@@ -8,7 +8,7 @@
 		to_char(a.due_date,'yyyy-MM-dd') as dueDate, a.work_prot as workPort,
 		to_char(a.plan_date,'yyyy-MM-dd') as
 		planDate ,
-		b.prd_cd as prdCd , b.prc_cd as prcCd , b.need_cnt as
+		b.prd_cd as prdCd , b.prc_cd as prcCd ,(select prd_nm from adm_prd where prd_cd=b.prd_cd) prd_nm, b.need_cnt as
 		needCnt,
 		b.instr_cnt as instrCnt , to_char(b.work_str_date,'yyyy-MM-dd') as workStrDate,
 		b.work_plan_time as workStrTime,b.line_no as lineNo
@@ -42,20 +42,28 @@
 		</if>  
 	</select>
 	<select id="workListDetail" resultType="com.onetouch.web.pdt.work.dao.WorkVO">
-		select instr_no, line_no ,  prd_cd , instr_cnt , pdt_cnt , to_char(work_str_date,'yyyy-MM-dd')  work_str_date, work_str_time , bom_cd from pdt_work_instr_dtl
+		select a.* , b.*		
+		from (select instr_no, line_no ,  prd_cd , instr_cnt , pdt_cnt , to_char(work_str_date,'yyyy-MM-dd')  work_str_date, work_str_time , bom_cd from pdt_work_instr_dtl
 		group by instr_no, line_no ,  prd_cd , instr_cnt , pdt_cnt , work_str_date , work_str_time , bom_cd
-		having 1=1
+		having 1=1) a join pdt_work_instr b 
+		on a.instr_no = b.instr_no   
 		<if test='instrNo!="" and planNo!=null'>
-			and instr_no=#{instrNo}
+			and instr_no='%'||#{instrNo}||'%'
 		</if>
 		<if test='prdCd!="" and prdCd!=null' >
 			and prd_cd like '%'||#{prdCd}||'%'
 		</if>
 	 	<if test='startDate!="" and startDate!=null'>
-			and work_str_date>=#{startDate}
+			and a.work_str_date>=#{startDate}
 		</if>
 	 	<if test='endDate!="" and endDate!=null'>
-			and #{endDate}>=work_str_date
+			and #{endDate}>=a.work_str_date
+		</if> 
+		<if test='nowPhs=="Y"'>
+			and now_phs = 'Y'
+		</if>  
+		<if test='nowPhs=="N"'>
+			and now_phs = 'N'
 		</if> 
 	</select>
 		<select id="prcMovingList" resultType="com.onetouch.web.pdt.work.dao.WorkVO">

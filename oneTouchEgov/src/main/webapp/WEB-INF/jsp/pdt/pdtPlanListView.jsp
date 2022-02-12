@@ -108,6 +108,13 @@ hr{
 							<label class="labeltext colline2">제품명</label>
 							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
 						</div>
+						<div class="rowdiv" style="display:inline-block">
+							<label class="labeltext">계획번호</label>
+							<input id="planNo" name="planNo" class="inputtext">
+							<!-- <button type="button" id="btnPrcCd" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
+							<label class="labeltext colline2">제품명</label>
+							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
+						</div>
 						
 						<span>
 							<button type="button" id="searchBtn" name="searchBtn" class="btn btn-primary mr-2 floatrightbtn">조회</button>
@@ -299,7 +306,8 @@ hr{
 		if(document.getElementById('prdCd').value!=''){
 			console.log("ifff")
 			let searchData=$('#planSearchFrm').serializeObject();
-			searchData.planNo='';
+			console.log(searchData);
+			//searchData.planNo='';
 			fetch('planDtlList',{
 					method:'POST',
 					headers:{
@@ -312,12 +320,13 @@ hr{
 				mainGrid.resetData(result);
 			})
 		}
-		else{
+/* 		else{
 			console.log("elseeee")
 			planDialog.dialog("open");
 			modalGrid.refreshLayout();
 			//계획서 조회
 			let searchData=$('#planSearchFrm').serializeObject();
+			console.log(searchData);
 			fetch('planSearchList',{
 					method:'POST',
 					headers:{
@@ -329,7 +338,7 @@ hr{
 			.then(result=>{
 				modalGrid.resetData(result);
 			})
-		}
+		} */
 	})
 	/* findPlan.addEventListener("click",ev=>{
 		planDialog.dialog("open");

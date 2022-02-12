@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <style>
+.clickRow{background-color: lightpink;}
 .labeltext{
 width: 100px !important;
 }
@@ -54,7 +55,7 @@ width: 100px !important;
 		<div class="col-md-12 grid-margin">
 			<div class="row">
 				<div class="col-12 col-xl-8 mb-4 mb-xl-0">
-					<h3 class="font-weight-bold page-title">생산계획조회</h3>
+					<h3 class="font-weight-bold page-title">공정진행상황</h3>
 				</div>
 			</div>
 		</div>
@@ -190,14 +191,14 @@ width: 100px !important;
 	}) */
 	//그리드 컬럼 설정	
 	const columns = [{
-		header : '라인번호',
-		name : 'lineNo',
-	},{
 		header : '지시번호',
 		name : 'instrNo',
 	},{
 		header : '작업시작일시',
 		name : 'workStrDt',
+	},{
+		header : '라인번호',
+		name : 'lineNo',
 	},{
 		header : '지시수량',
 		name : 'goalCnt',
@@ -220,17 +221,17 @@ width: 100px !important;
 ///////////////////////////그리드생성/////////////////////////////
 	//그리드 컬럼 설정	
 	const movingColumns = [
-	{
+		{
+			header : '지시번호',
+			name : 'instrNo',
+		},{
+			header : 'LOT번호',
+			name : 'mtrLot'
+		},{
 		header : '라인번호',
 		name : 'lineNo',
 	}
-	,{
-		header : '지시번호',
-		name : 'instrNo',
-	},{
-		header : 'LOT번호',
-		name : 'mtrLot'
-	}];
+	];
 	//그리드 생성
 	movingGrid = new Grid({
 		  el: document.getElementById('movingGrid'),
@@ -303,7 +304,10 @@ width: 100px !important;
 	})
 	//메인그리드 클릭
 	grid.on('click',ev=>{
-
+		for(obj of grid.getData()){
+			grid.removeRowClassName(obj.rowKey,'clickRow')
+		}
+		grid.addRowClassName(ev.rowKey,'clickRow')	
 		let searchData=grid.getRow(ev.rowKey);
 			fetch('PrcMovingLot',{
 				method:'POST',
@@ -320,6 +324,10 @@ width: 100px !important;
 	let v=[]; 
 	//무빙그리드 클릭 
 	movingGrid.on('click',ev=>{
+		for(obj of movingGrid.getData()){
+			movingGrid.removeRowClassName(obj.rowKey,'clickRow')
+		}
+		movingGrid.addRowClassName(ev.rowKey,'clickRow')	
 		console.log(ev.rowKey)
 		console.log("뭐지?")
 		if(movingGrid.getValue(ev.rowKey,'mtrLot') != v[0]){

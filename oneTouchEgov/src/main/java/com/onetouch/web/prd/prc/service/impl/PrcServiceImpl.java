@@ -159,10 +159,12 @@ public class PrcServiceImpl implements PrcService{
 			vo2=vo;
 			String fltSave=mapper.realFlt(vo).getSumFlt();  
 			String pdtSave=mapper.realFlt(vo).getPdtCnt();
+			System.out.println(fltSave+",,"+pdtSave);
 			while(true){
 				String flt=mapper.realFlt(vo2).getSumFlt(); 
 				String pdt=mapper.realFlt(vo2).getPdtCnt();
 				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
+					System.out.println(flt+"...."+pdt);
 					return mapper.realFlt(vo);
 				}
 				robot.delay(3000);

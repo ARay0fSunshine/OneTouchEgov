@@ -107,6 +107,13 @@ hr{
 							<label class="labeltext colline2">제품명</label>
 							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
 						</div>
+						<div class="rowdiv" style="display:inline-block">
+							<label class="labeltext">지시번호</label>
+							<input id="instrNo" name="instrNo" class="inputtext">
+							<!-- <button type="button" id="btnPrcCd" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
+							<label class="labeltext colline2">제품명</label>
+							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
+						</div>
 						
 						<span>
 							<button type="button" id="searchBtn" name="searchBtn" class="btn btn-primary mr-2 floatrightbtn">조회</button>

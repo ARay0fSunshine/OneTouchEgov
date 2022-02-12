@@ -127,7 +127,7 @@
 	</select>
 	<insert id='fastStop'>
 		insert into msg_alt (msg_no , alt_send_dt, alt_send_dept , alt_recp_dept , alt_cmt)
-		values ( PKG_MAKE_CODE.CODE('MSG','MTR_LOT_STCK','MTR_LOT') , sysdate , '수리부서' , 'PDT'||','||#{lineNo}||','||#{prcCd} , '공정설비 고장낫어요 빨리와주세요.')
+		values ( PKG_MAKE_CODE.CODE('MSG','MTR_LOT_STCK','MTR_LOT') , sysdate , 'fct' , 'PDT'||','fct','||#{prcCd} , '공정설비 고장낫어요 빨리와주세요.')
 	</insert>
 	<update id="fastStopUpdate">
 		update prd_prc_mng set
@@ -214,11 +214,11 @@
 	where now_phs like '%가동종료%'
 	</select>
 	<select id="autoSelect" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
-		select line_no , prc_cd ,instr_no ,nvl(pdt_cnt,0) pdt_cnt,(nvl(goal_cnt,0)) goalCnt from prd_prc_mng
+		select line_no , prc_cd ,instr_no ,nvl(pdt_cnt,0) pdt_cnt,(nvl(goal_cnt,0)) goal_cnt, nvl(flt_cnt,0) flt_cnt  from prd_prc_mng
 		where now_phs='가동중'
 	</select>
-	<select id="uphFind" resultType="integer">
-		select trunc(((a.uph_pdt_amt)/60/6),3)
+	<select id="uphFind" resultType="int">
+		select distinct trunc(((a.uph_pdt_amt)/60/6),3)
 		from fct_line a join fct_info b
 		on a.line_no = b.line_no
 		where a.line_no=#{lineNo}
@@ -229,7 +229,7 @@
 		update prd_prc_mng set pdt_cnt=#{pdtCnt} where instr_no = #{instrNo} and prc_cd=#{prcCd}
 	</update>	
 	<update id="autoFltUpdate">
-		update prd_prc_mng set flt_cnt=#{fltCnt} where instr_no = #{instrNo} and prc_cd=#{prcCd}
+		update prd_prc_mng set flt_cnt=#{pdtCnt} where instr_no = #{instrNo} and prc_cd=#{prcCd}
 	</update>	
 	
 	

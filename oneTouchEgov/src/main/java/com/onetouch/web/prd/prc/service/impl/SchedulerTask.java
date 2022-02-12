@@ -19,12 +19,17 @@ public class SchedulerTask {
 	public void selectTask1() {
 		List<PrcVO> list= new ArrayList<>();
 		list=mapper.autoSelect();
-		int rand=(int) (Math.random()*100);
 		for(PrcVO vo : list) {
+			int rand=(int) (Math.random()*100);
 			PrcVO vo2 =mapper.autoFltSum(vo);
 			if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt())) {
+				System.out.println("fddddddsssss");
 				int uph;
+				System.out.println(vo);
+				System.out.println("asd"+vo+mapper.uphFind(vo));
 				uph=mapper.uphFind(vo);
+				System.out.println("UPH"+uph);
+				System.out.println("rand"+rand);
 				if(rand<70) {
 					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
 					mapper.autoUpdate(vo);
