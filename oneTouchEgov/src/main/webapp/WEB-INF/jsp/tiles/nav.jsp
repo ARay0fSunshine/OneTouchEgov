@@ -144,6 +144,8 @@
 				str += '</li>'
 			}
 			
+			/* console.log(str); */
+			
 			$('#nav').append(str); 
 			
 		}
