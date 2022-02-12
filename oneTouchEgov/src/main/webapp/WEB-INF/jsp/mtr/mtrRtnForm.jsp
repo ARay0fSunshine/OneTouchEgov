@@ -16,15 +16,11 @@
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
 <link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
-<script src="${path}/resources/js/toastr-options.js"></script>
 </head>
 <style type="text/css">
 .tui-grid-cell-summary{
@@ -349,7 +345,7 @@ mainGrid.on('dblclick',function(ev){
 		ev.columnName == "inAmt" ||
 		ev.columnName == "fltAmt"
 		){
-		 toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+		alert("변경할 수 없는 코드 입니다.")
 	}
 });
 //---------mainGrid 수정불가 alert 끝---------
@@ -360,7 +356,7 @@ mainGrid.on('editingFinish',(ev)=>{
 	if(ev.columnName == 'rtnAmt' 
 		&& mainGrid.getValue(ev.rowKey,'rtnAmt') > (mainGrid.getValue(ev.rowKey,'ordAmt') - mainGrid.getValue(ev.rowKey,'inAmt'))){
 		ev.stop();
-		toastr["warning"]("반품량이 너무 많습니다.")
+		alert("반품량이 너무 많습니다.")
 	}
 });
 //---------mainGrid 반품량 validation 끝---------

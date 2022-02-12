@@ -451,7 +451,7 @@ mainGrid.on('editingStart', (ev) => {
     }else if(ev.columnName == 'ordNo') {
        value = mainGrid.getValue(ev.rowKey, 'ordNo');
        if(value != '') {
-    	  toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+    	   alert("변경할 수 없는 코드 입니다.")
           ev.stop();
        }
     }else if(ev.columnName == 'inAmt') {
@@ -464,10 +464,10 @@ mainGrid.on('editingStart', (ev) => {
 //---------mainGrid 단위, 업체 수정불가 alert---------
 mainGrid.on('dblclick', (ev) => {
 	if(ev.columnName == 'unitNm' || ev.columnName == 'compNm') {
-	       toastr["info"]("자재명 수정해 주세요.")
+		alert("자재명 수정해 주세요.")
 	    }
 	if(ev.columnName == 'ordAmt' || ev.columnName == 'befInAmt' || ev.columnName == 'notinAmt'|| ev.columnName == 'totCost') {
-	       toastr["info"]("수정할 수 없습니다.")
+		alert("수정할 수 없습니다.")
 	    }
 });
 //---------mainGrid 단위, 업체 수정불가 alert 끝---------
