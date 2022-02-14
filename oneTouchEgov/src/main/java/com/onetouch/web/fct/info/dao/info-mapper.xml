@@ -112,7 +112,7 @@ select fct_cd , fct_nm , line_no ,prc_cd,(select FN_GET_PRC_CD_TO_NM(prc_cd) fro
 							 ,FCT_IMG
 							 ,UPLOAD_PATH
 							 ) 
-	values (#{fctCd},#{fctNm},#{lineNO},#{prcCd},#{fctStd},#{fctModel},#{compCd},#{inDate},to_number(#{purchCost}),#{chkProd},#{chkProdUnit},#{fctImg},#{uploadPath})
+	values (#{fctCd},#{fctNm},#{lineNO},#{prcCd},#{fctStd},#{fctModel},#{compCd},to_date(#{inDate},'yy-MM-dd'),to_number(#{purchCost}),#{chkProd},#{chkProdUnit},#{fctImg},#{uploadPath})
 </insert>
 <!-- 수정 -->
 <update id="InfoUpdate">
@@ -121,7 +121,7 @@ select fct_cd , fct_nm , line_no ,prc_cd,(select FN_GET_PRC_CD_TO_NM(prc_cd) fro
 					,PRC_CD= #{prcCd}
 					,FCT_STD= #{fctStd}
 					,FCT_MODEL= #{fctModel}
-					,IN_DATE= #{inDate}
+					,IN_DATE= to_date(#{inDate},'yy-MM-dd')
 					,PURCH_COST= #{purchCost}
 					,CHK_PROD= #{chkProd}
                     ,CHK_PROD_UNIT = #{chkProdUnit}
