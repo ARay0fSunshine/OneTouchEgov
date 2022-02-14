@@ -78,10 +78,7 @@
 	<update id="endUpdate">
 		update prd_prc_mng set
 		work_fin_dt=sysdate ,
-		now_phs=#{msg},
-		goal_cnt=#{goalCnt},
-		pdt_cnt=#{pdtCnt},
-		flt_cnt=#{fltCnt}
+		now_phs=#{msg}
 		where instr_no=#{instrNo} AND line_no=#{lineNo} And prc_cd like '%'||#{prcCd}||'%'
 	</update>
 	<select id="endTimeSelect" resultType="com.onetouch.web.prd.prc.dao.PrcVO">

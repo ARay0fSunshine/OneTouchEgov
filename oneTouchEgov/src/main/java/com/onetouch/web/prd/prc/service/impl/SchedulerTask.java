@@ -25,7 +25,7 @@ public class SchedulerTask {
 			PrcVO vo2 =mapper.autoFltSum(vo);
 			System.out.println(vo);
 			System.out.println(vo2);
-			if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt())) {
+			if(Integer.parseInt(vo.getGoalCnt())>(Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt()))) {
 				System.out.println("fddddddsssss");
 				System.out.println(vo);
 				System.out.println(vo2);
