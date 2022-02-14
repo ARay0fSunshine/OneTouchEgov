@@ -79,7 +79,7 @@ width: 100px !important;
 							<div class="form-check checkwidth" style="display:inline-block">
 							    <label class="form-check-label schCondLabel" for="checkedY">
 							  		<input type="radio" class="form-check-input" id="checkedY" name="prcCheck" value="Y" checked>
-							  		지시완료
+							  		공정진행
 									<i class="input-helper"></i>
 								</label>
 							</div>
@@ -87,7 +87,7 @@ width: 100px !important;
 							<div class="form-check checkwidth" style="display:inline-block">
 								<label class="form-check-label schCondLabel" for="checkedN">
 							  		<input type="radio" class="form-check-input" id="checkedN" name="prcCheck" value="N">
-							  		미지시
+							  		공정미진행
 									<i class="input-helper"></i>
 								</label>
 							</div>
@@ -109,7 +109,7 @@ width: 100px !important;
 	</div>
 	<div class="flex row row1">
 		<div class = "col-12">
-		<h4 class="gridtitle">✔????</h4>
+		<h4 class="gridtitle">✔진행목록</h4>
 			<hr>
 			<div id="grid"></div>
 		</div>
@@ -117,13 +117,13 @@ width: 100px !important;
 	<br>
 	<div class="flex row">
 		<div class = "col-4">
-			<h4 class="gridtitle">✔?????</h4>
+			<h4 class="gridtitle">✔자재LOT</h4>
 			<hr>
 			<div id="movingGrid"></div>
 		</div>
 		
 		<div class = "col-8">
-			<h4 class="gridtitle">✔공정결과</h4>
+			<h4 class="gridtitle">✔진행상황</h4>
 			<hr>
 			<div id="movingPrcGrid"></div>
 		</div>
@@ -147,6 +147,7 @@ width: 100px !important;
 </div> -->
 
 	<script>
+	
 	$( function() {
 	    $( ".datepicker" ).datepicker({
 	      dateFormat:"yy-mm-dd",
@@ -193,18 +194,23 @@ width: 100px !important;
 	const columns = [{
 		header : '지시번호',
 		name : 'instrNo',
+        align:'center',
 	},{
 		header : '작업시작일시',
 		name : 'workStrDt',
+        align:'center',
 	},{
 		header : '라인번호',
 		name : 'lineNo',
+        align:'center',
 	},{
 		header : '지시수량',
 		name : 'goalCnt',
+        align:'right',
 	},{
 		header : '생산량',
 		name : 'pdtCnt',
+        align:'right',
 	}];
 	//그리드 생성
 	grid = new Grid({
@@ -224,12 +230,15 @@ width: 100px !important;
 		{
 			header : '지시번호',
 			name : 'instrNo',
+	        align:'center',
 		},{
 			header : 'LOT번호',
-			name : 'mtrLot'
+			name : 'mtrLot',
+	        align:'center',
 		},{
 		header : '라인번호',
 		name : 'lineNo',
+        align:'center',
 	}
 	];
 	//그리드 생성
@@ -249,30 +258,39 @@ width: 100px !important;
 	const movingPrcColumns = [{
 		header : '지시번호',
 		name : 'instrNo',
+        align:'center',
 	},{
 		header : '라인번호',
 		name : 'lineNo',
+        align:'center',
 	},{
 		header : '공정코드',
 		name : 'prcCd',
+        align:'center',
 	},{
 		header : '작업시작일',
 		name : 'workStrDt',
+        align:'center',
 	},{
 		header : '작업종료일',
 		name : 'workFinDt',
+        align:'center',
 	},{
 		header : '목표수량',
 		name : 'goalCnt',
+        align:'right',
 	},{
 		header : '생산수량',
 		name : 'pdtCnt',
+        align:'right',
 	},{
-		header : '불량률',
+		header : '불량량',
 		name : 'fltCnt',
+        align:'right',
 	},{
 		header : '현재상태',
 		name : 'nowPhs',
+        align:'center',
 	}];
 	//그리드 생성
 	movingPrcGrid = new Grid({
@@ -352,37 +370,31 @@ width: 100px !important;
 		.then(result=>{
 			movingPrcGrid.resetData(result);
 				console.log(v.length)
-				movingShowFnc(movingGrid.getRow(ev.rowKey));
 		}) 
 		
 		
 	})
 	
-	function movingShowFnc(ev){
-		console.log(ev)
-		let searchData=movingGrid.getRow(ev);
-		fetch('prcMovingShow',{
-			method:'POST',
-			headers:{
-			"Content-Type": "application/json",
-		},
-		body:JSON.stringify(searchData)
-		})
-		.then(response=>response.json())
-		.then(result=>{
-			console.log(result)
-			if(v[0]==ev.mtrLot || v[0]!=v[1]){
-				console.log("if들어옴")
-				movingPrcGrid.resetData(result);
-				movingShowFnc(ev);
-			}else{v.length=1||result.length==0}
-			
-			
-			
-		})
-	}
-	
-	
+	setInterval(()=>{
+		for(let i=0;i<movingGrid.getData().length;i++){
+		    if(movingGrid.getRowClassName(i)=='clickRow'){
+		    	console.log("ddddd")
+		     	console.log(movingGrid.getData()[i])
+		     	
+		     	fetch('prcMovingNonRoop',{
+					method:'POST',
+					headers:{
+					"Content-Type": "application/json",
+				},
+				body:JSON.stringify(movingGrid.getData()[i])
+				})
+				.then(response=>response.json())
+				.then(result=>{
+					movingPrcGrid.resetData(result);
+				})
+	    	}
+	    }
+	},5000)
 	
 	</script>
 </body>
