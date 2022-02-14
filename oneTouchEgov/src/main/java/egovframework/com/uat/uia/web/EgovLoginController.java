@@ -290,13 +290,13 @@ public class EgovLoginController {
 
 		LOGGER.debug("Globals.MAIN_PAGE > " + Globals.MAIN_PAGE);
 		LOGGER.debug("main_page > {}", main_page);
-
+		System.out.println("로그인부분ㄴㄴㄴㄴㄴㄴㄴㄴ");
 		/*
 		 * if (main_page.startsWith("/")) { return "forward:" + main_page; } else {
 		 * return main_page; }
 		 */
 		
-		return "tiles/brd/dashBoard";
+		return "redirect:/brd/dashBoard";
 
 		/*
 		if (main_page != null && !main_page.equals("")) {

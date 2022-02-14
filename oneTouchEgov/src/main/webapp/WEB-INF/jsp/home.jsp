@@ -29,7 +29,7 @@
 	console.log(uniqId)
 	if (uniqId != '' ) {
 		console.log("$$$$$")
-		location.href = "tiles/brd/dashBoard";
+		location.href = "/brd/dashBoard";
 	}
 	
 	</script>
