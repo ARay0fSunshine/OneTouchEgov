@@ -74,7 +74,7 @@
 			<option value="N">미지시</option>
 			<option value="Y">지시완료</option>
 		</select>
-		<button id="modalSearchBtn" name="modalSearchBtn">조회</button>
+		<button style="display:none" id="modalSearchBtn" name="modalSearchBtn">조회</button>
 	</div> 
 	
 	<div id="date-dialog-form" title="생산지시일정">생산지시 일정선택</div>
@@ -723,7 +723,7 @@ class abc{
 			}else{
 				let z =0;
 				for(obj of hiddenMainGrid.getData()){
-					if(obj.prcCd==mainGrid.getRow(ev.rowKey).prcCd){
+					if(obj.prcCd==mainGrid.getRow(ev.rowKey).prcCd&&obj.lineNo==mainGrid.getRow(ev.rowKey).lineNo){
 						z=1;
 					}
 				}
@@ -736,7 +736,9 @@ class abc{
 			
 			instrDate=mainGrid.getValue(mainGrid.getRow(ev.rowKey),'instrDate')			
 			instrNo=mainGrid.getValue(mainGrid.getRow(ev.rowKey),'instrNo')
-			
+			lineNo=mainGrid.getValue(ev.rowKey,'lineNo')
+			console.log(lineNo)
+			console.log(ev.rowKey)
 			fetch('planDtlPrc',{
 				method:'POST',
 				headers:{
@@ -751,7 +753,10 @@ class abc{
 				for(let obj of result){
 					obj.instrDate=selectInstrDate;
 					obj.instrNo=instrNo;
-					datas.push(obj)
+					if(lineNo==obj.lineNo){
+						obj.lineNo=lineNo;
+						datas.push(obj)
+					}
 				}
 				let i
 				if(prcGrid.getData().length==0){
@@ -762,7 +767,7 @@ class abc{
 				console.log()
 				for(obj of datas){
 					for(lot of prcGrid.getData())
-						if(obj.mtrLot==lot.mtrLot){
+						if(obj.mtrLot==lot.mtrLot&&obj.lineNo==lot.lineNo){
 							i=1;
 						}
 					
@@ -840,7 +845,7 @@ class abc{
 			prcGrid.blur();
 			let i=0;
 			for(obj of hiddenGrid.getData()){
-				if(obj.mtrLot==prcGrid.getRow(ev.rowKey).mtrLot){
+				if(obj.mtrLot==prcGrid.getRow(ev.rowKey).mtrLot&&obj.lineNo==prcGrid.getRow(ev.rowKey).lineNo){
 					i=1;
 					console.log("111111")
 				}

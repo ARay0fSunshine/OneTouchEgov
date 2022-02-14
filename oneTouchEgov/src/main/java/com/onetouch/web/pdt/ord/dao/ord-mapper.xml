@@ -35,7 +35,7 @@
 	</foreach>
 </delete>
 <!-- 주문서조회 -->
-<select id="ordShtSelect" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
+<select id="ordShtSelect"  resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
 	select a.prd_nm prdNm, b.prd_cd prdCd, b.cnt as needCnt
     from adm_prd a join (select prd_cd , cnt ,ord_sht_no 
                             from pdt_ord_sht_dtl) b

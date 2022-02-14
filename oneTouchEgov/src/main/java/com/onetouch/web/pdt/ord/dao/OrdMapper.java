@@ -10,6 +10,6 @@ public interface OrdMapper {
 	void delete(List<OrdVO> list);
 	void ordCheck(String ordShtNo);
 	void ordCheck();
-	List<PlanVO> ordShtSelect(String ordShtNo);
+	List<PlanVO> ordShtSelect(PlanVO vo);
 	OrdVO orderSeq();
 }

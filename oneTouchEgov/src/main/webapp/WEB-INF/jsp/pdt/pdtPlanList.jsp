@@ -1501,7 +1501,7 @@ function needOrdCd(){
 						}
 					}
 					console.log(ev)
-					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					planGridNeedCnt=planGrid.getValue(planGrid.getData().length-1,'needCnt')
 					//lotGrid.setValue(0,'hldCnt',0)
 				})
 			
@@ -1559,8 +1559,8 @@ function needOrdCd(){
 			console.log(obj);
 			modiList.push(obj);
 		}
-		let lotData1=lotGrid.getRow(ev.rowKey);
-		lotData1.planNo=grid.getData()[0].planNo;
+		let lotData1=lotGrid.getRow();
+		lotData1.planNo=insertLineNo;
 		lotData1.lineNo=planGrid.getData()[0].lineNo;
 		let i = 0;
 		for(z=0 ; z<hiddenGrid.getData().length ; z++){
@@ -1710,7 +1710,9 @@ function needOrdCd(){
 								if(i==obj.realCnt*1||i==planGridNeedCnt*1 * resultSave[0].useAmt*1){
 									console.log("i??"+i)
 									obj.hldCnt=i;
+									console.log(planGridNeedCnt)
 									planGridNeedCnt= planGridNeedCnt-(i/resultSave[0].useAmt*1);
+									console.log(planGridNeedCnt)
 									break;
 								}
 							}
@@ -1719,12 +1721,13 @@ function needOrdCd(){
 					//planGridNeedCnt.
 					console.log(resultSave);
 					console.log("여기");
-					planGridNeedCnt=needCnt;
+					console.log(planGridNeedCnt);
+					//planGridNeedCnt=needCnt;
 					lotGrid.resetData(resultSave);
 					for(obj of resultSave){
 						if(obj.hldCnt!=0){
 							obj.planNo=planGrid.getRowAt(0).planNo;
-							obj.lineNo=planGrid.getValue(ev,'lineNo');
+							obj.lineNo=insertLineNo;
 							hiddenGrid.appendRow(obj);
 						}
 					}
@@ -1732,7 +1735,9 @@ function needOrdCd(){
 					let pCnt=lotGrid.getValue(0,'hldCnt')
 					lotGrid.setValue(0,'hldCnt',0)
 					lotGrid.setValue(0,'hldCnt',pCnt)
-					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					console.log("dddddqqq")
+					console.log(planGridNeedCnt)
+					planGridNeedCnt=planGrid.getValue(ev,'needCnt')
 					//lotGrid.setValue(0,'hldCnt',0)
 					lotGridUseAmt=lotGrid.getData()[0].useAmt
 				})

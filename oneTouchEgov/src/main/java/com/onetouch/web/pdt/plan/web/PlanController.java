@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.onetouch.web.adm.bom.dao.BomVO;
-import com.onetouch.web.adm.bom.dao.PrdVO;
-import com.onetouch.web.fct.info.dao.InfoVO;
 import com.onetouch.web.pdt.ord.dao.OrdMapper;
 import com.onetouch.web.pdt.plan.dao.PlanMapper;
 import com.onetouch.web.pdt.plan.dao.PlanVO;
@@ -135,9 +133,11 @@ public class PlanController {
 	}
 	@ResponseBody
 	@GetMapping("ordShtSelect/{ordShtNo}")
-	public List<PlanVO> ordShtSelect(@PathVariable String ordShtNo){
-		System.out.println(ordMapper.ordShtSelect(ordShtNo));
-		return ordMapper.ordShtSelect(ordShtNo);
+	public List<PlanVO> ordShtSelect(@PathVariable String ordShtNo,PlanVO vo){
+		vo.setOrdShtNo(ordShtNo);
+		//System.out.println(ordShtNo);
+		//System.out.println(ordMapper.ordShtSelect(ordShtNo));
+		return ordMapper.ordShtSelect(vo);
 	}
 	//안전재고 확인
 	@ResponseBody
