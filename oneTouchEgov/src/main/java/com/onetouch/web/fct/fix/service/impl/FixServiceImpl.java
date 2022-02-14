@@ -50,18 +50,23 @@ public class FixServiceImpl implements FixService {
 		}
 	}
 
-	//생산공정관리 테이블에 수리요청 설비 조회 
-	@Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도)
+	@Override
 	public void selectprdPrcMngSelect() {
-		System.out.println("수리요청");
-		for(FixVO fixVO : fmapper.prdPrcMngSelect()) {
-			fmapper.insertRequestFixFtc(fixVO);
-			System.out.println("설비 비동기 상태 바꿔주기 ");
-			System.out.println(fixVO.getFctCd());
-			System.out.println(fmapper.updateChangeFct(fixVO));
-		}
+		// TODO Auto-generated method stub
 		
 	}
+
+	/*
+	 * //생산공정관리 테이블에 수리요청 설비 조회
+	 * 
+	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void
+	 * selectprdPrcMngSelect() { System.out.println("수리요청"); for(FixVO fixVO :
+	 * fmapper.prdPrcMngSelect()) { fmapper.insertRequestFixFtc(fixVO);
+	 * System.out.println("설비 비동기 상태 바꿔주기 "); System.out.println(fixVO.getFctCd());
+	 * System.out.println(fmapper.updateChangeFct(fixVO)); }
+	 * 
+	 * }
+	 */
 
 
 	

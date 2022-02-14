@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface ProdMapper {
 	
+	ProdVO selectFctExpectDtProd(ProdVO prodVO);
 	//등록, 수정 구분해주는 정기점검 코드 조회 
 	ProdVO selectFctProdChkNo(ProdVO prodVO);
 	//예정 정기점검코드 조회

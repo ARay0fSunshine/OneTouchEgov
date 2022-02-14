@@ -61,4 +61,8 @@ public class ProdServiceImpl implements ProdService {
 	public ProdVO selectFctProd( ) {
 		return mapper.selectFctProd();
 	}
+	@Override
+	public ProdVO selectFctExpectDtProd(ProdVO prodVO) {
+		return mapper.selectFctExpectDtProd(prodVO);
+	}
 }

@@ -99,12 +99,8 @@
 	<hr>
 	<div id="dialog-form" title="점검대상">점검대상 목록</div>
 	<div id="grid"></div>
-</div>
-
-	
+</div>	
 <script>
-
-
 	/* let Grid = tui.Grid; */
 	let data;
 	let prodCheckObj;	//점검대상인 데이터를 담는 변수
@@ -113,7 +109,7 @@
 	let now;
 	let prodNo;	//만들어질 정기점검이력번호
 	let predictprodChkNo;
-	
+	let prodExpectDt = {};
 	$(function() {
 	    //input을 datepicker로 선언
 	    $(".jquerydtpicker").datepicker({
@@ -133,24 +129,11 @@
 	        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
 	        ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
 	        ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
-	    });                    
-	    
+	    });                    	    
 	    //초기값을 오늘 날짜로 설정해줘야 합니다.
-	    //$('.jquerydtpicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)     
-	    	       
+	    //$('.jquerydtpicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)            
 	});   
-	
-	/* Grid.applyTheme('clean',{	
-        cell: {
-            header: {
-              background: '#eef'
-            }
-          },
-          currentRow: {
-          	background: '#fee'
-          }
-     	}) ;  */
-	
+
 	 dialog = $( "#dialog-form" ).dialog({
 		autoOpen : false,
 		modal : true,
@@ -162,44 +145,41 @@
 			fetch('./selectTodayDate')
 			.then(response=> response.json())
 			.then(result=>{
-				console.log('결과값 가져오기')
-				console.log(result)
 				now = result.fixTo.substr(0,10)
-				console.log(now)
+				prodExpectDt.chkExpectDt = now;
 			})
 			.then(x=>{
-				fetch('./selectExpectFctProd')
+				fetch('./selectFctProd')
 				.then(response=> response.json())
 				.then(result=>{
-					console.log('테스트입니다요요요용오오오옹호호호로로로오오오우우유유유류루루루유룰')
-					console.log(result.predictProdChkNo)
 					predictprodChkNo = result.predictProdChkNo; 
+					console.log('차기점검일')
+					console.log(result)
 				})
 				.then(x=>{
 					var temp = [];
+					console.log(checkedRowdata.length)
+					console.log(prodExpectDt)
 					for(i=0; i<checkedRowdata.length; i++){
-						console.log(checkedRowdata)
-						temp.push({
-									chkExpectDt:''
-								   ,chkProd:checkedRowdata[i].chkProd
-								   ,chkProdUnit:checkedRowdata[i].chkProdUnit
-								   ,chkDt:now
-								   ,prodChkNo:predictprodChkNo
-							       ,fctCd:checkedRowdata[i].fctCd
-							       ,chkRslt:checkedRowdata[i].chkRslt
-							       ,fctNm:checkedRowdata[i].fctNm
-								   ,msrMtt:''		   
-								   ,msrCmt:''})
+						prodExpectDt.fctCd = checkedRowdata[i].fctCd;
+						fetch('./selectExpectFctProd',{
+							method:'POST',
+							headers:{
+								'Content-Type' : 'application/json'
+							},
+							body: JSON.stringify(prodExpectDt),
+						})
+						.then(response=>response.json())
+						.then(result=>
+							
+							console.log(result)
+							
+						)
+						
 					}
 					console.table(temp)
-					//mainGrid.appendRows(temp);
 					mainGrid.resetData(temp);
-					
-					
 					let rowK = mainGrid.getRowCount();
-					
-			    	console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-			    	console.log(rowK)
 					for(i =0; i< rowK; i++){
 						mainGrid.setValue(i, 'chkRslt','');
 						mainGrid.setValue(i, 'msrMtt','');
@@ -209,25 +189,12 @@
 					}
 			    	prodCheckGrid.refreshLayout();
 					dialog.dialog( "close" );
-					
-					
 				})
 			})
-				
-		
-			
-			
-			
 		}}
-		/* maxHeight: 600
-		maxWidth: 600
-		minHeight: 200
-		minWidth: 200
-		position: { my: "left top", at: "left bottom", of: button } */
+		
 	});
-	
-	
-//  let dataSource; //그리드에 들어갈 데이터변수
+
 	 var dataSource = {
 		 initialRequest: false,
 		 api: {
@@ -251,7 +218,6 @@
 			 },
 			 contentType: 'application/json',
 		 };
-   
    //th 영역
     const columns = [
     {
@@ -275,6 +241,11 @@
   {
 	    header: '점검일자',
 	    name: 'chkDt',
+	    editor: 'text',
+	    align:'center'
+  },{
+	    header: '차기점검일',
+	    name: 'chkExpectDt',
 	    editor: 'text',
 	    align:'center'
   },
@@ -344,13 +315,6 @@
 	    bodyHeight: 509,
         minBodyHeight: 509,
 	 });
-   
-   //disapbleColumn 컬럼수정을 막는 코드
-    /* mainGrid.disableColumn('prodChkNo')
-	mainGrid.disableColumn('chkDt')
-	mainGrid.disableColumn('chkExpectDt')
-	mainGrid.disableColumn('chkProd')
-	mainGrid.disableColumn('chkProdUnit') */
    
    mainGrid.on('editingStart', (ev) => {
 	   console.log('startstartstartstartstart')
@@ -445,32 +409,26 @@
    
    //점검완료 등록 이벤트 
    prodChekCompleteBtn.addEventListener("click", function() {
-   	
-	   console.log('점검완료 등록')
-	   dialog.dialog( "open" );
-	   prodCheckGrid.refreshLayout();
-	   console.log('모달창 띄울 때 뜨는 값 ')
-	   console.log(dataSourceProdCheck)
-	   for(i=0;i<prodCheckGrid.getRowCount();i++){
-			if(prodCheckGrid.getData()[i].dayDiff<=1){
-				prodCheckGrid.addRowClassName(i,'warning')
-			}
-			else if(prodCheckGrid.getData()[i].dayDiff > 1 && prodCheckGrid.getData()[i].dayDiff <= 3){
-				prodCheckGrid.addRowClassName(i,'caution')
-			}
-			/* else{
-				prodCheckGrid.addRowClassName(i,'green')
-			} */
-	   }
+   		
+	   prodCheckGrid.readData();
+	   setTimeout(() => {
+		   console.log('점검완료 등록')
+		   dialog.dialog( "open" );
+		   prodCheckGrid.refreshLayout();
+		   console.log('모달창 띄울 때 뜨는 값 ')
+		   console.log(dataSourceProdCheck)
+		   for(i=0;i<prodCheckGrid.getRowCount();i++){
+				if(prodCheckGrid.getData()[i].dayDiff<=1){
+					prodCheckGrid.addRowClassName(i,'warning')
+				}
+				else if(prodCheckGrid.getData()[i].dayDiff > 1 && prodCheckGrid.getData()[i].dayDiff <= 5){
+					prodCheckGrid.addRowClassName(i,'caution')
+				}
+		   }
+		
+	}, 300);
 	   
-	   
-	   
-	   //button
-	   /* let btn = document.createElement('button');
-	   btn.innerHTML = '확인'
-	   document.getElementById('dialog-form').appendChild(btn) */
-	   
-	   
+
    });
    
    //체크 이벤트 처리 

@@ -14,16 +14,19 @@
 	<!-- 수리요청할 설비 조회 --> 
 	<select id="prdPrcMngSelect" resultType="com.onetouch.web.fct.fix.dao.FixVO">
 		SELECT M.FCT_CD as fctCd
-		FROM (SELECT * FROM FCT_INFO WHERE LINE_NO IN 
-							(SELECT P.LINE_NO FROM PRD_PRC_MNG P
-							WHERE P.instr_no IN 
-								(SELECT M.instr_no from PRD_PRC_MNG M  where M.now_phs = '라인가동종료')
-								AND work_fin_dt > to_date(sysdate,'yy-MM-dd')-2
-		GROUP BY P.LINE_NO,P.INSTR_NO
-		HAVING sum(P.flt_cnt) >1)) M LEFT JOIN 
-								(SELECT FCT_CD FROM FCT_FIX_MNG WHERE req_dt > (sysdate -1) AND( FIX_PHS = '수리요청' or FIX_PHS = '수리중' or FIX_PHS = '수리완료') ) P 
-		ON M.FCT_CD = P.FCT_CD
-		WHERE P.FCT_CD IS NULL
+	        FROM (SELECT * FROM FCT_INFO WHERE LINE_NO IN 
+	                            (SELECT P.LINE_NO FROM PRD_PRC_MNG P
+	                            WHERE P.instr_no IN 
+	                                (SELECT M.instr_no from PRD_PRC_MNG M  where M.now_phs = '라인가동종료')
+	                                AND work_fin_dt > to_date(sysdate,'yy-MM-dd')-2
+	        GROUP BY P.LINE_NO,P.INSTR_NO
+	        HAVING sum(P.flt_cnt) > (select round(goal_cnt *0.05) 
+			from (select distinct instr_no, goal_cnt
+			      from prd_prc_mng)
+			where instr_no = p.instr_no) )) M LEFT JOIN 
+	                                (SELECT FCT_CD FROM FCT_FIX_MNG WHERE req_dt > (sysdate -1) AND( FIX_PHS = '수리요청' or FIX_PHS = '수리중' or FIX_PHS = '수리완료') ) P 
+	        ON M.FCT_CD = P.FCT_CD
+        WHERE P.FCT_CD IS NULL
 	</select>
 	<select id="fixSelectList" resultType="com.onetouch.web.fct.fix.dao.FixVO">
 		SELECT fix_cd,fct_cd, req_dt, str_dt, fin_dt, fix_phs, fix_cmt, cnt, unit_cost, tot_cost FROM fct_fix_mng

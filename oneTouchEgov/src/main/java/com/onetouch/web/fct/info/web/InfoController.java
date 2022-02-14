@@ -45,14 +45,15 @@ public class InfoController {
 	@Autowired BasMapper basservice;
 	
 	//엑셀출력
-		@RequestMapping("/fctExcelView.do")
-		public ModelAndView excelView() throws IOException{
+		@PostMapping("/fctExcelView.do")
+		public ModelAndView fctExcelView() throws IOException{
+			System.out.println("등록등록등록");
 			List<Map<String, Object>> list = infomapper.findFctList();
 			HashMap<String, Object> map = new HashMap<String, Object>(); 
 			
 			map.put("filename", "excel_dept");
 			map.put("datas", list);
-			return new ModelAndView("excelView", map);
+			return new ModelAndView("fctSelexcelView", map);
 		}
 	
 	//설비가 등록된 라인
