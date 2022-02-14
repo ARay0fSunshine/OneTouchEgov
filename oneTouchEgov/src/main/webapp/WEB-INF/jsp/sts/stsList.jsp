@@ -27,16 +27,29 @@
 
 </head>
 <style>
- 	.cntDtl {color: blue; font-weight : bold;}
-	.cntAll {color: red; font-weight : bold;} 
+.cntDtl {color: blue; font-weight : bold;}
+
+.cntAll {color: red; font-weight : bold;} 
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    border: 1px solid #3b3a88 !important;
+    background: #4B49AC !important;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+.col-6 {
+	margin-bottom: 10px;
+}
+
 </style>
 <body>
-<br>
-<h3>통계</h3>
+<div class="content-wrapper">
+<h3 class="font-weight-bold page-title">통계 및 차트 조회</h3>
 <hr>
-
+<br>	
 <div id="tabs">
-		<ul>
+		<ul style="background:white">
 		  <li><a href="#mtrInTab">자재입고량</a></li>
 		  <li><a href="#mtrOutTab">자재출고량</a></li>
 		  <li><a href="#pdtCntTab">제품생산량</a></li>
@@ -45,18 +58,11 @@
 	<div class="flex row">
 		<div class="col-6">
 		<br>
-		&nbsp;&nbsp; 
-		<select id=selectSts>
-			<option>일별</option>
-			<option>월별</option>
-			<option>연도별</option>
-			<option id="optionD">자재별,일별</option>
-			<option id="optionM">자재별,월별</option>
-			<option id="optionY">자재별,연도별</option>
-		</select>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<h3 class="gridtitle">✔통계</h3>
 		<br><br>
 		<form id="stsDateFrm">
-			<div id="dateOnly">&nbsp;&nbsp;
+			<div id="dateOnly">&nbsp;&nbsp;&nbsp;&nbsp;
 				<label>해당일자</label>&nbsp;
 				<input type="text" id="startDate" name="startDate" class="datepicker jquerydtpicker">&nbsp;
 				<label> ~ </label>&nbsp;
@@ -67,7 +73,7 @@
 			</div>
 		</form>
 		<form id="stsMonthFrm">
-			<div id="monthOnly">&nbsp;&nbsp;
+			<div id="monthOnly">&nbsp;&nbsp;&nbsp;&nbsp;
 				<label>해당일자</label>&nbsp;
 				<input type="text" id="startDate2" name="startDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 				<label> ~ </label>&nbsp;
@@ -78,7 +84,7 @@
 			</div>
 		</form>
 		<form id="stsYearFrm">
-			<div id="yearOnly">&nbsp;&nbsp;
+			<div id="yearOnly">&nbsp;&nbsp;&nbsp;&nbsp;
 				<label>해당일자</label>&nbsp;
 				<select id="startDate3" name="startDate">
 					<option>2018</option>
@@ -94,32 +100,48 @@
 					<option>2020</option>
 					<option>2021</option>
 					<option>2022</option>
-				</select>&nbsp;
+				</select>&nbsp;&nbsp;
 					<button type="button" id="btnFind" class="btnFind">통계조회</button>			
 			</div>
 		<br>
 		</form>
+		&nbsp;&nbsp; &nbsp;&nbsp;
+		<select id=selectSts>
+			<option>일별</option>
+			<option>월별</option>
+			<option>연도별</option>
+			<option id="optionD">자재별,일별</option>
+			<option id="optionM">자재별,월별</option>
+			<option id="optionY">자재별,연도별</option>
+		</select>
+		<br>
 		<div id="mtrInTab"></div>
 		<div id="mtrOutTab"></div>
 		<div id="pdtCntTab"></div>
 		<div id="fltCntTab"></div>
 	</div>
-	<div class= "col-6" align="center" style="border-left: 0.1px solid lightgray;">
+	<div class= "col-6" style="border-left: 0.1px solid lightgray;">
+		<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<h3 class="gridtitle" align="left">✔차트</h3>
 		<form id="stsMonthFrm2">
-		<br><br><br>
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;
 			<label>해당일자</label>&nbsp;
 			<input type="text" id="startDate4" name="startDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 			<label> ~ </label>&nbsp;
 			<input type="text" id="endDate4" name="endDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 				<button type="button" id="btnChart">차트조회</button>			
 			<input style="display: none;" value='chart' name="chart">
-		</form><br><br>
+		</form><br><br><br>
+		<div align="center">
 		<div id="barChartMtrIn"></div>
 		<div id="barChartMtrOut"></div>
 		<div id="barChartPdtCnt"></div>
 		<div id="barChartFltCnt"></div>
 		</div>
+		</div>
 	</div>
+</div>
 </div>
 <script type="text/javascript">
 let flag = 1;
@@ -149,7 +171,7 @@ $(".datepicker").datepicker({
     ,changeYear: true //option값 년 선택 가능
     ,changeMonth: true //option값  월 선택 가능                
     ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시  
-    ,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
+    ,buttonImage: "${path}/resources/template/images/cal_lb_sm.png" //"http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
     ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
     //,buttonText: "선택" //버튼 호버 텍스트              
     ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
@@ -166,7 +188,7 @@ $(".monthpicker").monthpicker({
 	monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
 	,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
 	,showOn: "both" 
-	,buttonImage: "/oneTouch/resources/template/images/cal_lb_sm.png"
+	,buttonImage: "${path}/resources/template/images/cal_lb_sm.png"
 	,buttonImageOnly: true
 	,changeYear: true
 	,yearRange: 'c-2:c+2'
