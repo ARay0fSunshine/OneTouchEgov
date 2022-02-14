@@ -35,13 +35,13 @@ width: 100px !important;
 	width: 100px !important;
 }
 hr{
-	margin-top: -20px;
+	margin-top: -7px;
 }
 .rowdiv{
 	margin-bottom: 10px !important;
 }
 .bascard1{
-	height:165px;
+	height:217px;
 }
 </style>
 
@@ -104,11 +104,12 @@ hr{
 			</div>
 		</div>
 	</div>
-		<span class="floatright">
+	<span class="floatright">
 		<form action="./MtrExcelView.do">
 			<button type="submit" id="excelBtn" class="btn btn-main newalign">Excel</button>
 		</form>
 	</span>
+	<br><br><br>
 	<hr>
 	<div id="grid"></div>
 	<div id="dialog-form"></div>
@@ -220,8 +221,8 @@ var mainGrid = new Grid({
      data : dataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 449,
-     minBodyHeight: 449,
+     bodyHeight: 364,
+     minBodyHeight: 364,
      columns : [
 				 {
 				   header: '입고일자',

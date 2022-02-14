@@ -472,8 +472,8 @@ var mtrGrid = new Grid({
      data : mtrDataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 369,
-     minBodyHeight: 369,
+     bodyHeight: 399,
+     minBodyHeight: 399,
      columns : mtrColumns,
 				summary : {
 					height: 40,
@@ -589,8 +589,8 @@ var lotGrid = new Grid({
      data : lotDataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 369,
-     minBodyHeight: 369,
+     bodyHeight: 399,
+     minBodyHeight: 399,
      columns : lotColumns,
 				summary : {
 					height: 40,

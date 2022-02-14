@@ -204,8 +204,8 @@ var mainGrid = new Grid({
      data : dataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 449,
-     minBodyHeight: 449,
+     bodyHeight: 479,
+     minBodyHeight: 479,
      columns : [
 				{
 				header: '반품번호',

@@ -23,7 +23,7 @@ hr{
 	width: 120px !important;
 }
 .bascard1{
-	height: 651px;
+	height: 681px;
 }
 .inline{
 	display: inline-block;
@@ -277,8 +277,8 @@ hr{
 		el: document.getElementById('grid'),
 		data: dataSource,
 		columns,
-		bodyHeight: 612,
-		minBodyHeight: 612,
+		bodyHeight: 642,
+		minBodyHeight: 642,
 	});
 	
 	grid.on("click", (ev) => {

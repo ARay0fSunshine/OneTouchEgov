@@ -244,8 +244,8 @@ var mainGrid = new Grid({
      data : dataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 404,
-     minBodyHeight: 404,
+     bodyHeight: 434,
+     minBodyHeight: 434,
      columns : [
 				{
 				   header: '출고번호',

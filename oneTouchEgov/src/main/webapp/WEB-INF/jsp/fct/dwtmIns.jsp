@@ -60,7 +60,7 @@
 	height: 120px;
 }
 .bascard2{
-	height: 667px;
+	height: 697px;
 }
 .kioskBtn1{
 	margin: 70px 40px 40px 20px;	
@@ -322,8 +322,8 @@ $(function() {
 	         el: document.getElementById('fctGridDiv'),
 	         data: data,  //이름이 같다면 생격가능
 	         columns :fctColumns,
-	         bodyHeight: 480,
-	 		 minBodyHeight: 480,
+	         bodyHeight: 510,
+	 		 minBodyHeight: 510,
 	 		columnOptions: {
 	 			 minWidth:40
 	 			 }

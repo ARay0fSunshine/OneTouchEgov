@@ -229,8 +229,8 @@ var mainGrid = new Grid({
      data : dataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 444,
-     minBodyHeight: 444,
+     bodyHeight: 474,
+     minBodyHeight: 474,
      columns : [
 				 {
 				   header: '정산번호',

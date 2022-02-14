@@ -211,8 +211,8 @@
 		data: dataSource1,
 		rowHeaders : [ 'checkbox' ],
 		columns: columns1,
-		bodyHeight: 488,
-		minBodyHeight: 488
+		bodyHeight: 519,
+		minBodyHeight: 519
 	});
 	
 	const grid2 = new Grid({
@@ -220,8 +220,8 @@
 		data: dataSource2,
 		rowHeaders : [ 'checkbox' ],
 		columns: columns2,
-		bodyHeight: 616,
-		minBodyHeight: 616
+		bodyHeight: 646,
+		minBodyHeight: 646
 	})
 	//그리드 그리기 끝----------------------------------
 	
