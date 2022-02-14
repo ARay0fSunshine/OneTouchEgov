@@ -169,6 +169,7 @@ width: 100px !important;
 <script type="text/javascript">
 let rowk = -1;
 let modifyList = [];
+let inAmt = 0;
 
 //---------포맷에 맞게 날짜 구하는 function---------
 function getDateStr(dt){
@@ -318,7 +319,7 @@ let mainGrid = new Grid({
 				 },
 				 {
 					header: '기입고량',
-					name: 'inputAmt',
+					name: 'befInAmt',
 					align: 'right',
 				    formatter({value}){
 					   return format(value);
@@ -391,53 +392,7 @@ let mainGrid = new Grid({
 				   name: 'empNo',
 				   hidden: true
 				 }
-				],
-				summary : {
-					height: 40,
-				   	position: 'bottom',
-				   	columnContent: {
-				   		ordNo: {
-			                template(summary) {
-			        			return '합 계';
-			                }
-			            },	
-			            ordAmt: {
-			                template(summary) {
-			        			var sumResult = (summary.sum);
-			        			return format(sumResult);
-			                } 
-			            },
-			            notinAmt: {
-			                template(summary) {
-			        			var sumResult = (summary.sum);
-			        			return format(sumResult);
-			                } 
-			            },
-			            fltAmt: {
-			                template(summary) {
-			        			var sumResult = (summary.sum);
-			        			return format(sumResult);
-			                } 
-			            },
-			            inAmt: {
-			                template(summary) {
-			        			var sumResult = (summary.sum);
-			        			return format(sumResult);
-			                } 
-			            },
-			            unitCost: {
-			                template(summary){
-			        			return "MIN: "+format(summary.min)+"<br>"+"MAX: "+format(summary.max);
-			                } 
-			            },
-			            totCost: {
-			                template(summary) {
-			        			var sumResult = (summary.sum);
-			        			return format(sumResult);
-			                } 
-			            }
-					}
-				}
+				]
    		});
 //---------mainGrid 끝---------
 
@@ -465,15 +420,16 @@ function totCal(){
 //---------mainGrid 입고량 validation & 합계금액 산출---------
 mainGrid.on('editingFinish', (ev) => {
 	if(ev.columnName == 'inAmt'){
-		if(mainGrid.getValue(ev.rowKey, 'notinAmt') != ''){
-			if(mainGrid.getValue(ev.rowKey, 'inAmt')*1 > mainGrid.getValue(ev.rowKey, 'notinAmt')*1){
-				toastr["info"]("입고량이 해당자재의 미입고량보다 많습니다.")
-				mainGrid.setValue(ev.rowKey, 'inAmt', mainGrid.getValue(ev.rowKey, 'inAmt'))
-			} else {
-				let inAmt = mainGrid.getValue(ev.rowKey,"inAmt")
-				let unitCost = mainGrid.getValue(ev.rowKey,"unitCost")
-				mainGrid.setValue(ev.rowKey,"totCost",inAmt*unitCost)
-			}
+		if(mainGrid.getValue(ev.rowKey, 'ordAmt') != null && mainGrid.getValue(ev.rowKey, 'ordAmt') != ""){
+			let inAmt = mainGrid.getValue(ev.rowKey,"inAmt")
+			let unitCost = mainGrid.getValue(ev.rowKey,"unitCost")
+			mainGrid.setValue(ev.rowKey,"totCost",inAmt*unitCost)
+			
+			let ord = mainGrid.getValue(ev.rowKey,"ordAmt")
+			let bef = mainGrid.getValue(ev.rowKey,"befInAmt")
+			let flt = mainGrid.getValue(ev.rowKey,"fltAmt")
+			let inA = mainGrid.getValue(ev.rowKey,"inAmt")
+			mainGrid.setValue(ev.rowKey,"notinAmt",(ord-bef-flt-inA))
 		}
 	}
 	if(ev.columnName == 'unitCost'){
@@ -494,9 +450,11 @@ mainGrid.on('editingStart', (ev) => {
     }else if(ev.columnName == 'ordNo') {
        value = mainGrid.getValue(ev.rowKey, 'ordNo');
        if(value != '') {
-    	  toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+    	   alert("변경할 수 없는 코드 입니다.")
           ev.stop();
        }
+    }else if(ev.columnName == 'inAmt') {
+    	inAmt = mainGrid.getValue(ev.rowKey, 'inAmt')
     }
 });
 //---------mainGrid 기존의 발주번호는 수정불가 & 자재모달 open 끝---------
@@ -505,7 +463,10 @@ mainGrid.on('editingStart', (ev) => {
 //---------mainGrid 단위, 업체 수정불가 alert---------
 mainGrid.on('dblclick', (ev) => {
 	if(ev.columnName == 'unitNm' || ev.columnName == 'compNm') {
-	       toastr["info"]("자재명 수정해 주세요.")
+		alert("자재명 수정해 주세요.")
+	    }
+	if(ev.columnName == 'ordAmt' || ev.columnName == 'befInAmt' || ev.columnName == 'notinAmt'|| ev.columnName == 'totCost') {
+		alert("수정할 수 없습니다.")
 	    }
 });
 //---------mainGrid 단위, 업체 수정불가 alert 끝---------
@@ -519,7 +480,7 @@ mainGrid.on('onGridUpdated', ev => {
 
 
 //---------mainGrid modify후 focus---------
-mainGrid.on("response", function(ev) {
+/* mainGrid.on("response", function(ev) {
 	if(JSON.parse(ev.xhr.response).result != true) {
 		let param= $("#frm").serializeObject();
 		mainGrid.readData(1,param,true);
@@ -535,7 +496,7 @@ mainGrid.on("response", function(ev) {
 			}
 		},100);
 	}
-});
+}); */
 //---------mainGrid modify후 focus 끝---------
 
 
@@ -588,7 +549,7 @@ columns : [
 			},
 			{
 				header: '기입고량',
-				name: 'inputAmt',
+				name: 'befInAmt',
 			    hidden: true
 			 },
 			{
@@ -655,7 +616,7 @@ let ordDialog = $( "#dialog-ord" ).dialog({
 		mainGrid.clear();
 		for(row of rows){
 			row.inDate = today();
-			row.rowKey = mainGrid.getRowCount();
+			//row.rowKey = mainGrid.getRowCount();
 			row.inAmt = row.notinAmt;
 			mainGrid.appendRow(row,{focus:true});
 			mainGrid.setValue(row.rowKey,"totCost",row.notinAmt*row.unitCost)
@@ -741,10 +702,9 @@ btnDel.addEventListener("click", function(){
 
 //---------저장버튼---------
 btnSave.addEventListener("click", function(){
-	mainGrid.blur();
-	
 	 rowk = mainGrid.getRowCount();
-     
+	 let create = mainGrid.getModifiedRows().createdRows;
+	 let update = mainGrid.getModifiedRows().updatedRows;
      for(i=0; i<rowk; i++) {
         if(mainGrid.getRow(i).mtrNm == '') {
            alert("자재명은 필수입력칸입니다!!");
@@ -760,15 +720,21 @@ btnSave.addEventListener("click", function(){
         }
      }  
 	
-	let create = mainGrid.getModifiedRows().createdRows;
+	/* let create = mainGrid.getModifiedRows().createdRows;
 	let update = mainGrid.getModifiedRows().updatedRows;
 	for(let i=0; i<create.length; i++) {
 		modifyList.push(create[i].inNo);
 	}
 	for(let i=0; i<update.length; i++) {
 		modifyList.push(update[i].inNo);
-	 }
+	} */
+	mainGrid.blur();
 	mainGrid.request('modifyData');
+	
+	mainGrid.clear();
+    mainGrid.resetData(update);
+    mainGrid.appendRows(create);
+    
 	mainGrid.focus(mainGrid.getRowCount()-1,'inNo')
 });
 //---------저장버튼 끝---------

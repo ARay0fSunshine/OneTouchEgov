@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.onetouch.web.mtr.in.dao.MtrInMapper;
+import com.onetouch.web.mtr.in.dao.MtrInVO;
 import com.onetouch.web.mtr.in.dao.MtrSearchVO;
 import com.onetouch.web.mtr.in.service.MtrInService;
 @RequestMapping("/mtr")
@@ -22,7 +23,7 @@ import com.onetouch.web.mtr.in.service.MtrInService;
 public class MtrInListController {
 
 	@Autowired MtrInService service;
-	@Autowired MtrInMapper Mmapper;
+	@Autowired MtrInMapper mapper;
 	
 	@RequestMapping("/inList")
 	public String inForm() {
@@ -30,18 +31,15 @@ public class MtrInListController {
 	}
 	
 	//엑셀출력
-			@RequestMapping("/MtrExcelView.do")
-			public ModelAndView excelView() throws IOException{
-				System.out.println("통신완료");
-				List<Map<String, Object>> list = Mmapper.selectExcelIn();
-				HashMap<String, Object> map = new HashMap<String, Object>(); 
-				System.out.println("리스트 보여주기");
-				System.out.println(list );
-				map.put("filename", "excel_dept");
-				map.put("datas", list);
-				return new ModelAndView("mtrExcelView", map);
-			}
-	
+	@RequestMapping("/MtrExcelView.do")
+	public ModelAndView excelView() throws IOException{
+		List<Map<String, Object>> list = mapper.selectExcelIn();
+		HashMap<String, Object> map = new HashMap<String, Object>(); 
+		map.put("filename", "excel_dept");
+		map.put("datas", list);
+		return new ModelAndView("mtrExcelView", map);
+	}
+
 	
 	//조건조회 grid
 	@ResponseBody
@@ -55,4 +53,10 @@ public class MtrInListController {
 		return data;
 	}
 	
+	//발주번호 list
+	 @ResponseBody
+	  @PostMapping("/inputOrdList")
+	  public List<MtrInVO> inputOrdList(MtrSearchVO searchVO){
+	  return mapper.selectOrdNo(searchVO);
+	  }
 }

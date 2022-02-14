@@ -16,15 +16,11 @@
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
 <link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
-<script src="${path}/resources/js/toastr-options.js"></script>
 
 </head>
 <style type="text/css">
@@ -72,9 +68,9 @@ hr{
 					<form id="frm" method="post">
 						<div class="rowdiv">
 							<label class="labeltext">해당일자</label>
-							<input type="text" id="startDate" name="startDate" class="datepicker jquerydtpicker"> 
+							<input type="text" id="startDate" name="startDate" class="datepicker jquerydtpicker" onchange="checkOrdList()"> 
 							<label> ~ </label> 
-							<input type="text" id="endDate" name="endDate" class="datepicker jquerydtpicker">
+							<input type="text" id="endDate" name="endDate" class="datepicker jquerydtpicker" onchange="checkOrdList()">
 						</div>
 						
 						<div class="rowdiv">
@@ -85,12 +81,19 @@ hr{
 							<input id="compNm" name="compNm" class="inputtext" readonly>
 						</div>
 						
-						<span class="rowdiv">
+						<div class="rowdiv">
 							<label class="labeltext">자재코드</label>
 							<input type="text" id="ditemCode" name="ditemCode" class="inputtext" readonly>
 							<button type="button" id="btnMtrCd" class="btn btn-primary mr-2 minibtn" ><i class="icon-search"></i></button>
 							<label class="labeltext colline2">자재명</label>
 							<input type="text" id="ditemCodeNm" name="ditemCodeNm" class="inputtext" readonly>
+						</div>
+						
+						<span class="rowdiv">
+							<label class="labeltext">발주번호</label>
+							<input type="text" id="ordNo" name="ordNo" list="ordNo-options"
+									class="inputtext" autocomplete="off" style="text-transform: uppercase;" />
+							<datalist id="ordNo-options"></datalist>
 						</span>
 						
 						<span>
@@ -103,7 +106,7 @@ hr{
 	</div>
 		<span class="floatright">
 		<form action="./MtrExcelView.do">
-			<button type="sumit" id="excelBtn" class="btn btn-main newalign">Excel</button>
+			<button type="submit" id="excelBtn" class="btn btn-main newalign">Excel</button>
 		</form>
 	</span>
 	<hr>
@@ -264,6 +267,24 @@ var mainGrid = new Grid({
 				   sortable: true
 				 },
 				 {
+					header: '발주량',
+					name: 'ordAmt',
+					align: 'right',
+				    formatter({value}){
+					   return format(value);
+				    },
+				    sortable: true
+				 },
+				 {
+					header: '기입고량',
+					name: 'befInAmt',
+					align: 'right',
+				    formatter({value}){
+					   return format(value);
+				    },
+				    sortable: true
+				 },
+				 {
 				   header: '불량량',
 				   name: 'fltAmt',
 				   align: 'right',
@@ -280,6 +301,15 @@ var mainGrid = new Grid({
 					   return format(value);
 				   },
 				   sortable: true
+				 },
+				 {
+					header: '미입고량',
+					name: 'notinAmt',
+					align: 'right',
+				    formatter({value}){
+					   return format(value);
+				    },
+				    sortable: true
 				 },
 				 {
 				   header: '단가',
@@ -322,6 +352,12 @@ var mainGrid = new Grid({
 			        			return format(sumResult);
 			                } 
 			            },
+			            notinAmt: {
+			                template(summary) {
+			        			var sumResult = (summary.sum);
+			        			return format(sumResult);
+			                } 
+			            },
 			            unitCost: {
 			                template(summary){
 			        			return "MIN: "+format(summary.min)+"<br>"+"MAX: "+format(summary.max);
@@ -341,7 +377,7 @@ var mainGrid = new Grid({
 
 //---------mainGrid 수정불가 컬럼 alert---------
 mainGrid.on('dblclick',(ev)=>{
-	toastr["error"]("변경할 수 없습니다.", "경고입니다.")
+	alert("변경할 수 없습니다.")
 });
 //---------mainGrid 수정불가 컬럼 alert 끝---------
 
@@ -352,6 +388,28 @@ function format(value){
 	return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 //---------숫자데이터 구분자주는 기능 끝---------
+
+
+//---------발주번호 input에 option-list append---------
+function checkOrdList(){
+	fetch('./inputOrdList',{
+		method:'POST',
+		headers:{
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		body:$("#frm").serialize()
+	})
+	.then(response=>response.json())
+	.then(result=>{
+		$('#ordNo').val("");
+		$('#ordNo-options').empty();
+		for(let data of result){
+			$('#ordNo-options').append("<option value="+data.ordNo+">"+data.compNm+"</option>")
+		}
+	})
+}
+checkOrdList();
+//---------발주번호 input에 option-list append 끝---------
 
 
 //---------모달 설정---------

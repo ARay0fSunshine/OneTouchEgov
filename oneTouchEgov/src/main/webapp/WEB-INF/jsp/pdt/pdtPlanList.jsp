@@ -467,6 +467,10 @@
           type:abc
         }
       },{
+			header : '제품명',
+			name : 'prdNm',
+			align: 'center',
+		},{
     	header: '라인번호',
         name: 'lineNo',
         align:'center',
@@ -705,6 +709,10 @@
 		columns:[{
 			header : '자재코드',
 			name : 'mtrCd',
+			align: 'center',
+		},{
+			header : '공정코드',
+			name : 'prcCd',
 			align: 'center',
 		},{
 			header : '자재로트',
@@ -1016,6 +1024,7 @@
 						 planColumns[0].editor.options.listItems.length=0;
 						 for(let obj of result){
 							planColumns[0].editor.options.listItems.push({text:obj.prdNm,value:obj.prdCd})
+							
 						 }
   							 
 					})
@@ -1072,10 +1081,10 @@
 		else if(flag==1){
 			alert('시작일자 또는 종료일자를 입력해주세요')
 		} 
-		else if(document.querySelectorAll('#mtrSelect>option').length-1>insertDtlGrid.getData().length){
+		else if(document.querySelectorAll('#mtrSelect>option').length-1>hiddenGrid.getData().length){
 			alert('자재계획을 입력해주세요')
 		} 
-		else if(document.querySelectorAll('#prcSelect>option').length-1>hiddenGrid.getData().length){
+		else if(document.querySelectorAll('#prcSelect>option').length-1>insertDtlGrid.getData().length){
 			alert('제품계획을 입력해주세요')
 		} 
 		else{
@@ -1100,6 +1109,8 @@
 				})
 				.then(response=>response.json())
 				.then(dateResult=>{
+					console.log("date")
+					console.log(dateResult)
 					let resultDate=result.map(ev=>{
 						return ev.workStrDate;
 					})
@@ -1184,7 +1195,7 @@
 	
  	delBtn.addEventListener("click",function(){
  		planGridNeedCnt=0;
-		lotGrid.setValue(0,'hldCnt',0)
+		//lotGrid.setValue(0,'hldCnt',0)
 		grid.clear();
 		planGrid.clear();
 		insertDtlGrid.clear();
@@ -1477,12 +1488,18 @@ function needOrdCd(){
 					}
 					let prcSelect=document.getElementById('prcSelect').value;
 					if(i==0&&prcSelect!='--공정선택--'){
+						planData.rowKey=insertDtlGrid.getRowCount()-1;
 						insertDtlGrid.appendRow(planData);
 						//lotGridUseAmt=lotGrid.getData()[0].useAmt;
 					}
+					for(obj of hiddenGrid.getData()){
+						if(obj.hldCnt=='0'){
+							hiddenGrid.removeRow(obj.rowKey);
+						}
+					}
 					console.log(ev)
 					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
-					lotGrid.setValue(0,'hldCnt',0)
+					//lotGrid.setValue(0,'hldCnt',0)
 				})
 			
 		}
@@ -1506,11 +1523,6 @@ function needOrdCd(){
 		if(grid.getValue(0,'ordShtNo')!='null'){
   			
   		 }
-		
-		
-		
-		
-		
 		//document.getElementById('lotDiv').style='display:none';
 		planGrid.appendRow([{}]);
 		planGrid.setValue(planGrid.getData()[planGrid.getRowCount()-1].rowKey,'planNo',grid.getData()[0].planNo);
@@ -1526,6 +1538,7 @@ function needOrdCd(){
 				 i++;
 			 }
 			 planGrid.setValue(planGrid.getRowCount()-1,'prdCd',result[0].prdCd)
+			 planGrid.setValue(planGrid.getRowCount()-1,'prdNm',result[0].prdNm)
 			 lineFindFnc(planGrid.getRowCount()-1);
 			 prcFindFnc(planGrid.getRowCount()-1)
 		})
@@ -1565,6 +1578,8 @@ function needOrdCd(){
 		let hiddenGetData=hiddenGrid.getData();
 		let m=0;
 		let hiddenInsertData =hiddenGetData.map(x=>{
+			console.log("확인")
+			console.log(x.hldCnt)
 			if(lotData1.mtrLot == x.mtrLot && lotData1.prdCd == x.prdCd){
 				lotData1.rowKey=m;
 				m++;
@@ -1575,8 +1590,12 @@ function needOrdCd(){
 				m++;
 				return x;
 			}
+		}).filter(obj=>{
+			if(obj.hldCnt!=0&&obj.hldCnt!='0'){
+				return obj;
+			}
 		})
-		
+		console.log(hiddenInsertData)
 		hiddenGrid.resetData(hiddenInsertData)
 	})
 	
@@ -1593,15 +1612,21 @@ function needOrdCd(){
  			let i=0;
  			console.log(result)
  			planGrid.setValue(planGrid.getData()[0].rowKey,'uphPdtAmt',result[0].uphPdtAmt)
- 			planColumns[1].editor.options.listItems.length=0;
+ 			planColumns[2].editor.options.listItems.length=0;
 			for(obj of result){
 				console.log(obj)
-				planColumns[1].editor.options.listItems[i]={text:obj.lineNo,value:obj.lineNo}
+				planColumns[2].editor.options.listItems[i]={text:obj.lineNo,value:obj.lineNo}
 				//planColumns[0].editor.options.listItems.push({text:obj.lineNo,value:obj.lineNo})
  				//planColumns[3].editor.options.listItems[i]={text:obj.lineNo,value:obj.lineNo}
 				i++;
 			}
  			planGrid.setValue(ev,'lineNo',result[0].lineNo)
+ 			for(let i=0; i<planColumns[0].editor.options.listItems.length ;i++){
+ 				if(planColumns[0].editor.options.listItems[i].value==planGrid.getValue(ev,'prdCd')){
+ 					planGrid.setValue(ev,'prdNm',planColumns[0].editor.options.listItems[i].text);
+ 					
+ 				}
+ 			}
  			prcFindFnc(ev)
 			
  		})
@@ -1615,7 +1640,7 @@ function needOrdCd(){
  			.then(result=>{
  				planGridNeedCnt=planGrid.getRow(ev).needCnt;
  				let i=0;
-					planColumns[2].editor.options.listItems.length=0;
+					planColumns[3].editor.options.listItems.length=0;
 					$('#prcSelect').empty();
 					let prcSelect=document.getElementById('prcSelect');
 					prcSelect.setAttribute('data-id',planGrid.getValue(ev,'prdCd'));
@@ -1669,17 +1694,61 @@ function needOrdCd(){
 			fetch("addPlanLotSelect/"+ev.target.getAttribute('data-id')+'/'+ev.target.getAttribute('data-prc')+'/'+ev.target.value)
 				.then(response=>response.json())
 				.then(result=>{
-										
-					lotGrid.resetData(result);
+					console.log("dddddd")
+					console.log(planGridNeedCnt*1 * result[0].useAmt*1)		
+					let resultSave=result;
+					let needCnt=planGridNeedCnt;
+					if(resultSave.length!=0){
+						for(obj of resultSave){
+							console.log(planGridNeedCnt*1)
+							console.log(resultSave[0].useAmt*1)
+							for(let i=1; i<=planGridNeedCnt*1 * resultSave[0].useAmt*1;i++){
+								console.log("aaaaaa")
+								if(i==obj.realCnt*1||i==planGridNeedCnt*1 * resultSave[0].useAmt*1){
+									console.log("i??"+i)
+									obj.hldCnt=i;
+									planGridNeedCnt= planGridNeedCnt-(i/resultSave[0].useAmt*1);
+									break;
+								}
+							}
+						}
+					}
+					//planGridNeedCnt.
+					console.log(resultSave);
+					console.log("여기");
+					planGridNeedCnt=needCnt;
+					lotGrid.resetData(resultSave);
+					for(obj of resultSave){
+						if(obj.hldCnt!=0){
+							obj.planNo=planGrid.getRowAt(0).planNo;
+							obj.lineNo=planGrid.getValue(ev,'lineNo');
+							hiddenGrid.appendRow(obj);
+						}
+					}
 				}).then(()=>{
-					
-					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					let pCnt=lotGrid.getValue(0,'hldCnt')
 					lotGrid.setValue(0,'hldCnt',0)
+					lotGrid.setValue(0,'hldCnt',pCnt)
+					planGridNeedCnt=planGrid.getValue(ev,'instrCnt')
+					//lotGrid.setValue(0,'hldCnt',0)
 					lotGridUseAmt=lotGrid.getData()[0].useAmt
 				})
 			
 		}
 	})
+	insertDtlGrid.on('click',ev=>{
+		lotGrid.clear()
+		for(obj of hiddenGrid.getData()){
+			if(insertDtlGrid.getValue(ev.rowKey,'prcCd')==obj.prcCd){
+				obj.rowKey=lotGrid.getRowCount()-1;
+				lotGrid.appendRow(obj);
+			}
+			
+		}
+		
+		
+	})
+	
 	
 	
 	</script>

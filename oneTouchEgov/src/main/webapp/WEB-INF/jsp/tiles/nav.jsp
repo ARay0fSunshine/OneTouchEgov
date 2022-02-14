@@ -20,11 +20,10 @@
 	}else {
 		temp = temp.substring(0, 25);
 	}
-	
+	console.log(temp);
 	$.ajax({
 		//url: 'selectRole',
 		url : temp + 'selectRole',
-		//url : ${path} + 'selectRole',
 		type: 'POST',
 		async : false,
 		data: {
@@ -37,13 +36,16 @@
 			
 			var chk = 0;
 			var str =  '';
-				/* str += '<li class="nav-item">'
+			
+			if (result.data.contents.length > 1) {
+				str += '<li class="nav-item">'
 	            str += '<a class="nav-link" href="${path}/brd/dashBoard">'
-                str += '	<i class="icon-grid menu-icon"></i>'
+                str += '	<i class="bi bi-clipboard-data menu-icon"></i>'
             	str += '	<span class="menu-title">Dashboard</span>'
           		str += '</a>'
-        		str += '</li>' */
-        		
+        		str += '</li>'
+			}
+				
 			for (var i = 1; i < result.data.contents.length; i++) {
 				if (i != 1 && result.data.contents[i].chkUrl == 'dir') {
 					str += '</ul></div></li>'
@@ -142,7 +144,10 @@
 				str += '</li>'
 			}
 			
+			/* console.log(str); */
+			
 			$('#nav').append(str); 
+			
 		}
 	});
 }); 

@@ -21,14 +21,28 @@ public class SchedulerTask {
 		list=mapper.autoSelect();
 		System.out.println(list);
 		for(PrcVO vo : list) {
-			if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) {
-				
-				int uph=mapper.uphFind(vo);
-				System.out.println(uph);
-				System.out.println(vo.getPdtCnt());
-				vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
+			int rand=(int) (Math.random()*100);
+			PrcVO vo2 =mapper.autoFltSum(vo);
+			System.out.println(vo);
+			System.out.println(vo2);
+			if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt())) {
+				System.out.println("fddddddsssss");
 				System.out.println(vo);
-				mapper.autoUpdate(vo);
+				System.out.println(vo2);
+				System.out.println("fddddddsssss");
+				int uph;
+				System.out.println(vo);
+				System.out.println("asd"+vo+mapper.uphFind(vo));
+				uph=mapper.uphFind(vo);
+				System.out.println("UPH"+uph);
+				System.out.println("rand"+rand);
+				if(rand<70) {
+					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
+					mapper.autoUpdate(vo);
+				}else {
+					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getFltCnt())));
+					mapper.autoFltUpdate(vo);
+				}
 			}
 		}
 	}

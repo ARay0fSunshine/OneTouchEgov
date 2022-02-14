@@ -277,7 +277,7 @@
 	let lineNoTag=document.getElementById("lineNo");
 	let prcCdTag=document.getElementById("prcCd");
 	let Grid = tui.Grid;
-	
+
 	Grid.applyTheme('clean', {
 		cell: {
 			normal: {
@@ -430,9 +430,10 @@
 			console.log(hiddenGrid.getRow(0).prcCd)
 			if(result.sumFlt!=result.goalCnt&&result.prcCd==hiddenGrid.getRow(0).prcCd){
 				hiddenGrid.setValue(0,'sumFlt',result.sumFlt*1);
+				hiddenGrid.setValue(0,'fltCnt',result.fltCnt*1);
 				hiddenGrid.setValue(0,'pdtCnt',result.pdtCnt*1);
 				console.log(result)
-				fltCheck();
+				
 				
 			}else{
 				console.log("불량률 100퍼 !!!!!!!!! 공장망하겟누")
@@ -493,7 +494,7 @@
 	})
 	//종료버튼
 	prcEnd.addEventListener('click',ev=>{
-		hiddenGrid.setValue(0,'pdtCnt',hiddenGrid.getValue(0,'goalCnt')*1-hiddenGrid.getValue(0,'sumFlt')*1)
+		//hiddenGrid.setValue(0,'pdtCnt',hiddenGrid.getValue(0,'goalCnt')*1-hiddenGrid.getValue(0,'sumFlt')*1)
 		fetch('prcEnd',{
 			method:'POST',
 			headers:{
@@ -606,7 +607,11 @@
 		hiddenGrid.setValue(0,'prcCd',ev.target.value)
 		prcGridData(prcVO)
 	})
-	
+	setInterval(()=>{
+		if(hiddenGrid.getData()[0].workStrDt!=null){
+			fltCheck();
+		}
+	},5000)
 	</script>
 </body>
 </html>

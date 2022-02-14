@@ -24,18 +24,25 @@
 		from pdt_plan_dtl a join pdt_plan b
 		on a.plan_no = b.plan_no
 		where 1=1
-		<if test='planNo!="" and planNo!=null'>
+ 		<if test='planNo!="" and planNo!=null'>
 			and a.plan_no=#{planNo}
 		</if>
 		<if test='prdCd!="" and prdCd!=null' >
 			and a.prd_cd like '%'||#{prdCd}||'%'
 		</if>
 	 	<if test='startDate!="" and startDate!=null'>
-			and b.plan_date>=#{startDate}
+			and to_char(b.plan_date,'yyyy-MM-dd')>=#{startDate}
 		</if>
 	 	<if test='endDate!="" and endDate!=null'>
-			and #{endDate}>=b.plan_date
+			and #{endDate}>=to_char(b.plan_date,'yyyy-MM-dd')
+		</if> 
+		<if test='nowPhs=="Y"'>
+			and b.now_phs = '%'||#{nowPhs}||'%'
 		</if>  
+		<if test='nowPhs=="N"'>
+			and (b.now_phs = 'N' or b.now_phs = 'P')
+		</if>  
+		
 		order by work_str_date
 </select>
 <select id="selectDtl" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">

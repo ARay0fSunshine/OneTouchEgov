@@ -152,30 +152,34 @@ public class PrcServiceImpl implements PrcService{
 	
 	@Override
 	public PrcVO selectCheck(PrcVO vo) {
-		try {
-			Robot robot=new Robot();
-			PrcVO vo2=new PrcVO();
-			int i=0;
-			vo2=vo;
-			String fltSave=mapper.realFlt(vo).getSumFlt();  
-			String pdtSave=mapper.realFlt(vo).getPdtCnt();
-			while(true){
-				String flt=mapper.realFlt(vo2).getSumFlt(); 
-				String pdt=mapper.realFlt(vo2).getPdtCnt();
-				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
-					return mapper.realFlt(vo);
-				}
-				robot.delay(3000);
-				i++;
-				if(i==9) {
-					return null;
-				}
-			}
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+//		try {
+//			Robot robot=new Robot();
+//			PrcVO vo2=new PrcVO();
+//			int i=0;
+//			vo2=vo;
+			return mapper.realFlt(vo);
+//			String fltSave=mapper.realFlt(vo).getSumFlt();  
+//			String pdtSave=mapper.realFlt(vo).getPdtCnt();
+//			System.out.println(fltSave+",,"+pdtSave);
+//			while(true){
+//				String flt=mapper.realFlt(vo2).getSumFlt(); 
+//				String pdt=mapper.realFlt(vo2).getPdtCnt();
+//				System.out.println(mapper.realFlt(vo)+"...."+fltSave);
+//				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
+//					return mapper.realFlt(vo);
+//
+//				}
+//				robot.delay(3000);
+//				i++;
+//				if(i==9) {
+//					return null;
+//				}
+//			}
+//		} catch (AWTException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 	
@@ -235,13 +239,16 @@ public class PrcServiceImpl implements PrcService{
 	
 	/*
 	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void selectTask1()
-	 * { List<PrcVO> list= new ArrayList<>(); list=mapper.autoSelect();
-	 * System.out.println(list); for(PrcVO vo : list) {
-	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo.getPdtCnt())) {
-	 * 
-	 * int uph=mapper.uphFind(vo);
+	 * { List<PrcVO> list= new ArrayList<>(); list=mapper.autoSelect(); int
+	 * rand=(int) (Math.random()*100); for(PrcVO vo : list) { PrcVO vo2
+	 * =mapper.autoFltSum(vo);
+	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo2.getFltCnt())+
+	 * Integer.parseInt(vo.getPdtCnt())) { int uph; uph=mapper.uphFind(vo);
+	 * if(rand<70) {
 	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
-	 * mapper.autoUpdate(vo); } } }
+	 * mapper.autoUpdate(vo); }else {
+	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getFltCnt())));
+	 * mapper.autoFltUpdate(vo); } } } }
 	 */
 
 	@Override

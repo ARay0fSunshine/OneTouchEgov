@@ -34,7 +34,10 @@
 .login_input ul li input.btn_login {
     background: #4747A1 !important;
     border-radius: 10px !important;
-    margin-bottom: 430px;
+    margin-bottom: 430px !important;
+}
+.login_form{
+	margin-left: 41% !important;
 }
 </style>
 <title><spring:message code="comUatUia.title" /></title><!-- 로그인 -->

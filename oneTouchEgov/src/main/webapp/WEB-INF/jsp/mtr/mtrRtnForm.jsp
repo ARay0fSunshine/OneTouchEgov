@@ -16,15 +16,11 @@
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
 <link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
-<script src="${path}/resources/js/toastr-options.js"></script>
 </head>
 <style type="text/css">
 .tui-grid-cell-summary{
@@ -140,7 +136,7 @@ hr{
 
 <script type="text/javascript">
 let rowk = -1;
-
+let datas = [];
 
 //---------포맷에 맞게 날짜 구하는 function---------
 function getDateStr(dt){
@@ -214,6 +210,7 @@ var mainGrid = new Grid({
      scrollY : true,
      bodyHeight: 447,
      minBodyHeight: 447,
+     rowHeaders : [ 'checkbox'],
      columns : [
 				{
 				header: '발주번호',
@@ -348,7 +345,7 @@ mainGrid.on('dblclick',function(ev){
 		ev.columnName == "inAmt" ||
 		ev.columnName == "fltAmt"
 		){
-		 toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+		alert("변경할 수 없는 코드 입니다.")
 	}
 });
 //---------mainGrid 수정불가 alert 끝---------
@@ -359,7 +356,7 @@ mainGrid.on('editingFinish',(ev)=>{
 	if(ev.columnName == 'rtnAmt' 
 		&& mainGrid.getValue(ev.rowKey,'rtnAmt') > (mainGrid.getValue(ev.rowKey,'ordAmt') - mainGrid.getValue(ev.rowKey,'inAmt'))){
 		ev.stop();
-		toastr["warning"]("반품량이 너무 많습니다.")
+		alert("반품량이 너무 많습니다.")
 	}
 });
 //---------mainGrid 반품량 validation 끝---------
@@ -437,21 +434,8 @@ btnFind.addEventListener("click", function(){
 //---------조회버튼 끝---------
 
 
-//---------저장버튼---------
-btnSave.addEventListener("click", function(){
-	mainGrid.blur();
-	datas=[];
-	for(data of mainGrid.getModifiedRows().updatedRows){
-		if(data.rtnAmt != ""){
-			datas.push(data)
-		}
-	}
-	if(datas.length != 0){
-		alert(datas.length + "건의 데이터를 처리하겠습니까?")
-	}else if(datas.length == 0){
-		alert("저장할 데이터가 없습니다.")
-		return;
-	}
+//---------조회버튼 끝---------
+function mod(){
 	let modify={};
 	modify.updatedRows = datas
 	fetch('mtrRtnModify',{
@@ -460,10 +444,33 @@ btnSave.addEventListener("click", function(){
 			"Content-Type": "application/json"
 		},
 		body:JSON.stringify(modify)
-	}).then(()=>{
-		let param= $("#frm").serializeObject();
-		mainGrid.readData(1,param,true);
 	})
+}
+//---------조회버튼 끝---------
+
+//---------저장버튼---------
+btnSave.addEventListener("click", function(){
+	datas=[];
+	for(data of mainGrid.getCheckedRows()){
+		if(data.rtnAmt != ""){
+			datas.push(data);
+		}
+	}
+	if(datas.length != 0){
+		if(confirm(datas.length + "건의 데이터를 처리하겠습니까?") == true){
+			mod();
+			mainGrid.blur();
+			mainGrid.clear();
+			mainGrid.resetData(datas);
+			mainGrid.uncheckAll();
+		} else {
+			mainGrid.uncheckAll();
+			return;
+		}
+	}else if(datas.length == 0){
+		alert("저장할 데이터가 없습니다.")
+		return;
+	}
 });
 //---------저장버튼 끝---------
 </script>

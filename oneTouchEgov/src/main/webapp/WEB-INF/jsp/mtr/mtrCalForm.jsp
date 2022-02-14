@@ -16,15 +16,11 @@
 <script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <link rel="stylesheet" href="${path}/resources/jquery-ui/jquery-ui.css">
 <link rel="stylesheet" href="${path}/resources/jquery-ui/images">
 
 <script src="${path}/resources/js/grid-common.js"></script>
 <script src="${path}/resources/js/modal.js"></script>
-<script src="${path}/resources/js/toastr-options.js"></script>
 </head>
 <style type="text/css">
 .tui-grid-cell-summary{
@@ -451,10 +447,10 @@ mainGrid.on('editingStart', function(ev) {
 		if(ev.columnName == "mtrLot"){
 			$('#ui-id-2').html('자재별 LOT정보');
 			if(mainGrid.getValue(ev.rowKey, 'mtrNm') == null || mainGrid.getValue(ev.rowKey, 'mtrNm') == ''){
-				toastr["warning"]("자재를 선택해 주세요.")
+				alert("자재를 선택해 주세요.")
 				ev.stop();
 			}else if(mainGrid.getValue(ev.rowKey, 'calSectNm') == null || mainGrid.getValue(ev.rowKey, 'calSectNm') == ''){
-				toastr["warning"]("정산 구분을 입력해 주세요.")
+				alert("정산 구분을 입력해 주세요.")
 				ev.stop();
 			}else{
 				 let row = mainGrid.getRow(ev.rowKey);
@@ -491,17 +487,11 @@ mainGrid.on('editingFinish', function(ev) {
 	};
 	if(ev.columnName == 'calAmt'){
 		if(mainGrid.getValue(ev.rowKey,'calSectNm') == '출고정산'){
-			if(mainGrid.getValue(ev.rowKey,'calAmt') > mainGrid.getValue(ev.rowKey,'stckCnt')){
-				toastr["warning"]("출고정산량이 현재고보다 많습니다.")
-				ev.stop();
+			if(mainGrid.getValue(ev.rowKey,'calAmt')*1 > mainGrid.getValue(ev.rowKey,'stckCnt')*1){
+				alert("출고정산량이 현재고보다 많습니다.")
+				mainGrid.blur();
+				mainGrid.setValue(ev.rowKey,'calAmt',mainGrid.getValue(ev.rowKey,'calAmt'));
 			}
-		}else if(mainGrid.getValue(ev.rowKey,'calSectNm') == '입고정산'){
-			console.log(mainGrid.getValue(ev.rowKey,'mngAmt'))
-			if(mainGrid.getValue(ev.rowKey,'calAmt') > mainGrid.getValue(ev.rowKey,'mngAmt')){
-				toastr["warning"]("입고정산량이 관리수량보다 많습니다.")
-				ev.stop();
-			}
-			
 		}
 	};
 	mainGrid.refreshLayout();
@@ -671,6 +661,7 @@ columns : [
 });
 //---------lotGrid 끝---------
 
+
 //***************************************************************************************************
 //---------lotGrid (mainGrid에 있는 데이터 제거)---------
 lotGrid.on('onGridUpdated', ev => {
@@ -690,7 +681,7 @@ lotGrid.on('onGridUpdated', ev => {
 //---------lotGrid 수정불가 컬럼 alert---------
 lotGrid.on('dblclick',function(ev){
 	if(ev.columnName == "inNo" || ev.columnName == "mtrLot" || ev.columnName == "hldCnt" || ev.columnName == "stckCnt"){
-		 toastr["error"]("변경할 수 없는 코드 입니다.", "경고입니다.")
+		alert("변경할 수 없는 코드 입니다.")
 	}
 });
 //---------lotGrid 수정불가 컬럼 alert 끝---------
@@ -706,10 +697,8 @@ btnFind.addEventListener("click", function(){
 
 //---------저장버튼---------
 btnSave.addEventListener("click", function(){
-	mainGrid.blur();
-	
  	rowk = mainGrid.getRowCount();
-     
+    let checked = mainGrid.getCheckedRows();
      for(i=0; i<rowk; i++) {
         if(mainGrid.getRow(i).calSectNm == '') {
            alert("정산구분은 필수입력칸입니다!!");
@@ -724,16 +713,15 @@ btnSave.addEventListener("click", function(){
            alert("정산량은 필수입력칸입니다!!");
            return;
         }
-     }  
-	
-	let param= $("#frm").serializeObject();
+     }
+	mainGrid.blur();
 	mainGrid.request('createData');
-	setTimeout(function(){
-		mainGrid.readData(1,param,true);
-	},100);
-	setTimeout(function(){
-		mainGrid.focus(mainGrid.getRowCount()-1,'calSectNm')
-	},500);
+
+	mainGrid.clear();
+    mainGrid.resetData(checked);
+    
+	
+	mainGrid.focus(mainGrid.getRowCount()-1,'calSectNm')
 });
 //---------저장버튼 끝---------
 

@@ -56,9 +56,11 @@ public class FixServiceImpl implements FixService {
 		
 	}
 
+
 	/*
 	 * //생산공정관리 테이블에 수리요청 설비 조회
 	 * 
+
 	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void
 	 * selectprdPrcMngSelect() { System.out.println("수리요청"); for(FixVO fixVO :
 	 * fmapper.prdPrcMngSelect()) { fmapper.insertRequestFixFtc(fixVO);
