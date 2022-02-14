@@ -110,6 +110,7 @@
 	let prodNo;	//만들어질 정기점검이력번호
 	let predictprodChkNo;
 	let prodExpectDt = {};
+	let ExpectDt;
 	$(function() {
 	    //input을 datepicker로 선언
 	    $(".jquerydtpicker").datepicker({
@@ -170,15 +171,33 @@
 							body: JSON.stringify(prodExpectDt),
 						})
 						.then(response=>response.json())
-						.then(result=>
+						.then(result=>{
 							
 							console.log(result)
+							ExpectDt = result.chkExpectDt;
+							console.log('ExpectDt')
+							console.log(ExpectDt.chkExpectDt)
+						})
+						.then(x=>{
 							
-						)
 						
-					}
+						temp.push({
+									chkExpectDt:ExpectDt
+								   ,chkProd:checkedRowdata[i].chkProd
+								   ,chkProdUnit:checkedRowdata[i].chkProdUnit
+								   ,chkDt:now
+								   ,prodChkNo:predictprodChkNo
+							       ,fctCd:checkedRowdata[i].fctCd
+							       ,chkRslt:checkedRowdata[i].chkRslt
+							       ,fctNm:checkedRowdata[i].fctNm
+								   ,msrMtt:''		   
+								   ,msrCmt:''})
+						
 					console.table(temp)
 					mainGrid.resetData(temp);
+						})
+						
+					}
 					let rowK = mainGrid.getRowCount();
 					for(i =0; i< rowK; i++){
 						mainGrid.setValue(i, 'chkRslt','');

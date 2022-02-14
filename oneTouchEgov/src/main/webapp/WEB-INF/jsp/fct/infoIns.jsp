@@ -694,7 +694,7 @@ $(function() {
       document.getElementById('fctImg').value = dataVO.fctImg;
       document.getElementById('lineNO').value = dataVO.lineNO;
       
-      var fileCallPath = encodeURIComponent(dataVO.uploadPath+"/s_"+dataVO.fctImg);
+      var fileCallPath = encodeURIComponent(dataVO.fctImg);
       console.log('이미지 테스트')
       console.log(fileCallPath);
       if(dataVO.uploadPath == null){
@@ -702,7 +702,7 @@ $(function() {
     	  document.getElementById('fctImges').setAttribute("src", '../resources/img/logo.jpg');
       }
       else{
-		document.getElementById('fctImges').setAttribute("src", 'display?fileName='+fileCallPath);
+		document.getElementById('fctImges').setAttribute("src", '../resources/img/'+fileCallPath);
 		console.log('사진 경로 띄우기')
 		console.log(dataVO.fctImg+dataVO.uploadPath)
       }
@@ -982,13 +982,13 @@ $(function() {
       $(uploadResultArr).each(function(i, obj){
          console.log(obj);
          if(!obj.image){
-            str +="<li><img src='/resources/img/images.jpg'>"+obj.fileName+"</li>";
+            str +="<li><img src='../resources/img/images.jpg'>"+obj.fileName+"</li>";
          }else{
             //str +="<li>"+ obj.fileName+"</li>";
             
-            var fileCallPath = encodeURIComponent( obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
+            var fileCallPath = encodeURIComponent( '../resources/img/'+obj.fileName);
             
-            str += "<li><img src='display?fileName="+fileCallPath+"'></li>";
+            str += "<li><img src='../resources/img/images.jpg'>"+obj.fileName+"</li>";
          }
       });
       uploadResult.append(str)
@@ -1284,7 +1284,7 @@ $(function() {
 				    	  document.getElementById('fctImges').setAttribute("src", '../resources/img/logo.jpg');
 				      }
 				      else{
-						document.getElementById('fctImges').setAttribute("src", 'display?fileName='+fileCallPath);
+						document.getElementById('fctImges').setAttribute("src", '../resources/img/'+fileCallPath);
 						console.log('사진 경로 띄우기')
 						console.log(d.fctImg+d.uploadPath)
 				      }
