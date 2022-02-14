@@ -343,8 +343,8 @@ class abc{
 			  data:mainDataSource,
 			  columns:mainColumns,
 			  scrollY:true,
-			  minBodyHeight : 234,
-			  bodyHeight : 234,
+			  minBodyHeight : 244,
+			  bodyHeight : 244,
 			  columnOptions: {
 				  frozenCount :10,
 				  frozenBorderWidth:2
@@ -426,8 +426,8 @@ class abc{
 			  data:prcDataSource,
 			  columns:prcColumns,
 			  scrollY:true,
-			  minBodyHeight : 235,
-			  bodyHeight : 235,
+			  minBodyHeight : 255,
+			  bodyHeight : 255,
 			  columnOptions: {
 				  frozenCount :11,
 				  frozenBorderWidth:1
@@ -501,8 +501,8 @@ class abc{
 			  rowHeaders:['checkbox'],
 			  columns:modalColumns,
 			  scrollY:true,
-			  minBodyHeight : 250,
-			  bodyHeight : 250,
+			  minBodyHeight : 270,
+			  bodyHeight : 270,
 			  columnOptions: {
 				  frozenCount :11,
 				  frozenBorderWidth:1

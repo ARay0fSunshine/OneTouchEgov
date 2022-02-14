@@ -52,7 +52,10 @@ hr{
     font-weight: normal;
     color: #ffffff;
 }
-
+.form-check .form-check-label input[type="checkbox"] + .input-helper:before, .form-check .form-check-label input[type="checkbox"] + .input-helper:after{
+	top: -38px;
+	left: 130px;
+}
 /* 안전재고수량경고 */
 .warning{background-color: orangered}
 .caution{background-color: gold}
@@ -142,40 +145,56 @@ hr{
 							<input type="text" id="ditemCodeNm2" name="ditemCodeNm" class="inputtext" readonly>
 						</div>
 						
-						<div id="lotRadio" style="display:inline-block">
-							<label class="labeltext">자재구분</label>
-							<div class="form-check checkwidth" style="display:inline-block">
-								<label class="form-check-label schCondLabel" for="allRadio2">
-							  		<input type="radio" class="form-check-input" id="allRadio2" name="mtrSect" value="" checked>
-							  		전체
-									<i class="input-helper"></i>
-								</label>
+						<div class="rowdiv">
+							<div id="lotRadio" style="display:inline-block">
+								<label class="labeltext">자재구분</label>
+								<div class="form-check checkwidth" style="display:inline-block">
+									<label class="form-check-label schCondLabel" for="allRadio2">
+								  		<input type="radio" class="form-check-input" id="allRadio2" name="mtrSect" value="" checked>
+								  		전체
+										<i class="input-helper"></i>
+									</label>
+								</div>
+								<!-- <div class="form-check checkwidth" style="display:inline-block">
+									<label class="form-check-label schCondLabel" for="lotRadio">
+								  		<input type="radio" class="form-check-input" id="lotRadio" name="mtrSect" value="MTR_SECT001">
+								  		원자재
+										<i class="input-helper"></i>
+									</label>
+								</div>
+								                
+								<div class="form-check checkwidth" style="display:inline-block">
+								    <label class="form-check-label schCondLabel" for="semiRadio">
+								  		<input type="radio" class="form-check-input" id="semiRadio" name="mtrSect" value="MTR_SECT002">
+								  		반제품
+										<i class="input-helper"></i>
+									</label>
+								</div> -->
+						   </div>
+							
+							<div style="display:inline-block">
+								<label class="labeltext colline2">소진Lot</label>&emsp;&nbsp;
+								<span class="form-check form-check-flat form-check-primary inline">
+									<label class="form-check-label chkboxalign">
+										<input id="spent" name="spent" type="checkbox" class="form-check-input"  value="spent" readonly>
+									</label>
+								</span>
 							</div>
-							<!-- <div class="form-check checkwidth" style="display:inline-block">
-								<label class="form-check-label schCondLabel" for="lotRadio">
-							  		<input type="radio" class="form-check-input" id="lotRadio" name="mtrSect" value="MTR_SECT001">
-							  		원자재
-									<i class="input-helper"></i>
-								</label>
-							</div>
-							                
-							<div class="form-check checkwidth" style="display:inline-block">
-							    <label class="form-check-label schCondLabel" for="semiRadio">
-							  		<input type="radio" class="form-check-input" id="semiRadio" name="mtrSect" value="MTR_SECT002">
-							  		반제품
-									<i class="input-helper"></i>
-								</label>
-							</div> -->
+							
+							<span>
+								<button type="reset" id="btnLotReset" class="btn btn-primary mr-2 floatrightbtn">초기화</button>
+								<button type="button" id="btnLotFind" class="btn btn-primary mr-2 floatrightbtn">조회</button>
+							</span>
 						</div>
-						<div>
+						
+						
+							
+						<!-- <div style="display:inline-block">
 							<label class="labeltext">소진Lot</label>          
 							<input type="checkbox" id="spent" name="spent" class="form-check-input" value="spent">
 							<i class="input-helper"></i>
-						</div>
-						<span>
-							<button type="reset" id="btnLotReset" class="btn btn-primary mr-2 floatrightbtn">초기화</button>
-							<button type="button" id="btnLotFind" class="btn btn-primary mr-2 floatrightbtn">조회</button>
-						</span>
+						</div>  -->
+						
 					</form>
 				</div>
 			</div>
@@ -189,7 +208,7 @@ hr{
 		  
 		  <li style="top:5px; float:right;">
 		  	<button id = "mtrBtn" onclick=mtr() class="btn btn-main mr-2 floatrightbtn">excel</button>
-		  	<button id="lotBtn" onclick=lot() class="btn btn-main mr-2 floatrightbtn">Lotexcel</button>
+		  	<button id="lotBtn" onclick=lot() class="btn btn-main mr-2 floatrightbtn">excel</button>
 		  </li>
 		</ul>
 		<div id="mtrTab"></div>

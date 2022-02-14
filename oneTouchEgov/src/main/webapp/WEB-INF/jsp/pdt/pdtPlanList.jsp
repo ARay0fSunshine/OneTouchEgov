@@ -605,8 +605,8 @@
 		el: document.getElementById('insertDtlGrid'),
 		data:null,
 		scrollY:true,
-		minBodyHeight : 120,
-		bodyHeight : 120,
+		minBodyHeight : 130,
+		bodyHeight : 130,
 		columns:insertDtlColumns
 	});	
 
@@ -694,8 +694,8 @@
 		el: document.getElementById('grid'),
 		data:dataSource,
 		columns,
-		minBodyHeight : 104,
-		bodyHeight : 104,
+		minBodyHeight : 114,
+		bodyHeight : 114,
 	});  
 
 	//자재 hidden grid
@@ -704,8 +704,8 @@
 		el: document.getElementById('hidden'),
 		data:null,
 		scrollY:true,
-		minBodyHeight : 170,
-		bodyHeight : 170,
+		minBodyHeight : 180,
+		bodyHeight : 180,
 		columns:[{
 			header : '자재코드',
 			name : 'mtrCd',
@@ -753,8 +753,8 @@
 		el: document.getElementById('planGrid'),
 		data:null,
 		scrollY:true,
-		minBodyHeight : 120,
-		bodyHeight : 120,
+		minBodyHeight : 130,
+		bodyHeight : 130,
 		columns:planColumns
 	});	
 	
@@ -763,8 +763,8 @@
 		el: document.getElementById('lotDiv'),
 		data:null,
 		scrollY:true,
-		minBodyHeight : 130,
-		bodyHeight : 130,
+		minBodyHeight : 140,
+		bodyHeight : 140,
 		columns:[{
 			header : '자재코드',
 			name : 'mtrCd',
