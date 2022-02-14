@@ -226,8 +226,8 @@ hr{
 		  data:null,
 		  columns,
 		  scrollY : true,
-		  bodyHeight: 528,
-		  minBodyHeight: 528
+		  bodyHeight: 558,
+		  minBodyHeight: 558
 		});
 	grid.on('successResponse',function(ev){
 		console.log("성공")

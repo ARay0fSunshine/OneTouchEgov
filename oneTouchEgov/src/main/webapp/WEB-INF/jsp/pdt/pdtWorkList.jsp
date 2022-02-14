@@ -54,7 +54,7 @@ hr{
 		<div class="col-md-12 grid-margin">
 			<div class="row">
 				<div class="col-12 col-xl-8 mb-4 mb-xl-0">
-					<h3 class="font-weight-bold page-title">생산지시관리</h3>
+					<h3 class="font-weight-bold page-title">생산지시조회</h3>
 				</div>
 			</div>
 		</div>
@@ -278,8 +278,8 @@ hr{
 		  data: null,
 		  columns:mainColumns,
 	      scrollY:true,
-		  minBodyHeight : 477,
-		  bodyHeight : 477,
+		  minBodyHeight : 507,
+		  bodyHeight : 507,
 		  columnOptions: {
 			  frozenCount :6,
 			  frozenBorderWidth:2

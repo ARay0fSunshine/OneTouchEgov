@@ -177,7 +177,7 @@
 	height:150px;
 }
 .bascard2{
-	height:420px;
+	height:450px;
 	margin-bottom: 12px;
 }
 
@@ -339,8 +339,8 @@
 			  frozenCount :10,
 			  frozenBorderWidth:2
 		  },
-		  bodyHeight: 208,
-		  minBodyHeight: 208
+		  bodyHeight: 238,
+		  minBodyHeight: 238
 	});
 	//main그리드 데이터 
 	function prcGridData(prcVO){

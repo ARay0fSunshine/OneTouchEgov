@@ -283,8 +283,8 @@ hr{
 		  data: null,
 		  columns:mainColumns,
 	      scrollY:true,
-		  minBodyHeight : 477,
-		  bodyHeight : 477,
+		  minBodyHeight : 507,
+		  bodyHeight : 507,
 		  columnOptions: {
 			  frozenCount :6,
 			  frozenBorderWidth:2

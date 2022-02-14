@@ -221,8 +221,8 @@ width: 100px !important;
 			  frozenCount :6,
 			  frozenBorderWidth:2
 	 	 },
-	 	bodyHeight: 159,
-		minBodyHeight: 159  
+	 	bodyHeight: 189,
+		minBodyHeight: 189  
 	});
 ///////////////////////////그리드생성/////////////////////////////
 	//그리드 컬럼 설정	
