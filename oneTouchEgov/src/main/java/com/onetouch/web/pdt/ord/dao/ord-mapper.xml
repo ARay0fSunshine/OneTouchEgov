@@ -40,6 +40,7 @@
     from adm_prd a join (select prd_cd , cnt ,ord_sht_no 
                             from pdt_ord_sht_dtl) b
     on a.prd_Cd = b.prd_cd
+    where 1=1
 	<if test='ordShtNo!=null and ordShtNo!=""'>
 		AND b.ord_sht_no = #{ordShtNo}
 	</if>

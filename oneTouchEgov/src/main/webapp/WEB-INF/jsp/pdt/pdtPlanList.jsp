@@ -615,6 +615,7 @@
 	dialog = $( "#dialog-form" ).dialog({
 		autoOpen: false,
 		modal:true,
+		width: 330,
 	});
 	$("#btnFindCo").on("click",function(){
 		dialog.dialog( "open" );
@@ -1277,9 +1278,11 @@ function needOrdCd(){
 		let tHeadTag=document.createElement('thead');
 		let thTag=document.createElement('th');
 		thTag.innerHTML='주문번호';
+		thTag.style="text-align:center"
 		tHeadTag.appendChild(thTag);
 		thTag=document.createElement('th');
 		thTag.innerHTML='업체코드';
+		thTag.style="text-align:center"
 		thTag.setAttribute('class','thTag')
 		tHeadTag.appendChild(thTag);
 		tHeadTag.setAttribute('class','tHeadTag')

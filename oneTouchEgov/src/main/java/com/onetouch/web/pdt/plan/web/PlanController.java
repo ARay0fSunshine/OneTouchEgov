@@ -136,7 +136,7 @@ public class PlanController {
 	@ResponseBody
 	@GetMapping("ordShtSelect/{ordShtNo}")
 	public List<PlanVO> ordShtSelect(@PathVariable String ordShtNo){
-		System.out.println(ordShtNo);
+		System.out.println(ordMapper.ordShtSelect(ordShtNo));
 		return ordMapper.ordShtSelect(ordShtNo);
 	}
 	//안전재고 확인
