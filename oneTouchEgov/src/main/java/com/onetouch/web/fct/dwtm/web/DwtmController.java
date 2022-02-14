@@ -22,6 +22,13 @@ public class DwtmController {
 	@Autowired DwtmService dservice;
 	@Autowired DwtmMapper dmapper;
 	
+	//수리횟수 조회
+	@ResponseBody
+	@PostMapping("/selectFctFixCount")
+	public List<DwtmVO> selectFixFctCount(@RequestBody DwtmVO dwtmVO) {
+		System.out.println();
+		return dservice.selectFctFixCount(dwtmVO);
+	}
 	//비동기 조회 이동
 	@RequestMapping("/fctDwtmSel")
 	public String moveDwtmSelPage() {

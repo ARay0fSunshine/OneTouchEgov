@@ -88,5 +88,11 @@
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
 	</bean>
+	<!-- 종현 엑셀 -->
+	<bean id = "fctSelexcelView" class="com.onetouch.web.fct.info.dao.CommonExcelOneView" ></bean>
+	<bean id = "mtrExcelView" class="com.onetouch.web.mtr.in.dao.MtrlnExcelView" ></bean>
+	<bean id = "LotExcelView" class="com.onetouch.web.mtr.stck.dao.mtrLotExcelView" ></bean>
+	<bean id = "mtrExcelTwoView" class="com.onetouch.web.mtr.stck.dao.mtrExcelTwoView" ></bean>
+	
 
 </beans>

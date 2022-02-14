@@ -38,4 +38,9 @@ public class DwtmServiceImpl implements DwtmService {
 		return dmapper.dwtmDelete(dwtmVO);
 	}
 
+	@Override
+	public List<DwtmVO> selectFctFixCount(DwtmVO dwtmVO) {
+		return dmapper.selectFctFixCount(dwtmVO);
+	}
+
 }

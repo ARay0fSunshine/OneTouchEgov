@@ -19,4 +19,5 @@ public class DwtmVO {
 	String dwtmEndMinute;
 	String checkPrcCd;
 	String proceedCheck; 	//진행중인 설비 보여주기 위한 조건값 담는 변수 
+	int count;
 }

@@ -152,7 +152,7 @@ function poll(){
 			$.ajax({ 
 				url: '../msgAltDept', 
 				method: 'POST',
-				data : 'altRecpDept=fct',
+				data : 'altSendDept=fct',
 				success: function(result){ 
 					console.log(result);
 					if (result.length > 0){

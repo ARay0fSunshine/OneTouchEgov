@@ -21,10 +21,17 @@ public class PropController {
 
 	@Autowired ProdService prodservice;
 	
+	//차기점검일 조회
+	@ResponseBody
+	@PostMapping("/selectExpectFctProd")
+	public ProdVO selecteExpectFctProd(@RequestBody ProdVO prodVO) {
+		System.out.println("차기점검일 가져오기");
+		return prodservice.selectchkExpectDt(prodVO);
+	}
 	//이력번호 조회 해서 가져오기 
 	@ResponseBody
-	@GetMapping("/selectExpectFctProd")
-	public ProdVO selecteExpectFctProd() {
+	@GetMapping("/selectFctProd")
+	public ProdVO selecteFctProd() {
 		System.out.println("차기점검일 컨트롤러 실행완료");
 		return prodservice.selectFctProd();
 	}

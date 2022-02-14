@@ -42,7 +42,7 @@
 		       alt_chk_dt as altChkDt 
 		FROM msg_alt
 		WHERE alt_chk = 'N'
-		AND alt_recp_dept = #{altRecpDept}
+		AND alt_send_dept = #{altSendDept}
 		ORDER BY alt_send_dt desc)
 		WHERE rownum = 1
 	</select>

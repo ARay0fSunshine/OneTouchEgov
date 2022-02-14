@@ -690,6 +690,7 @@ $(function() {
       document.getElementById('inDate').value = dataVO.inDate;
       document.getElementById('purchCost').value = dataVO.purchCost;
       document.getElementById('chkProd').value = dataVO.chkProd;
+      document.getElementById('chkProdUnit').value = dataVO.chkProdUnit;
       document.getElementById('fctImg').value = dataVO.fctImg;
       document.getElementById('lineNO').value = dataVO.lineNO;
       
@@ -727,20 +728,22 @@ $(function() {
      
    })
     
-   //라인 찾는 아작스 
-   $.ajax({
-      url : './LineSelect',
-      method:'post',
-      data: JSON.stringify(lineStatusVO),
-	  contentType: "application/json",
-      success : function(result){
-         lineData = result;
-         LineGrid.resetData(result);
-         for(let lines of result){
-        	 $('#l-option').append("<option value="+lines.lineNO+">"+lines.lineNO+"</option>")
-         }
-      }
-   });
+   function selectLineInput(){
+		//라인 찾는 아작스 
+		$.ajax({
+		   url : './LineSelect',
+		   method:'post',
+		   data: JSON.stringify(lineStatusVO),
+		contentType: "application/json",
+		   success : function(result){
+		      lineData = result;
+		      LineGrid.resetData(result);
+		      for(let lines of result){
+		     	 $('#l-option').append("<option value="+lines.lineNO+">"+lines.lineNO+"</option>")
+		      }
+		   }
+		});
+   }
    
     //클릭 이벤트 그리드
     fctGrid.on('check', (ev) => {
@@ -1036,6 +1039,7 @@ $(function() {
 				}
 			}		   
 	   })
+	   selectLineInput()//라인페이지 라인 input조회
    }
    //라인삭제
 	function LineDel(){
@@ -1065,6 +1069,7 @@ $(function() {
 		else if(lineInput.useYn == 'Y'){
 			alert("해당 라인에 사용중인 설비를 먼저 등록해제 해주세요")
 		}
+		selectLineInput()//라인페이지 라인 input조회
 	}
    
    //라인 input 초기화 
@@ -1181,6 +1186,7 @@ $(function() {
 			console.log(result)
 			LineGrid.resetData(result)
 		})
+		selectLineInput()//라인페이지 라인 input조회
 	}
 	//라인번호 select 값 조회 
 	function selectLine(){
@@ -1297,6 +1303,7 @@ $(function() {
 	prcSelect()		//공정코드조회
 	componySelect()	//회사코드조회
 	selectfctSize()	//설비규격조회
+	selectLineInput()//라인페이지 라인 input조회
 
 </script>
 </body>

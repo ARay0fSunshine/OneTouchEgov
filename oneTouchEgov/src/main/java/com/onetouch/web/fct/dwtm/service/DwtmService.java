@@ -6,6 +6,7 @@ import com.onetouch.web.fct.dwtm.dao.DwtmVO;
 
 public interface DwtmService {
 
+	List<DwtmVO> selectFctFixCount(DwtmVO dwtmVO);
 	List<DwtmVO> dwtmSelectAll(DwtmVO dwtmVO);
 	int dwtmInsert(DwtmVO dwtmVO);
 	int dwtmUpdate(DwtmVO dwtmVO);

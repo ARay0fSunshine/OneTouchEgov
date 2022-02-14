@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 @Component
-public class CommonExcelView  extends  AbstractXlsxView {
+public class CommonExcelOneView  extends  AbstractXlsxView {
 
-	private static final Logger LOGGER  = LoggerFactory.getLogger(CommonExcelView.class);
+	private static final Logger LOGGER  = LoggerFactory.getLogger(CommonExcelOneView.class);
 	
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,

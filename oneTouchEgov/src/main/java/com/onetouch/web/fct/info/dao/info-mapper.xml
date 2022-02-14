@@ -78,12 +78,12 @@ select fct_cd , fct_nm , line_no ,prc_cd,(select FN_GET_PRC_CD_TO_NM(prc_cd) fro
 		</if>
 		<if test="fixTo != null and fixTo != ''">
 			<![CDATA[
-				AND f.in_date <= to_char(#{fixTo}, 'yyyy-MM-dd')
+				AND f.in_date <= to_date(#{fixTo}, 'yyyy-MM-dd')
 			]]>
 		</if>
 		<if test="fixFrom != null and fixFrom != ''">
 			<![CDATA[
-				AND f.in_date >= #{fixFrom}
+				AND f.in_date >= to_date(#{fixFrom}, 'yyyy-MM-dd')
 			]]>
 		</if>
 </select>
