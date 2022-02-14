@@ -192,10 +192,10 @@
 		on a.instr_no = b.instr_no
 		where 1=1
 	 	<if test='startDate!="" and startDate!="null"'>
-			and b.work_str_dt>#{startDate}
+			and b.work_str_dt>=#{startDate}
 		</if>
 	 	<if test='endDate!="" and endDate!="null"'>
-			and #{endDate}>b.work_str_dt
+			and #{endDate}>=b.work_str_dt
 		</if>
 	 	<if test='mtrLot!="" and mtrLot!=null'>
 			and a.mtr_lot=#{mtrLot}
@@ -271,8 +271,7 @@
 		                                a join prd_prc_mng b
 		                on a.able_line_no like '%'||b.line_no||'%' and a.prc_cd =b.prc_cd)
 		
-		                where work_str_dt is not null
-		                and work_fin_dt is null
+		                where b.line_no = #{lineNo}
 		                and instr_no=#{instrNo}
 		                and  (select distinct a.prc_seq
 		                                    from ((select  able_line_no,b.prc_cd,b.prc_seq  
@@ -282,8 +281,7 @@
 		                                                    a join prd_prc_mng b
 		                                    on a.able_line_no like '%'||b.line_no||'%' and a.prc_cd =b.prc_cd)
 		                    
-		                                    where work_str_dt is not null
-		                                    and work_fin_dt is null
+		                                    where b.line_no = #{lineNo}
 		                                    and instr_no=#{instrNo}
 		                                    and a.prc_cd=#{prcCd}) >= a.prc_seq)
 		group by instr_no , line_no

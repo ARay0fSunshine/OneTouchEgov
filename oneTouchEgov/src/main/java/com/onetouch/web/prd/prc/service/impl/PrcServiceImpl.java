@@ -152,32 +152,34 @@ public class PrcServiceImpl implements PrcService{
 	
 	@Override
 	public PrcVO selectCheck(PrcVO vo) {
-		try {
-			Robot robot=new Robot();
-			PrcVO vo2=new PrcVO();
-			int i=0;
-			vo2=vo;
-			String fltSave=mapper.realFlt(vo).getSumFlt();  
-			String pdtSave=mapper.realFlt(vo).getPdtCnt();
-			System.out.println(fltSave+",,"+pdtSave);
-			while(true){
-				String flt=mapper.realFlt(vo2).getSumFlt(); 
-				String pdt=mapper.realFlt(vo2).getPdtCnt();
-				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
-					System.out.println(flt+"...."+pdt);
-					return mapper.realFlt(vo);
-				}
-				robot.delay(3000);
-				i++;
-				if(i==9) {
-					return null;
-				}
-			}
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+//		try {
+//			Robot robot=new Robot();
+//			PrcVO vo2=new PrcVO();
+//			int i=0;
+//			vo2=vo;
+			return mapper.realFlt(vo);
+//			String fltSave=mapper.realFlt(vo).getSumFlt();  
+//			String pdtSave=mapper.realFlt(vo).getPdtCnt();
+//			System.out.println(fltSave+",,"+pdtSave);
+//			while(true){
+//				String flt=mapper.realFlt(vo2).getSumFlt(); 
+//				String pdt=mapper.realFlt(vo2).getPdtCnt();
+//				System.out.println(mapper.realFlt(vo)+"...."+fltSave);
+//				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
+//					return mapper.realFlt(vo);
+//
+//				}
+//				robot.delay(3000);
+//				i++;
+//				if(i==9) {
+//					return null;
+//				}
+//			}
+//		} catch (AWTException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 	
