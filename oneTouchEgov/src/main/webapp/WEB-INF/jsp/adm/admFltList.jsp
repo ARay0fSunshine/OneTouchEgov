@@ -142,8 +142,8 @@ hr{
 		data: dataSource, 
 		rowHeaders : [ 'checkbox' ],
 		columns,
-		bodyHeight: 612,
-		minBodyHeight: 612
+		bodyHeight: 642,
+		minBodyHeight: 642
 	}); 
 	//그리드 그리기 끝-----------------------------------	
 	

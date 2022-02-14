@@ -312,8 +312,8 @@
 	    data:dataSource,  //이름이 같다면 생격가능
 	    rowHeaders : [ 'checkbox' ],
 	    columns: columns,
-	    bodyHeight: 509,
-        minBodyHeight: 509,
+	    bodyHeight: 539,
+        minBodyHeight: 539,
 	 });
    
    mainGrid.on('editingStart', (ev) => {

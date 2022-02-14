@@ -208,8 +208,8 @@ var mainGrid = new Grid({
      data : dataSource,
      scrollX : false,
      scrollY : true,
-     bodyHeight: 447,
-     minBodyHeight: 447,
+     bodyHeight: 477,
+     minBodyHeight: 477,
      rowHeaders : [ 'checkbox'],
      columns : [
 				{

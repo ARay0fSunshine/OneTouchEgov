@@ -93,7 +93,7 @@
 			</span>
 			<br>
 			<hr class="hr4">
-			<div class="row row1">
+			<div class="row">
 				<div class="col-md-12 grid-margin stretch-card">
 					<div class="card bascard">
 						<div class="card-body bascard1">
@@ -143,7 +143,6 @@
 					</div>
 				</div>
 			</div>
-			<br><br>
 			<h4 class="gridtitle">✔공정흐름</h4>
 			<span class="floatright">
 				<!-- <button type="button" id="btnFlw" class="btn btn-main newalign2">조회</button> -->
@@ -370,16 +369,16 @@
 		el: document.getElementById('grid1'),
 		data: dataSource1,
 		columns: columns1,
-		bodyHeight: 616,
-		minBodyHeight: 616
+		bodyHeight: 647,
+		minBodyHeight: 647
 	});
 	
 	const grid2 = new Grid({
 		el: document.getElementById('grid2'),
 		data: dataSource2,
 		columns: columns2,
-		bodyHeight: 287,
-		minBodyHeight: 287
+		bodyHeight: 315,
+		minBodyHeight: 315
 	});
 	//그리드 그리기 끝----------------------------------
 	

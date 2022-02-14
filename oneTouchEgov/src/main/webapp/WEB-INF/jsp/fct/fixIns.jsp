@@ -332,8 +332,8 @@ function poll(){
               frozenCount: 2, // 3개의 컬럼을 고정하고
               frozenBorderWidth: 3 // 고정 컬럼의 경계선 너비를 3px로 한다.
             } */
-        bodyHeight: 468,
- 		minBodyHeight: 468
+        bodyHeight: 498,
+ 		minBodyHeight: 498
     });
     grid.on('response', function(ev) {
 	    if(ev.xhr.response ==0 ){

@@ -232,8 +232,8 @@
          el: document.getElementById('grid'),
          data:data,  //이름이 같다면 생격가능
          /* rowHeaders : [ 'checkbox' ], */
-         bodyHeight: 509,
-         minBodyHeight: 509,
+         bodyHeight: 539,
+         minBodyHeight: 539,
          columns
          });
     

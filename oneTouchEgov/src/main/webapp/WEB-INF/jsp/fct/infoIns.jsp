@@ -627,8 +627,8 @@ $(function() {
         el: document.getElementById('grid'),
         data:data,  //이름이 같다면 생격가능
         columns:fctColumns,
-        bodyHeight: 312,
-        minBodyHeight: 312
+        bodyHeight: 342,
+        minBodyHeight: 342
        /* ,width: 800 */
     });
     
@@ -656,8 +656,8 @@ $(function() {
         el: document.getElementById('lineGrid'),
         data:lineData,  //이름이 같다면 생격가능
         columns:lineColumns,
-        bodyHeight: 312,
-       minBodyHeight: 312
+        bodyHeight: 342,
+       minBodyHeight: 342
       /*  ,width:250 */
     });
   

@@ -241,8 +241,8 @@ let mainGrid = new Grid({
 			},
 	 scrollX : false,
 	 scrollY : true,
-	 bodyHeight: 325,
-	 minBodyHeight: 325,
+	 bodyHeight: 397,
+	 minBodyHeight: 397,
      rowHeaders : [ 'checkbox'],
      columns : [
 				{
