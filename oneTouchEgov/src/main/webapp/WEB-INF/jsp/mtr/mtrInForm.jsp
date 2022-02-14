@@ -612,11 +612,14 @@ let ordDialog = $( "#dialog-ord" ).dialog({
 	width: 800,
 	buttons:{
 		"확인":()=>{
+		let cnt = mainGrid.getRowCount();
+		for(let i = 0; i < cnt; i++){
+			mainGrid.removeRow(cnt)
+		}
 		let rows = ordGrid.getCheckedRows();
-		mainGrid.clear();
 		for(row of rows){
 			row.inDate = today();
-			//row.rowKey = mainGrid.getRowCount();
+			row.rowKey = mainGrid.getRowCount();
 			row.inAmt = row.notinAmt;
 			mainGrid.appendRow(row,{focus:true});
 			mainGrid.setValue(row.rowKey,"totCost",row.notinAmt*row.unitCost)
