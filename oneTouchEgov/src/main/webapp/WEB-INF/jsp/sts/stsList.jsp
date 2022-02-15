@@ -42,6 +42,7 @@
 	margin-bottom: 10px;
 }
 
+
 </style>
 <body>
 <div class="content-wrapper">
@@ -68,7 +69,7 @@
 				<label> ~ </label>&nbsp;
 				<input type="text" id="endDate" name="endDate" class="datepicker jquerydtpicker">&nbsp;
 
-					<button type="button" id="btnFind" class="btnFind">통계조회</button>			
+					<button type="button" id="btnFind" class="btnFind btn btn-main newalign">통계조회</button>			
 
 			</div>
 		</form>
@@ -79,7 +80,7 @@
 				<label> ~ </label>&nbsp;
 				<input type="text" id="endDate2" name="endDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 
-					<button type="button" id="btnFind" class="btnFind">통계조회</button>			
+					<button type="button" id="btnFind" class="btnFind btn btn-main newalign">통계조회</button>			
 
 			</div>
 		</form>
@@ -101,7 +102,7 @@
 					<option>2021</option>
 					<option>2022</option>
 				</select>&nbsp;&nbsp;
-					<button type="button" id="btnFind" class="btnFind">통계조회</button>			
+					<button type="button" id="btnFind" class="btnFind btn btn-main newalign">통계조회</button>			
 			</div>
 		<br>
 		</form>
@@ -130,7 +131,7 @@
 			<input type="text" id="startDate4" name="startDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 			<label> ~ </label>&nbsp;
 			<input type="text" id="endDate4" name="endDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
-				<button type="button" id="btnChart">차트조회</button>			
+				<button type="button" id="btnChart" class="btn btn-main newalign">차트조회</button>			
 			<input style="display: none;" value='chart' name="chart">
 		</form><br><br><br>
 		<div align="center">
