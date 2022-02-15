@@ -47,8 +47,9 @@
 		group by instr_no, line_no ,  prd_cd , instr_cnt , pdt_cnt , work_str_date , work_str_time , bom_cd
 		having 1=1) a join pdt_work_instr b 
 		on a.instr_no = b.instr_no   
+		where 1=1
 		<if test='instrNo!="" and planNo!=null'>
-			and instr_no='%'||#{instrNo}||'%'
+			and instr_no like'%'||#{instrNo}||'%'
 		</if>
 		<if test='prdCd!="" and prdCd!=null' >
 			and prd_cd like '%'||#{prdCd}||'%'

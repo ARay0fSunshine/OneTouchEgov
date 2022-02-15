@@ -26,6 +26,7 @@ public class WorkViewController {
 	@ResponseBody
 	@RequestMapping("workSearchList")
 	public List<WorkVO> workSearchList(@RequestBody WorkVO vo){
+		System.out.println(vo+","+mapper.workListDetail(vo));
 		return mapper.workListDetail(vo);
 	}
 
