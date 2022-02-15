@@ -90,7 +90,7 @@ hr{
 							<div class="form-check checkwidth" style="display:inline-block">
 								<label class="form-check-label schCondLabel" for="checkedN">
 							  		<input type="radio" class="form-check-input" id="checkedN" name="nowPhs" value="N">
-							  		미지시
+							  		미진행
 									<i class="input-helper"></i>
 								</label>
 							</div>

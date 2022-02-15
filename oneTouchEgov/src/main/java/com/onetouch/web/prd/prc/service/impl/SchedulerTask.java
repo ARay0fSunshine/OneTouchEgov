@@ -15,35 +15,35 @@ public class SchedulerTask {
 	
 	@Autowired PrcMapper mapper;
 	
-	@Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도)
-	public void selectTask1() {
-		List<PrcVO> list= new ArrayList<>();
-		list=mapper.autoSelect();
-		System.out.println(list);
-		for(PrcVO vo : list) {
-			int rand=(int) (Math.random()*100);
-			PrcVO vo2 =mapper.autoFltSum(vo);
-			System.out.println(vo);
-			System.out.println(vo2);
-			if(Integer.parseInt(vo.getGoalCnt())>(Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt()))) {
-				System.out.println("fddddddsssss");
-				System.out.println(vo);
-				System.out.println(vo2);
-				System.out.println("fddddddsssss");
-				int uph;
-				System.out.println(vo);
-				System.out.println("asd"+vo+mapper.uphFind(vo));
-				uph=mapper.uphFind(vo);
-				System.out.println("UPH"+uph);
-				System.out.println("rand"+rand);
-				if(rand<98) {
-					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
-					mapper.autoUpdate(vo);
-				}else {
-					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getFltCnt())));
-					mapper.autoFltUpdate(vo);
-				}
-			}
-		}
-	}
+//	@Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도)
+//	public void selectTask1() {
+//		List<PrcVO> list= new ArrayList<>();
+//		list=mapper.autoSelect();
+//		System.out.println(list);
+//		for(PrcVO vo : list) {
+//			int rand=(int) (Math.random()*100);
+//			PrcVO vo2 =mapper.autoFltSum(vo);
+//			System.out.println(vo);
+//			System.out.println(vo2);
+//			if(Integer.parseInt(vo.getGoalCnt())>(Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt()))) {
+//				System.out.println("fddddddsssss");
+//				System.out.println(vo);
+//				System.out.println(vo2);
+//				System.out.println("fddddddsssss");
+//				int uph;
+//				System.out.println(vo);
+//				System.out.println("asd"+vo+mapper.uphFind(vo));
+//				uph=mapper.uphFind(vo);
+//				System.out.println("UPH"+uph);
+//				System.out.println("rand"+rand);
+//				if(rand<98) {
+//					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
+//					mapper.autoUpdate(vo);
+//				}else {
+//					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getFltCnt())));
+//					mapper.autoFltUpdate(vo);
+//				}
+//			}
+//		}
+//	}
 }
