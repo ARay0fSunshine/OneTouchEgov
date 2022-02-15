@@ -616,6 +616,9 @@
 		autoOpen: false,
 		modal:true,
 		width: 330,
+		open:function(){
+			$(this).parent().offset ( { top : 300 , left : 850 } );
+		}
 	});
 	$("#btnFindCo").on("click",function(){
 		dialog.dialog( "open" );
@@ -1560,8 +1563,8 @@ function needOrdCd(){
 			console.log(obj);
 			modiList.push(obj);
 		}
-		let lotData1=lotGrid.getRow();
-		lotData1.planNo=insertLineNo;
+		let lotData1=lotGrid.getRow(ev.rowKey);
+		lotData1.planNo=grid.getRowAt(0).planNo;
 		lotData1.lineNo=planGrid.getData()[0].lineNo;
 		let i = 0;
 		for(z=0 ; z<hiddenGrid.getData().length ; z++){
@@ -1584,7 +1587,7 @@ function needOrdCd(){
 		let hiddenInsertData =hiddenGetData.map(x=>{
 			console.log("확인")
 			console.log(x.hldCnt)
-			if(lotData1.mtrLot == x.mtrLot && lotData1.prdCd == x.prdCd){
+			if(lotData1.mtrLot == x.mtrLot){
 				lotData1.rowKey=m;
 				m++;
 				return lotData1;
@@ -1694,6 +1697,7 @@ function needOrdCd(){
 	}
 	
 	mtrSelect.addEventListener('change',ev=>{
+		insertLineNo=planGrid.getValue(0,'planNo');
 		if(ev.target.value!='자재선택'){
 			fetch("addPlanLotSelect/"+ev.target.getAttribute('data-id')+'/'+ev.target.getAttribute('data-prc')+'/'+ev.target.value)
 				.then(response=>response.json())
@@ -1725,11 +1729,15 @@ function needOrdCd(){
 					console.log(planGridNeedCnt);
 					//planGridNeedCnt=needCnt;
 					lotGrid.resetData(resultSave);
+					//let n=0;
 					for(obj of resultSave){
 						if(obj.hldCnt!=0){
+							
 							obj.planNo=planGrid.getRowAt(0).planNo;
 							obj.lineNo=insertLineNo;
+							//obj.rowKey=n;
 							hiddenGrid.appendRow(obj);
+							//n++;
 						}
 					}
 				}).then(()=>{

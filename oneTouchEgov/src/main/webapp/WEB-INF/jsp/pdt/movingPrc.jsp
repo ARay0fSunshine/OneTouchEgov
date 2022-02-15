@@ -79,7 +79,7 @@ width: 100px !important;
 							<div class="form-check checkwidth" style="display:inline-block">
 							    <label class="form-check-label schCondLabel" for="checkedY">
 							  		<input type="radio" class="form-check-input" id="checkedY" name="prcCheck" value="Y" checked>
-							  		공정진행
+							  		진행완료
 									<i class="input-helper"></i>
 								</label>
 							</div>
@@ -87,7 +87,7 @@ width: 100px !important;
 							<div class="form-check checkwidth" style="display:inline-block">
 								<label class="form-check-label schCondLabel" for="checkedN">
 							  		<input type="radio" class="form-check-input" id="checkedN" name="prcCheck" value="N">
-							  		공정미진행
+							  		진행중
 									<i class="input-helper"></i>
 								</label>
 							</div>
@@ -95,7 +95,7 @@ width: 100px !important;
 						
 						<div class="rowdiv" style="display:inline-block">
 							<label class="labeltext">자재LOT</label>
-							<input id="mtrLot" name="mtrLot" class="inputtext" readonly>
+							<input id="mtrLot" name="mtrLot" class="inputtext">
 						</div>
 						
 						<span>
