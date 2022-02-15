@@ -37,7 +37,7 @@
 			and #{endDate}>=to_char(b.plan_date,'yyyy-MM-dd')
 		</if> 
 		<if test='nowPhs=="Y"'>
-			and b.now_phs = '%'||#{nowPhs}||'%'
+			and b.now_phs = 'Y'
 		</if>  
 		<if test='nowPhs=="N"'>
 			and (b.now_phs = 'N' or b.now_phs = 'P')
