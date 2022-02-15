@@ -36,7 +36,7 @@ public class SchedulerTask {
 				uph=mapper.uphFind(vo);
 				System.out.println("UPH"+uph);
 				System.out.println("rand"+rand);
-				if(rand<70) {
+				if(rand<98) {
 					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
 					mapper.autoUpdate(vo);
 				}else {

@@ -672,7 +672,8 @@
       },{
 		header : '작업우선순위',
 		name : 'workProt',
-		editor : 'text'
+		editor : 'text',
+		hidden:true
 	},{
 		header : '계획일자',
 		name : 'planDate',

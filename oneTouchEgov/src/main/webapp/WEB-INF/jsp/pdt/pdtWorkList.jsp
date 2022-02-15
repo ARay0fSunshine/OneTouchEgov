@@ -298,7 +298,6 @@ hr{
 	searchBtn.addEventListener('click',ev=>{
 		let searchData=$('#workSearchFrm').serializeObject();
 		
-		if(document.getElementById('prdCd').value!=''){
 			searchData.workNo='';
 			fetch('workSearchList',{
 					method:'POST',
@@ -311,7 +310,7 @@ hr{
 			.then(result=>{
 				mainGrid.resetData(result);
 			})
-		}else{
+		/* else{
 			workDialog.dialog("open");
 			modalGrid.refreshLayout();
 			fetch('workList',{
@@ -326,7 +325,7 @@ hr{
 				console.log("sssss")
 				modalGrid.resetData(result);
 			})
-		}
+		} */
 	})
 /* 	findWork.addEventListener("click",ev=>{
 		
