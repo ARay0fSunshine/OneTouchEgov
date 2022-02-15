@@ -25,15 +25,15 @@
 
 <style type="text/css">
 .red{
-		background-color:red
+		background-color:#F3797E
 		
 	}
 .green{
-		background-color:#7DA0FA
+		background-color:#36b9ad
 		
 	  }
 .blue{
-		background-color:#F3797E 
+		background-color:#7DA0FA 
 		
 }
 .labeltext1{
