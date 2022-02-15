@@ -292,7 +292,7 @@ var mainGrid = new Grid({
 				 {
 				   header: '출고공정',
 				   name: 'prcNm',
-				   align: 'center',
+				   align: 'left',
 				   sortable: true
 				 },
 				 {
@@ -355,7 +355,7 @@ dialog = $( "#dialog-form" ).dialog({
 	modal : true,
 	resizable: false,
 	height: "auto",
-	width: 500
+	width: 600
 });
 //---------모달 설정 끝---------
 

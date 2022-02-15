@@ -458,9 +458,8 @@ btnSave.addEventListener("click", function(){
 	}
 	if(datas.length != 0){
 		if(confirm(datas.length + "건의 데이터를 처리하겠습니까?") == true){
-			mod();
 			mainGrid.blur();
-			mainGrid.clear();
+			mod();
 			mainGrid.resetData(datas);
 			mainGrid.uncheckAll();
 		} else {
