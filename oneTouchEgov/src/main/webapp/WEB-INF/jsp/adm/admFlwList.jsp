@@ -578,6 +578,11 @@
 						document.getElementById('btnDelPrd').disabled = undefined;	
 						
 						document.getElementById('prdCd').readOnly = true;
+						
+						prdCodeVal = $('#prdCd').val();
+						prdCode2 = {'prdCd' : prdCodeVal};
+						grid2.readData(1,prdCode2,true);
+						
 						flag = true;
 						break;
 					} else {

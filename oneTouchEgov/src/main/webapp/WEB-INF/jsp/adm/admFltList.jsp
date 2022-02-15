@@ -221,8 +221,7 @@ hr{
 			modal : true,
 			resizable: false,
 			height: "auto",
-			width: 700,
-			height: 400
+			width: 1000
 		});
 		
 		//불량코드 수정불가알림
