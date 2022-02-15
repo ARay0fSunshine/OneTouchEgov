@@ -265,6 +265,7 @@ var mainGrid = new Grid({
 				   header: '발주번호',
 				   name: 'ordNo',
 				   align: 'center',
+				   width: 150,
 				   sortable: true
 				 },
 				 {

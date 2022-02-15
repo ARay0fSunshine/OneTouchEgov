@@ -598,7 +598,7 @@ let dialog = $( "#dialog-form" ).dialog({
 	modal : true,
 	resizable: false,
 	height: "auto",
-	width: 500
+	width: 600
 });
 //---------모달 설정 끝---------
 

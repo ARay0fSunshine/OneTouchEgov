@@ -23,7 +23,8 @@ function mMtr(btn){
 			{
 				header: '자재명',
 				name: 'mtrNm',
-				align: 'center'
+				align: 'left',
+				width: 200
 			},
 			{
 				header: '규격',
@@ -53,7 +54,8 @@ function mMtr(btn){
 			{
 				header: '업체명',
 				name: 'compNm',
-				align: 'center'
+				align: 'left',
+				width: 100
 			},
 			{
 				header: '자재구분코드',
@@ -213,15 +215,18 @@ function mPrc(){
 			},
 			{
 				header: '관리단위코드',
-				name: 'mngUnit'
+				name: 'mngUnit',
+				align: 'center'
 			},
 			{
 				header: '관리단위',
-				name: 'mngUnitNm'
+				name: 'mngUnitNm',
+				align: 'center'
 			},
 			{
 				header: '생산일수',
-				name: 'pdtDay'
+				name: 'pdtDay',
+				align: 'right'
 			},
 			{
 				header: '공정구분코드',
