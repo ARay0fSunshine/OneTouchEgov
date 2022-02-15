@@ -44,6 +44,10 @@ hr{
 .checkwidth{
 	width:110px;
 }
+.colline2{
+	margin-left: 100px;
+	width: 100px !important;
+}
 </style>
 
 </head>
@@ -108,7 +112,7 @@ hr{
 							<input id="prdNm" name="prdNm" class="inputtext" readonly> -->
 						</div>
 						<div class="rowdiv" style="display:inline-block">
-							<label class="labeltext">지시번호</label>
+							<label class="labeltext colline2">지시번호</label>
 							<input id="instrNo" name="instrNo" class="inputtext">
 							<!-- <button type="button" id="btnPrcCd" class="btn btn-primary mr-2 minibtn" onclick="inComList()"><i class="icon-search"></i></button>
 							<label class="labeltext colline2">제품명</label>
