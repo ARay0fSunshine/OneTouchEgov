@@ -19,12 +19,12 @@
 		line-height:0.1 !important;
 	}
 	.badge-danger {
-    color: #fff;
-    background-color: crimson;
+	    color: #fff;
+	    background-color: crimson;
 	}
 	.badge-info{
-    color: #fff;
-    background-color: green;
+	    color: #fff;
+	    background-color: green;
 	}
 </style>
 <body>
@@ -184,8 +184,21 @@
 		</div>
 	</div>
 	<div class="col-6">
-		 <div id="piechart" style="width: 900px; height: 500px;"></div>
-    	<div id="realPiechart" style="width: 900px; height: 500px;"></div>
+		<div class="col-lg-12 stretch-card chartcard">
+			<div class="card">
+				<div class="card-body chartcard">
+					<div id="piechart" style="height: 370px;"></div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="col-lg-12 stretch-card chartcard">
+			<div class="card">
+				<div class="card-body chartcard">
+					<div id="realPiechart" style="height: 370px;"></div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 </div>
