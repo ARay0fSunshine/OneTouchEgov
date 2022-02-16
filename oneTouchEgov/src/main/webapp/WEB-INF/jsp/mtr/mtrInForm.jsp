@@ -186,13 +186,13 @@ function today() {
 	let dt = new Date();
 	return getDateStr(dt);
 };
-function lastWeek() {
+function lastMonth() {
 	let dt = new Date();
-	let day = dt.getDate();
-	dt.setDate(day -7);
+	let month = dt.getMonth();
+	dt.setMonth(month -1);
 	return getDateStr(dt);
-};
-document.getElementById('startDate').value = lastWeek();
+}
+document.getElementById('startDate').value = lastMonth();
 document.getElementById('endDate').value = today();
 //---------포맷에 맞게 날짜 구하는 function 끝---------
 
