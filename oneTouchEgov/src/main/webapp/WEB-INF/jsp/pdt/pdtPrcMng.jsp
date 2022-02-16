@@ -468,8 +468,9 @@
 			})
 			.then(response=>response.json)
 			.then(result=>{
-				alert('라인이 재가동 됩니다');
 				fastStop.innerHTML='긴급중단';
+				hiddenGrid.setValue(0,'nowPhs','가동중')
+				alert('라인이 재가동 됩니다');
 			})
 		}
 	})
