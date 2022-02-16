@@ -245,8 +245,9 @@
 		btnSrc.addEventListener("click", function() {
 			basName = {'basNm' : $('#basNm').val()};
 			console.log("검색한값: "+$('#basNm').val());
-			//console.log(basName);
+			console.log(basName);
 			grid1.readData(1,basName,true);
+			document.getElementById('basNm').value='';
 		})
 		
 		//기초코드명 클릭하면 상세코드 받아옴

@@ -43,7 +43,7 @@ hr{
 	margin-top: 40px;
 	margin-left: 30px;
 }
-.basCdColor{
+.mtrCdColor{
 	background-color: pink;
 }
 </style>
@@ -283,7 +283,7 @@ hr{
 	
 	grid.on("click", (ev) => {
 		for(let i=0; i<grid.getRowCount(); i++) {
-			grid.removeRowClassName(grid.getRow(i).rowKey,'basCdColor')				
+			grid.removeRowClassName(grid.getRow(i).rowKey,'mtrCdColor')				
 		}
 		if(ev.columnName === 'mtrCd' || ev.columnName === 'mtrNm') {
 			
@@ -319,7 +319,7 @@ hr{
 				document.getElementById('btnAdd').setAttribute('disabled', true);
 				document.getElementById('btnEdit').disabled = undefined;
 				document.getElementById('btnDel').disabled = undefined;
-				grid.addRowClassName(ev.rowKey,'basCdColor');
+				grid.addRowClassName(ev.rowKey,'mtrCdColor');
 			})
 		}
 	})
@@ -486,6 +486,10 @@ hr{
 		document.getElementById('btnAdd').disabled = undefined;
 		document.getElementById('btnEdit').setAttribute('disabled', true);
 		document.getElementById('btnDel').setAttribute('disabled', true);
+		
+		for(let i=0; i<grid.getRowCount(); i++) {
+			grid.removeRowClassName(grid.getRow(i).rowKey,'mtrCdColor')				
+		}	
 	}
 	
 	//삭제버튼

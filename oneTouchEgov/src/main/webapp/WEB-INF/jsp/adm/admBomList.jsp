@@ -126,7 +126,10 @@ hr{
 			modal : true,
 			resizable: false,
 			//height: 550,
-			width:  900
+			width:  900,
+			open:function(){
+		         $(this).parent().offset ( { top : 200 , left : 550 } );
+		      }
 		});
 		
 		//제품코드 눌렀을때 나오는 모달에서 더블클릭했을때 실행되는 함수
