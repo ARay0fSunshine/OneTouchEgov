@@ -29,7 +29,8 @@
 		
 	}
 .green{
-		background-color:#36b9ad
+
+		background-color:white
 		
 	  }
 .blue{
