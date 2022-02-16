@@ -8,8 +8,8 @@
 .datepicker, .selectoption, .inputtext, .monthpicker{
 	color: #495057 !important;
 	background-color: #fdfdff !important;
-	border: 1px solid #ced4da !important;
-  	border-color: #e4e6fc !important;
+	border: 1px solid rgb(151, 157, 183) !important;
+  	border-color: rgb(180, 181, 216) !important;
   	border-radius: 3px !important;
 	height: 34px !important;
 	width: 200px !important;
@@ -20,7 +20,7 @@
 .inputtext:focus,
 .monthpicker:focus{
 	background-color: #fefeff !important;
-	border-color: #95a0f4 !important;
+	border-color: rgb(137, 137, 248) !important;
 }
 
 .schCondLabel{
