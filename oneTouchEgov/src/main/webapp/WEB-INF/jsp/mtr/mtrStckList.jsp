@@ -385,12 +385,12 @@ $( function() {
     $( "#tabs" ).tabs({
     	activate: function( event, ui ) {
     		if(ui.newTab[0].innerText == 'Lot별'){
-    			document.getElementById('startDate').value = lastWeek();
+    			document.getElementById('startDate').value = lastMonth();
     			document.getElementById('endDate').value = today();
     			document.getElementById('ditemCode2').value = '';
     			document.getElementById('ditemCodeNm2').value = '';
     			document.getElementById('allRadio2').checked = true;
-    			
+    			console.log("lot")
     			lotGrid.readData(1,$("#frmLot").serializeObject(),true);
     			
     			document.getElementById('mtrBtn').setAttribute("style", "display:none");//종현
@@ -404,6 +404,7 @@ $( function() {
     			document.getElementById('ditemCodeNm').value = '';
     			document.getElementById('allRadio').checked = true;
     			
+    			console.log("mtr")
     			lotGrid.readData(1,$("#frmMtr").serializeObject(),true);
     			document.getElementById('mtrBtn').setAttribute("style", "display:block");//종현
     			document.getElementById('lotBtn').setAttribute("style", "display:none");//종현
