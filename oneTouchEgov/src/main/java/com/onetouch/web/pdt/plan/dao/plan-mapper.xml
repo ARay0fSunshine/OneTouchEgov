@@ -180,7 +180,6 @@ on a.mtrCd=b.mtr_cd and a.prcCd = b.prc_cd
 	                        group by  line_no , work_str_date) b
 	on a.line_no = b.line_no
 	where a.line_no=#{lineNo}
-	
 </select>
 
 <select id="useFct" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">
