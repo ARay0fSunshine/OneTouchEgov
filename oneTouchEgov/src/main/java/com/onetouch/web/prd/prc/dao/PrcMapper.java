@@ -44,4 +44,6 @@ public interface PrcMapper {
 	List<PrcVO> liveInstr(PrcVO vo);
 	List<PrcVO> playingPrcFind(PrcVO vo);
 	PrcVO autoFltSum(PrcVO vo);
+	PrcVO btnSelect(PrcVO vo);
+	void reStart(PrcVO vo);
 }
