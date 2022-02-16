@@ -187,7 +187,7 @@
 		<div class="col-lg-12 stretch-card chartcard">
 			<div class="card">
 				<div class="card-body chartcard">
-					<div id="piechart" style="height: 370px;"></div>
+					<div id="piechart" style="height: 395px;"></div>
 				</div>
 			</div>
 		</div>
@@ -195,7 +195,7 @@
 		<div class="col-lg-12 stretch-card chartcard">
 			<div class="card">
 				<div class="card-body chartcard">
-					<div id="realPiechart" style="height: 370px;"></div>
+					<div id="realPiechart" style="height: 395px;"></div>
 				</div>
 			</div>
 		</div>
