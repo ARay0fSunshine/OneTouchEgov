@@ -1168,6 +1168,7 @@ $(function() {
 	//라인 수정 
 	function LineUpt(){
 		console.log('수정버튼 클릭 이벤트')
+		alert('수정완료 되었습니다.')
 		let lineInput =$("#lineForm").serializeObject();
 		console.log('폼태그 값 시리얼 라이즈')
 		if(lineInput.useYn==null){

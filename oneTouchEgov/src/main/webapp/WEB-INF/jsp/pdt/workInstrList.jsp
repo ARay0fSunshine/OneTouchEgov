@@ -472,6 +472,7 @@ class abc{
 			header : '작업우선순위',
 			name : 'workProt',
 	        align:'center',
+	        hidden:true
 		},{
 	    	header: '작업지시일',
 	        name: 'instrDate',
@@ -857,7 +858,7 @@ class abc{
 			let hiddenGetData=hiddenGrid.getData();
 			let m=0;
 			let hiddenInsertData = hiddenGetData.map(x=>{
-				if(lotData.mtrLot == x.mtrLot){
+				if(lotData.mtrLot == x.mtrLot&&lotData.prcCd== x.prcCd){
 					console.log("2222222")
 					lotData.rowKey=m;
 					m++;

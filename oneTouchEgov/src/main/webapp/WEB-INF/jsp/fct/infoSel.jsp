@@ -123,7 +123,7 @@
 });
 	
    
-   //th 영역
+      //th 영역
     const columns = [
     {
     header: '설비코드',

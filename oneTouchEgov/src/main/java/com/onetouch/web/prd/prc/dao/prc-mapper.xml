@@ -124,7 +124,7 @@
 	</select>
 	<insert id='fastStop'>
 		insert into msg_alt (msg_no , alt_send_dt, alt_send_dept , alt_recp_dept , alt_cmt)
-		values ( PKG_MAKE_CODE.CODE('MSG','MTR_LOT_STCK','MTR_LOT') , sysdate , 'fct' , 'PDT'||','fct','||#{prcCd} , '공정설비 고장낫어요 빨리와주세요.')
+		values (PKG_MAKE_CODE.CODE('MSG','MSG_ALT','MSG_NO') , sysdate , #{lineNo} , 'PDT'||',FCT,'||#{prcCd} , '설비에 이상이 생겼어요 빨리와주세요.')
 	</insert>
 	<update id="fastStopUpdate">
 		update prd_prc_mng set
@@ -283,4 +283,14 @@
 		                                    and a.prc_cd=#{prcCd}) >= a.prc_seq)
 		group by instr_no , line_no
 	</select>
+	<select id="btnSelect" resultType="com.onetouch.web.prd.prc.dao.PrcVO"> 
+		select * from prd_prc_mng
+		where instr_no=#{instrNo}
+		and prc_cd=#{prcCd}
+	</select>
+	<update id="reStart">
+		update prd_prc_mng set now_phs='가동중'
+		where instr_no=#{instrNo}
+		and now_phs='긴급중단'	
+	</update>
 </mapper>

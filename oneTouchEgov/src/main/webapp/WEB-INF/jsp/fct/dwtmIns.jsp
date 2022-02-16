@@ -29,11 +29,12 @@
 		
 	}
 .green{
+
 		background-color:white
 		
 	  }
 .blue{
-		background-color:#7DA0FA
+		background-color:#7DA0FA 
 		
 }
 .labeltext1{

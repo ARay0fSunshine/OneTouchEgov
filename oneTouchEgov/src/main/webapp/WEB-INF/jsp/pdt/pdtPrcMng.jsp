@@ -442,18 +442,37 @@
 	}
 	//긴급중단버튼
 	fastStop.addEventListener('click',ev=>{
-		fetch('fastStop',{
-			method:'POST',
-			headers:{
-				"Content-Type": "application/json",
-			},
-			body:JSON.stringify(hiddenGrid.getData())
-		})
-		.then(response=>response.json)
-		.then(result=>{
-			alert('관리부서에 알림을 보냇습니다');
-			hiddenGrid.setValue(0,'nowPhs','긴급중단');
-		})
+		let fastStop=document.getElementById('fastStop');
+		if(fastStop.innerHTML=='긴급중단'){
+			fetch('fastStop',{
+				method:'POST',
+				headers:{
+					"Content-Type": "application/json",
+				},
+				body:JSON.stringify(hiddenGrid.getData())
+			})
+			.then(response=>response.json)
+			.then(result=>{
+				alert('관리부서에 알림을 보냇습니다');
+				fastStop.innerHTML='재시작';
+				hiddenGrid.setValue(0,'nowPhs','긴급중단');
+			})
+		}
+		else if(fastStop.innerHTML=='재시작'){
+			fetch('reStart',{
+				method:'POST',
+				headers:{
+					"Content-Type": "application/json",
+				},
+				body:JSON.stringify(hiddenGrid.getData())
+			})
+			.then(response=>response.json)
+			.then(result=>{
+				fastStop.innerHTML='긴급중단';
+				hiddenGrid.setValue(0,'nowPhs','가동중')
+				alert('라인이 재가동 됩니다');
+			})
+		}
 	})
 
 	//시작버튼
@@ -530,6 +549,7 @@
 		})
 	})
 	mainGrid.on("click",ev=>{
+
 		hiddenGrid.resetData([{}])
 		hiddenGrid.setValue(0,'instrNo',mainGrid.getValue(ev.rowKey,'instrNo'))
 		hiddenGrid.setValue(0,'instrNo',mainGrid.getValue(ev.rowKey,'instrNo'))
@@ -540,7 +560,7 @@
 		mainGrid.getRow(ev.rowKey)
 		
 
-		
+
 		
 		fetch('selectPrcReal',{
 			method:'POST',
@@ -564,6 +584,24 @@
 			hiddenGrid.setValue(0,'goalCnt',mainGrid.getValue(ev.rowKey,'goalCnt'))
 			
 		})
+		
+		fetch('btnSelect',{
+			method:'POST',
+			headers:{
+				"Content-Type": "application/json",
+			},
+			body:JSON.stringify(hiddenGrid.getData())
+		}).then(response=>response.json())
+		.then(result=>{
+			let fastStop=document.getElementById('fastStop');
+			if(result.nowPhs=='긴급중단'){
+				console.log(result.nowPhs)
+				fastStop.innerHTML='재시작';
+			}else{
+				fastStop.innerHTML='긴급중단';
+			}
+		})
+		
 		fltCheck();
 	})
 	//불량+버튼

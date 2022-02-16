@@ -37,7 +37,7 @@
 			and #{endDate}>=to_char(b.plan_date,'yyyy-MM-dd')
 		</if> 
 		<if test='nowPhs=="Y"'>
-			and b.now_phs = '%'||#{nowPhs}||'%'
+			and b.now_phs = 'Y'
 		</if>  
 		<if test='nowPhs=="N"'>
 			and (b.now_phs = 'N' or b.now_phs = 'P')
@@ -180,7 +180,6 @@ on a.mtrCd=b.mtr_cd and a.prcCd = b.prc_cd
 	                        group by  line_no , work_str_date) b
 	on a.line_no = b.line_no
 	where a.line_no=#{lineNo}
-	
 </select>
 
 <select id="useFct" resultType="com.onetouch.web.pdt.plan.dao.PlanVO">

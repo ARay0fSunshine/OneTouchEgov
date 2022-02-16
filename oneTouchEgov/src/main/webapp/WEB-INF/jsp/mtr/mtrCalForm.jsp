@@ -227,15 +227,15 @@ function today() {
 	let dt = new Date();
 	return getDateStr(dt);
 }
-function lastWeek() {
+function lastMonth() {
 	let dt = new Date();
-	let day = dt.getDate();
-	dt.setDate(day -7);
+	let month = dt.getMonth();
+	dt.setMonth(month -1);
 	return getDateStr(dt);
 }
-document.getElementById('startDate').value = lastWeek();
+document.getElementById('startDate').value = lastMonth();
 document.getElementById('endDate').value = today();
-document.getElementById('mStartDate').value = lastWeek();
+document.getElementById('mStartDate').value = lastMonth();
 document.getElementById('mEndDate').value = today();
 //---------포맷에 맞게 날짜 구하는 function 끝---------
 
@@ -529,7 +529,7 @@ dialog = $( "#dialog-form" ).dialog({
 	modal : true,
 	resizable: false,
 	height: "auto",
-	width: 500
+	width: 600
 });
 //---------모달 설정 끝---------
 
@@ -608,19 +608,23 @@ rowHeaders : [ 'checkbox'],
 columns : [ 
 			{
 				header: '입고번호',
-				name: 'inNo'
+				name: 'inNo',
+				align: 'center'
 			},
 			{
 				header: 'Lot No',
-				name: 'mtrLot'
+				name: 'mtrLot',
+				align: 'center'
 			},
 			{
 				header: '홀딩수량',
-				name: 'hldCnt'
+				name: 'hldCnt',
+				align: 'right'
 			},
 			{
 				header: '재고수량',
-				name: 'stckCnt'
+				name: 'stckCnt',
+				align: 'right'
 			},
 			{
 				header: '정산일자',
