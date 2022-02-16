@@ -53,7 +53,7 @@
 .form-check .form-check-label input[type="checkbox"] + .input-helper:before, .form-check .form-check-label input[type="checkbox"] + .input-helper:after{
 	top: 12px;
 }
-.basCdColor{
+.prdCdColor{
 	background-color: pink;
 }
 </style>
@@ -386,7 +386,7 @@
 		//제품명 클릭하면 제품상세정보 받아옴
 		grid1.on("click", (ev) =>{
 			for(let i=0; i<grid1.getRowCount(); i++) {
-				grid1.removeRowClassName(grid1.getRow(i).rowKey,'basCdColor')				
+				grid1.removeRowClassName(grid1.getRow(i).rowKey,'prdCdColor')				
 			}
 			if(ev.columnName === 'prdCd' || ev.columnName === 'prdNm'){	
 				prdCode1 = {'prdCd':grid1.getValue(ev.rowKey,'prdCd')};
@@ -424,7 +424,7 @@
 					prdCodeVal = $('#prdCd').val();
 					prdCode2 = {'prdCd' : prdCodeVal};
 					grid2.readData(1,prdCode2,true);
-					grid1.addRowClassName(ev.rowKey,'basCdColor');
+					grid1.addRowClassName(ev.rowKey,'prdCdColor');
 				})
 			}
 		})
@@ -525,6 +525,10 @@
 			document.getElementById('btnAddPrd').disabled = undefined;
 			document.getElementById('btnEditPrd').setAttribute('disabled', true);
 			document.getElementById('btnDelPrd').setAttribute('disabled', true);
+		
+			for(let i=0; i<grid1.getRowCount(); i++) {
+				grid1.removeRowClassName(grid1.getRow(i).rowKey,'prdCdColor')				
+			}
 		}
 		
 		//삭제버튼

@@ -62,6 +62,15 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<h3 class="gridtitle">✔통계</h3>
 		<br><br>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<select id=selectSts>
+			<option>일별</option>
+			<option>월별</option>
+			<option>연도별</option>
+			<option id="optionD">자재별,일별</option>
+			<option id="optionM">자재별,월별</option>
+			<option id="optionY">자재별,연도별</option>
+		</select><br><br>
 		<form id="stsDateFrm">
 			<div id="dateOnly">&nbsp;&nbsp;&nbsp;&nbsp;
 				<label>해당일자</label>&nbsp;
@@ -104,17 +113,8 @@
 				</select>&nbsp;&nbsp;
 					<button type="button" id="btnFind" class="btnFind btn btn-main newalign">통계조회</button>			
 			</div>
-		<br>
 		</form>
-		&nbsp;&nbsp; &nbsp;&nbsp;
-		<select id=selectSts>
-			<option>일별</option>
-			<option>월별</option>
-			<option>연도별</option>
-			<option id="optionD">자재별,일별</option>
-			<option id="optionM">자재별,월별</option>
-			<option id="optionY">자재별,연도별</option>
-		</select>
+		&nbsp;&nbsp; 
 		<br>
 		<div id="mtrInTab"></div>
 		<div id="mtrOutTab"></div>
@@ -124,7 +124,7 @@
 	<div class= "col-6" style="border-left: 0.1px solid lightgray;">
 		<br>
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<h3 class="gridtitle" align="left">✔차트</h3>
+		<h3 class="gridtitle" align="left">✔차트</h3><br><br><br>
 		<form id="stsMonthFrm2">
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;
 			<label>해당일자</label>&nbsp;
@@ -133,7 +133,8 @@
 			<input type="text" id="endDate4" name="endDate" class="monthpicker" class="datepicker jquerymonpicker"/>&nbsp;
 				<button type="button" id="btnChart" class="btn btn-main newalign">차트조회</button>			
 			<input style="display: none;" value='chart' name="chart">
-		</form><br><br><br>
+		</form>
+		<br><br>
 		<div align="center">
 		<div id="barChartMtrIn"></div>
 		<div id="barChartMtrOut"></div>
