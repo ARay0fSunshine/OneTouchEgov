@@ -34,7 +34,7 @@ public class PrcServiceImpl implements PrcService{
 
 	@Override
 	public PrcVO prcFlowMinMax(PrcVO vo) {
-
+	
 		List<PrcVO> list=mapper.prcFlowMinMax(vo);
 		int flowMax=0;
 		int flowMin=100;
@@ -52,7 +52,6 @@ public class PrcServiceImpl implements PrcService{
 		String a=(mapper.myPrcFlow(vo)).getPrcSeq().substring(0,1);//내공정흐름번호
 		if(flowMin==Integer.parseInt(a)) { //공정흐름 1번이 들어온경우
 			for(PrcVO insertVo:list) {
-				System.out.println(insertVo);
 				mapper.defaultInsert(insertVo);
 			}
 			mapper.startUpdate(vo); //시간업데이트
@@ -63,7 +62,7 @@ public class PrcServiceImpl implements PrcService{
 			vo.setMsg("라인이 가동되지 않았습니다.");
 			return vo;
 		}
-
+	
 		else if(Integer.parseInt(a)!=1 &&  Integer.parseInt(a)-1==mapper.flowCheck(vo)) { //1번흐름이 아니고 스타트시간찍힌애들의 합이 내플로우 -1과같을떄(라인시작o 앞공정시작o)
 			mapper.startUpdate(vo); //시간업데이트
 			vo=mapper.startTimeSelect(vo);
@@ -84,11 +83,8 @@ public class PrcServiceImpl implements PrcService{
 		int flowMin=100;
 		PrcVO vo100 = new PrcVO();
 		vo100=vo;
-		System.out.println("111111111111111111");
-		System.out.println(vo100);
 		// flow min max 구하는 for문
 		for(PrcVO resultVo: list) {
-			System.out.println(resultVo);
 			String a=resultVo.getPrcSeq().substring(0,1);
 			if(flowMax<Integer.parseInt(a)) {
 				flowMax=Integer.parseInt(a);
@@ -123,13 +119,13 @@ public class PrcServiceImpl implements PrcService{
 			//lot 번호 부여
 			
 			String sect=mapper.sectSelect(vo100);
-			if(sect.equals("PDT_SECT002")) {
+			if(sect.equals("PDT_SECT002")) { //반제품 재고입력
 				String lot=(mapper.insertHrdLotSelect(vo100)).getPrdLot();
 				vo100.setPrdLot(lot);
 				vo.setPrdLot(lot);
 				mapper.hrdInsert(vo100);
 			}
-			else if(sect.equals("PDT_SECT001")) {
+			else if(sect.equals("PDT_SECT001")) { //완제품 재고입력
 				String lot=(mapper.insertLotSelect(vo100)).getPrdLot();
 				vo100.setPrdLot(lot);
 				vo.setPrdLot(lot);
@@ -145,43 +141,12 @@ public class PrcServiceImpl implements PrcService{
 			return vo; 
 		}
 		
-		
 	}
-//void updateFlt(PrcVO vo);
-//	PrcVO realFlt(PrcVO vo);
 	
 	@Override
 	public PrcVO selectCheck(PrcVO vo) {
-//		try {
-//			Robot robot=new Robot();
-//			PrcVO vo2=new PrcVO();
-//			int i=0;
-//			vo2=vo;
 			return mapper.realFlt(vo);
-//			String fltSave=mapper.realFlt(vo).getSumFlt();  
-//			String pdtSave=mapper.realFlt(vo).getPdtCnt();
-//			System.out.println(fltSave+",,"+pdtSave);
-//			while(true){
-//				String flt=mapper.realFlt(vo2).getSumFlt(); 
-//				String pdt=mapper.realFlt(vo2).getPdtCnt();
-//				System.out.println(mapper.realFlt(vo)+"...."+fltSave);
-//				if(!fltSave.equals(flt)||fltSave==vo.getGoalCnt()||!pdtSave.equals(pdt)||pdtSave==vo.getPdtCnt()) {
-//					return mapper.realFlt(vo);
-//
-//				}
-//				robot.delay(3000);
-//				i++;
-//				if(i==9) {
-//					return null;
-//				}
-//			}
-//		} catch (AWTException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
 	}
-
 	
 	@Override
 	public void updateFlt(PrcVO vo) {
@@ -190,7 +155,6 @@ public class PrcServiceImpl implements PrcService{
 
 	@Override
 	public void fastStop(PrcVO vo) {
-		//긴급중단 좀더생각해보자.
 		mapper.fastStopUpdate(vo);
 		mapper.fastStop(vo);
 		
@@ -201,9 +165,6 @@ public class PrcServiceImpl implements PrcService{
 		try {
 			Robot robot=new Robot();
 			int upCheck=mapper.updateCheck();
-			System.out.println("1111");
-			System.out.println(vo);
-			System.out.println(upCheck);
 			int i=0;
 			while(true) {
 				if(upCheck!=(mapper.updateCheck())) {
@@ -226,39 +187,20 @@ public class PrcServiceImpl implements PrcService{
 	public List<PrcVO> movingSearchList(PrcVO vo) {
 		
 		if("Y".equals(vo.getPrcCheck())){
-			System.out.println("진행종료");
 			return mapper.movingSearchListFinish(vo);
 		}
 		else{
-			System.out.println("미진행");
 			return mapper.movingSearchList(vo);
 		}
 	}
 	
-	
-	
-	/*
-	 * @Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도) public void selectTask1()
-	 * { List<PrcVO> list= new ArrayList<>(); list=mapper.autoSelect(); int
-	 * rand=(int) (Math.random()*100); for(PrcVO vo : list) { PrcVO vo2
-	 * =mapper.autoFltSum(vo);
-	 * if(Integer.parseInt(vo.getGoalCnt())>Integer.parseInt(vo2.getFltCnt())+
-	 * Integer.parseInt(vo.getPdtCnt())) { int uph; uph=mapper.uphFind(vo);
-	 * if(rand<70) {
-	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
-	 * mapper.autoUpdate(vo); }else {
-	 * vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getFltCnt())));
-	 * mapper.autoFltUpdate(vo); } } } }
-	 */
 
 	@Override
 	public List<List<PrcVO>> dashBoardData() {
 		List<PrcVO> list=mapper.playStartInstr();
 		List<List<PrcVO>> bigList=new ArrayList<>();
 		for(PrcVO vo1 : list) {
-			
 			bigList.add(mapper.liveInstr(vo1));
-			
 		}
 		return bigList;
 	}

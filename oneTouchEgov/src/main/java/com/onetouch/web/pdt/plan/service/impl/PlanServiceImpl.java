@@ -47,21 +47,6 @@ public class PlanServiceImpl implements PlanService {
 	}
 	@Override
 	public void insertPlan(ModifyVO<PlanVO> list) {
-//		// TODO Auto-generated method stub
-//		System.out.println(list);
-//		if(list.getCreatedRows()!=null) {
-//			for (PlanVO vo : list.getCreatedRows()) {
-//				System.out.println(vo);
-//				mapper.insertPlan(vo);
-//				ordMapper.ordCheck(vo.getOrdShtNo());
-//			}
-//		}
-//		if(list.getDeletedRows()!=null) {
-//			for (PlanVO vo : list.getDeletedRows()) {
-//				mapper.deletePlan(vo);
-//			}
-//		}
-//		list = new ModifyVO<PlanVO>();
 	}
 	@Override
 	public List<PlanVO> lotCntSelect(PlanVO vo) {
@@ -73,26 +58,23 @@ public class PlanServiceImpl implements PlanService {
 		List<PlanVO> list=map.get("detail");
 
 		PlanVO inVo=map.get("plan").get(0);
-		if(map.get("plan")!=null) {
+		if(map.get("plan")!=null) { //계획 INSERT
 			for(PlanVO vo:map.get("plan")) {
-				System.out.println(vo);
 				mapper.insertPlan(vo);
 			}
 		}
 		if(list!=null) {
-			for(PlanVO vo : list) {
+			for(PlanVO vo : list) { //계획 디테일 INSERT
 				int date=mapper.dateCal(vo);
 				for(int i=0 ;i<=date;i++) {
 					vo.setDate(i);
-					System.out.println(vo);
-					System.out.println(mapper.test(vo));
 					mapper.planDtlInsert(vo);
 				}
 				if(inVo.getOrdShtNo()!=null)
 				ordMapper.ordCheck(inVo.getOrdShtNo());
 			}
 		}
-		if(map.get("lot")!=null) {
+		if(map.get("lot")!=null) { //소요자재LOT UPDATE
 			List<PlanVO> lotList=map.get("lot");
 			for(PlanVO vo : lotList) {
 				mapper.LotFindInsert(vo);
@@ -144,7 +126,6 @@ public class PlanServiceImpl implements PlanService {
 	@Override
 	public List<PlanVO> findLineNo(String prdCd) {
 		String lines=mapper.findLineNo(prdCd).getLineNo();
-		System.out.println(lines);
 		String line[]=lines.split("/");
 		List<PlanVO> list=new ArrayList<>();
 		List<PlanVO> list2=new ArrayList<>();
@@ -152,30 +133,23 @@ public class PlanServiceImpl implements PlanService {
 		for(int i=0; i<line.length;i++) {
 			PlanVO vo=new PlanVO();
 			vo.setLineNo(line[i]);
-			System.out.println(vo.getLineNo());
 			list.add(vo);
 		}
 		list2=mapper.useFct();
-		System.out.println(list);
-		System.out.println(list2);
 		
 		for(int i =0 ; i< list.size() ;i++ ) {
 			for(PlanVO vo2 : list2) {
 				if(list.get(i).getLineNo().equals(vo2.getLineNo())) {
 					list3.add(i);
 				}
-				
 			}
 		}
-		System.out.println(list);
-		System.out.println(list2);
 		for(int i=0 ; i< list.size();i++) {
 			for(int k=0 ; k<list2.size(); k++) {
 				list.remove(list2.get(k));
 			}
 		}
 		list=mapper.lineUphFind(list);
-		System.out.println(list);
 		return list;
 	}
 	@Override
