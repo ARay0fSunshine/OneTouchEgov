@@ -36,13 +36,22 @@
 	position: absolute;
 	z-index: 9;
 }
+.tableTag{
+	border-style: solid;
+    border-collapse: collapse;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: #4B49AC;
+    border-bottom-color: #4B49AC;
+    padding: 5px;
+}
 .tHeadTag {
-    background-color: dimgray;
+    background-color: #4B49AC;
     color: white;
 }
 .trTag:hover{
-    background-color: slateblue;
-    color: white;
+    background-color: #F5F7FF;
+    color: black;
 }
 .thTag{
     padding-top: 11px;
@@ -1288,6 +1297,7 @@ function needOrdCd(){
 		porObj=result;
 		console.log(result)
 		let tableTag=document.createElement('table');
+		tableTag.setAttribute('class','tableTag')
 		tableTag.border=1;
 		let tHeadTag=document.createElement('thead');
 		let thTag=document.createElement('th');
