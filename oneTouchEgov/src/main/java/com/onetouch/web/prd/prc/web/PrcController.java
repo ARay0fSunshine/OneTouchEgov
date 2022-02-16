@@ -76,6 +76,18 @@ public class PrcController {
 		
 		service.fastStop(list.get(0));
 	}
+	@ResponseBody
+	@PostMapping("btnSelect")
+	public PrcVO btnSelect(@RequestBody List<PrcVO> list) {
+		
+		return mapper.btnSelect(list.get(0));
+	}
+	@ResponseBody
+	@PostMapping("reStart")
+	public void reStart(@RequestBody List<PrcVO> list) {
+		
+		mapper.reStart(list.get(0));
+	}
 	
 	@ResponseBody
 	@PostMapping("playingPrcFind")

@@ -422,6 +422,7 @@
   	let insertPrcCd;
   	let inserMtrLot;
   	let phsValue;
+  	let saveLineNo;
 
   	
   	function dateSelectFnc(){
@@ -819,8 +820,17 @@
 	
 	// 계획추가 그리드 셀렉트옵션 선택시 이벤트
 	 	planGrid.on('editingFinish',ev=>{
+	 		saveLineNo=planGrid.getData()[ev.rowKey].lineNo;
 			if(ev.columnName=='needCnt'){
+				let newArr=[]
 				planGridNeedCnt=planGrid.getRow(ev.rowKey).needCnt
+				for(obj of hiddenGrid.getData()){
+					if(obj.lineNo == planGrid.getRow(ev.rowKey).lineNo){
+					}else{
+						newArr.push(obj)
+					}
+				}
+				hiddenGrid.resetData(newArr)
 			}
 	 		//plan 그리드 
 	 		//라인번호 선택하면 공정코드가져옴
@@ -1565,7 +1575,7 @@ function needOrdCd(){
 		}
 		let lotData1=lotGrid.getRow(ev.rowKey);
 		lotData1.planNo=grid.getRowAt(0).planNo;
-		lotData1.lineNo=planGrid.getData()[0].lineNo;
+		lotData1.lineNo=saveLineNo;
 		let i = 0;
 		for(z=0 ; z<hiddenGrid.getData().length ; z++){
 			if(lotData1.mtrLot == hiddenGrid.getData()[z].mtrLot && lotData1.prdCd == hiddenGrid.getData()[z	].prdCd){
@@ -1589,16 +1599,19 @@ function needOrdCd(){
 			console.log(x.hldCnt)
 			if(lotData1.mtrLot == x.mtrLot){
 				lotData1.rowKey=m;
+				lotData1.lineNo=saveLineNo;
 				m++;
 				return lotData1;
 			}
 			else{
 				x.rowKey=m;
+				x.lineNo=saveLineNo;
 				m++;
 				return x;
 			}
 		}).filter(obj=>{
 			if(obj.hldCnt!=0&&obj.hldCnt!='0'){
+				
 				return obj;
 			}
 		})
@@ -1697,7 +1710,7 @@ function needOrdCd(){
 	}
 	
 	mtrSelect.addEventListener('change',ev=>{
-		insertLineNo=planGrid.getValue(0,'planNo');
+		insertLineNo=planGrid.getValue(0,'lineNo');
 		if(ev.target.value!='자재선택'){
 			fetch("addPlanLotSelect/"+ev.target.getAttribute('data-id')+'/'+ev.target.getAttribute('data-prc')+'/'+ev.target.value)
 				.then(response=>response.json())
@@ -1734,7 +1747,7 @@ function needOrdCd(){
 						if(obj.hldCnt!=0){
 							
 							obj.planNo=planGrid.getRowAt(0).planNo;
-							obj.lineNo=insertLineNo;
+							obj.lineNo=saveLineNo;
 							//obj.rowKey=n;
 							hiddenGrid.appendRow(obj);
 							//n++;

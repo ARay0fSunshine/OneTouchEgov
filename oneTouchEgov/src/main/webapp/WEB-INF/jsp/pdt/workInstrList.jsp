@@ -472,6 +472,7 @@ class abc{
 			header : '작업우선순위',
 			name : 'workProt',
 	        align:'center',
+	        hidden:true
 		},{
 	    	header: '작업지시일',
 	        name: 'instrDate',

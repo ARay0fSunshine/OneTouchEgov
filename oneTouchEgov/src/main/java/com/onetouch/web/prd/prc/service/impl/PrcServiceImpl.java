@@ -57,22 +57,22 @@ public class PrcServiceImpl implements PrcService{
 			}
 			mapper.startUpdate(vo); //시간업데이트
 			vo=mapper.startTimeSelect(vo);  //입력된시간불러와서 리턴
-			vo.setMsg("라인가동 시작!!!.");
+			vo.setMsg("라인가동이 시작되었습니다.");
 			return vo;
 		}else if(flowMin!=Integer.parseInt(a)&&mapper.lineStartCheck(vo).size()==0) { //1번흐름이아니고 line 셀렉트했는데 결과가 없는경우 (라인시작이안됨)
-			vo.setMsg("라인가동안됨");
+			vo.setMsg("라인이 가동되지 않았습니다.");
 			return vo;
 		}
 
 		else if(Integer.parseInt(a)!=1 &&  Integer.parseInt(a)-1==mapper.flowCheck(vo)) { //1번흐름이 아니고 스타트시간찍힌애들의 합이 내플로우 -1과같을떄(라인시작o 앞공정시작o)
 			mapper.startUpdate(vo); //시간업데이트
 			vo=mapper.startTimeSelect(vo);
-			vo.setMsg("공정시작!!.");
+			vo.setMsg("공정이 시작되었습니다.");
 			return vo;
 		}
 		else{
 			mapper.startTimeSelect(vo);
-			vo.setMsg("앞공정시작안됨!!!.");
+			vo.setMsg("이전 공정이 시작되지 않았습니다.");
 			return vo; 
 		}
 	}
@@ -102,18 +102,18 @@ public class PrcServiceImpl implements PrcService{
 			vo.setMsg("공정종료");
 			mapper.endUpdate(vo); //시간업데이트
 			vo=mapper.endTimeSelect(vo);  //입력된시간불러와서 리턴
-			vo.setMsg("공정종료.");
+			vo.setMsg("공정이 종료되었습니다.");
 			return vo;
 		}
 		else if(mapper.lineEndCheck(vo).get(0).getPrcEndNull()==0) { //라인종료시간찍힌 로우의 합이 0일때
-			vo.setMsg("앞공정종료안됨!!!.");
+			vo.setMsg("이전 공정이 종료되지 않았습니다.");
 			return vo; 
 		}
 		else if(Integer.parseInt(a)!=flowMax &&  Integer.parseInt(a)-1==mapper.endFlowCheck(vo)) { //1번흐름이 아니고 엔드시간찍힌애들의 합이 내플로우 -1과같을떄(앞공정종료o)
 			vo.setMsg("공정종료");
 			mapper.endUpdate(vo); //시간업데이트
 			vo=mapper.endTimeSelect(vo);
-			vo.setMsg("공정종료!!.");
+			vo.setMsg("공정이 종료되었습니다.");
 			return vo;
 		}
 		else if(Integer.parseInt(a)-1==mapper.endFlowCheck(vo) &&  Integer.parseInt(a)==flowMax) {
@@ -136,12 +136,12 @@ public class PrcServiceImpl implements PrcService{
 				mapper.prdInsert(vo100);
 			}
 			mapper.planPhsUpdate(vo100);
-			vo.setMsg("라인가동 종료!!.");
+			vo.setMsg("라인 가동이 종료되었습니다.");
 			return vo;
 		}
 		else{
 			mapper.endTimeSelect(vo);
-			vo.setMsg("앞공정종료안됨!!!.");
+			vo.setMsg("이전 공정이 종료되지 않았습니다.");
 			return vo; 
 		}
 		
