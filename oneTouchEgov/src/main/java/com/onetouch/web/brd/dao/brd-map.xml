@@ -30,35 +30,35 @@
 			dual
 	</select>
 	<select id="fctList" resultType="com.onetouch.web.fct.prod.dao.ProdVO">
-	<![CDATA[ select *                  
-			from (SELECT distinct p.fct_cd as fctCd, 
-						       p.prod_chk_no as prodChkNo,
-						       f.fct_nm as fctNm, 
-						       (select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) as chkDt, 
-						       p.chk_rslt as chkRslt, 
-						       p.msr_mtt as msrMtt, 
-						       p.msr_cmt as msrCmt,
-						       case when f.chk_prod_unit = 'Y' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), (f.chk_prod * 12)), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'M' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), f.chk_prod), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'W' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + (f.chk_prod * 7), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'D' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + f.chk_prod, 'yyyy-MM-dd')
-							   end as chkExpectDt
-							From fct_prod_chk p, fct_info f
-						      WHERE p.fct_cd= f.fct_cd)                  
-					 a right join 
-					 (SELECT  p.fct_cd as fctCd, 
-						       max(case when f.chk_prod_unit = 'Y' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), (f.chk_prod * 12)), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'M' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), f.chk_prod), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'W' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + (f.chk_prod * 7), 'yyyy-MM-dd')
-							    when f.chk_prod_unit = 'D' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + f.chk_prod, 'yyyy-MM-dd')
-							   end) as chkExpectDt
-							From fct_prod_chk p, fct_info f
-						      WHERE p.fct_cd= f.fct_cd
-					  group by p.fct_cd) b
-			on (a.fctCd = b.fctCd and a.chkexpectdt = b.chkexpectdt)
-			where a.fctCd is not null
-			and a.chkExpectDt >= to_char(sysdate, 'yyyy-MM-dd')
-			and a.chkExpectDt <= to_char(sysdate + 7, 'yyyy-MM-dd')
+	<![CDATA[ select a.fctCd, a.prodChkNo, a.fctNm, a.chkDt, a.chkRslt, a.msrMtt, a.msrCmt, b.chkExpectDt, (to_date(b.chkExpectDt, 'yyyy-MM-dd') - trunc(sysdate)) as day_diff
+		from (SELECT distinct p.fct_cd as fctCd, 
+				p.prod_chk_no as prodChkNo,
+				f.fct_nm as fctNm, 
+				(select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) as chkDt, 
+				p.chk_rslt as chkRslt, 
+				p.msr_mtt as msrMtt, 
+				p.msr_cmt as msrCmt,
+				case when f.chk_prod_unit = 'Y' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), (f.chk_prod * 12)), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'M' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), f.chk_prod), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'W' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + (f.chk_prod * 7), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'D' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + f.chk_prod, 'yyyy-MM-dd')
+				    end as chkExpectDt
+				 From fct_prod_chk p, fct_info f
+			       WHERE p.fct_cd= f.fct_cd)                  
+				 a right join 
+				 (SELECT  p.fct_cd as fctCd, 
+				max(case when f.chk_prod_unit = 'Y' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), (f.chk_prod * 12)), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'M' then to_char(add_months((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt), f.chk_prod), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'W' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + (f.chk_prod * 7), 'yyyy-MM-dd')
+				     when f.chk_prod_unit = 'D' then to_char((select max(chk_dt) from fct_prod_chk where chk_dt = p.chk_dt) + f.chk_prod, 'yyyy-MM-dd')
+				    end) as chkExpectDt
+				 From fct_prod_chk p, fct_info f
+			       WHERE p.fct_cd= f.fct_cd
+				  group by p.fct_cd) b
+		on (a.fctCd = b.fctCd and a.chkexpectdt = b.chkexpectdt)
+		where a.fctCd is not null
+		and a.chkExpectDt >= to_char(sysdate, 'yyyy-MM-dd')
+		and a.chkExpectDt <= to_char(sysdate + 7, 'yyyy-MM-dd')
    	]]>
 	</select>
 	<select id="pdtList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
