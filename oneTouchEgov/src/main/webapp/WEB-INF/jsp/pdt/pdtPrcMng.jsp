@@ -453,7 +453,7 @@
 			})
 			.then(response=>response.json)
 			.then(result=>{
-				alert('관리부서에 알림을 보냇습니다');
+				alert('관리부서에 알림을 보냈습니다');
 				fastStop.innerHTML='재시작';
 				hiddenGrid.setValue(0,'nowPhs','긴급중단');
 			})
