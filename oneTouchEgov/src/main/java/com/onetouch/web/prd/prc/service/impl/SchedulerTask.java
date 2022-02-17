@@ -15,7 +15,7 @@ public class SchedulerTask {
 	
 	@Autowired PrcMapper mapper;
 	
-	@Scheduled(fixedDelay = 10000) //10초마다 실행 (실행시간 별도)
+	@Scheduled(fixedDelay = 5000) //10초마다 실행 (실행시간 별도)
 	public void selectTask1() {
 		List<PrcVO> list= new ArrayList<>();
 		list=mapper.autoSelect();
