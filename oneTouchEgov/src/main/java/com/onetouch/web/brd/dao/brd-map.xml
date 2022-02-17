@@ -59,6 +59,7 @@
 		where a.fctCd is not null
 		and a.chkExpectDt >= to_char(sysdate, 'yyyy-MM-dd')
 		and a.chkExpectDt <= to_char(sysdate + 7, 'yyyy-MM-dd')
+		order by chkexpectdt
    	]]>
 	</select>
 	<select id="pdtList" resultType="com.onetouch.web.prd.prc.dao.PrcVO">
