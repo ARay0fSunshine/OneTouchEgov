@@ -178,7 +178,7 @@ function poll(){
 			}); 
 		}
 		
-		window.setInterval(poll, 10000)
+		window.setInterval(poll, 1000)
 
 
 //공정 코드 조회 ajax 요청
