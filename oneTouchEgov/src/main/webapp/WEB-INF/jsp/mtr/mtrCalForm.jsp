@@ -454,7 +454,7 @@ mainGrid.on('editingStart', function(ev) {
 				ev.stop();
 			}else{
 				 let row = mainGrid.getRow(ev.rowKey);
-				 document.getElementById('mStartDate').value = lastWeek();
+				 document.getElementById('mStartDate').value = lastMonth();
 				 document.getElementById('mEndDate').value = today();
 				 lotDialog.dialog("open");
 				 document.getElementById('mDitemCode').value = row.mtrCd
