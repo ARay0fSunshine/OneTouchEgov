@@ -25,7 +25,7 @@ public class SchedulerTask {
 			if(Integer.parseInt(vo.getGoalCnt())>(Integer.parseInt(vo2.getFltCnt())+Integer.parseInt(vo.getPdtCnt()))) {
 				int uph;
 				uph=mapper.uphFind(vo);
-				if(rand<98) {
+				if(rand<95) {
 					vo.setPdtCnt(String.valueOf(uph+Integer.parseInt(vo.getPdtCnt())));
 					mapper.autoUpdate(vo);
 				}else {
